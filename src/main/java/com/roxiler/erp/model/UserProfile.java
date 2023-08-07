@@ -6,6 +6,8 @@ import jakarta.validation.constraints.Size;
 import lombok.Data;
 import org.hibernate.annotations.GenericGenerator;
 
+import java.util.Date;
+
 @Entity
 @Table(name = "user_profile")
 @Data
@@ -13,8 +15,8 @@ public class UserProfile {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="user_id")
-    private Integer userId;
+    @Column(name="id")
+    private Integer id;
 
     @NotBlank(message = "First name should not be blank")
     @Size(min=3, message = "Length should not be less than 3")
@@ -25,4 +27,31 @@ public class UserProfile {
     @Size(min=3, message = "Length should not be less than 3")
     @Column(name="last_name")
     private String lastName;
+
+    @Temporal(TemporalType.DATE)
+    @Column(name="date_of_birth", nullable = true)
+    private Date dateOfBirth;
+
+    @Column(name="gender", nullable = true)
+    private String gender;
+
+    @Column(name="work_phone_number", nullable = true)
+    private String workPhoneNumber;
+
+    @Column(name="personal_phone_number", nullable = true)
+    private String personalPhoneNumber;
+
+    @Column(name="aadhar_card", nullable = true)
+    private String aadharCard;
+
+    @Column(name="pan_card", nullable = true)
+    private String panCard;
+
+    @Column(name="monthly_ctc", nullable = true)
+    private String monthlyCtc;
+    @Column(name="language", nullable = true)
+    private String language;
+
 }
+
+
