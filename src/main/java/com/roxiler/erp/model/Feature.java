@@ -12,7 +12,7 @@ import java.util.Set;
 @Entity
 @Table(name = "feature")
 @Data
-public class Feature {
+public class Feature extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

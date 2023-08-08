@@ -10,7 +10,7 @@ import org.hibernate.annotations.GenericGenerator;
 @Entity
 @Table(name = "users")
 @Data
-public class Users {
+public class Users extends  BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

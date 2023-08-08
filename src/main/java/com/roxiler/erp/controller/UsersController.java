@@ -7,14 +7,15 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-@RestController("/users")
+@RestController()
+@RequestMapping("/users")
 public class UsersController {
 
     @Autowired
     private UsersService usersService;
 
     @GetMapping("/")
-    public Iterable<Users> getAllDepartments() {
+    public Iterable<Users> getAllUsers() {
 
         Iterable<Users> users = usersService.getAllUsers();
 
@@ -26,7 +27,7 @@ public class UsersController {
     }
 
     @PostMapping("/")
-    public Users addDepartment(@Valid @RequestBody Users user) {
+    public Users addUser(@Valid @RequestBody Users user) {
 
         Users newUser = usersService.saveUser(user, new Organization());
 
@@ -34,7 +35,7 @@ public class UsersController {
     }
 
     @PatchMapping("/{id}")
-    public String updateDepartment(@Valid @RequestBody Users user, @PathVariable("id") Integer id) {
+    public String updateUser(@Valid @RequestBody Users user, @PathVariable("id") Integer id) {
 
         String result = usersService.updateUser(user, id);
 
@@ -42,7 +43,7 @@ public class UsersController {
     }
 
     @DeleteMapping("/{id}")
-    public String deleteDepartment(@PathVariable("id") Integer id) {
+    public String deleteUser(@PathVariable("id") Integer id) {
 
         String result = usersService.deleteUser(id);
 

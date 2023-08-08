@@ -11,7 +11,7 @@ import java.util.Set;
 @Entity
 @Table(name = "designation")
 @Data
-public class Designation {
+public class Designation extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

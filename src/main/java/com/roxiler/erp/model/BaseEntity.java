@@ -1,4 +1,4 @@
-package com.eazybytes.eazyschool.model;
+package com.roxiler.erp.model;
 
 import lombok.Data;
 import org.springframework.data.annotation.CreatedBy;

@@ -7,14 +7,15 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-@RestController("/designation")
+@RestController()
+@RequestMapping("/designation")
 public class DesignationController {
 
     @Autowired
     private DesignationService designationService;
 
     @GetMapping("/")
-    public Iterable<Designation> getAllDepartments() {
+    public Iterable<Designation> getAllDesignations() {
 
         Iterable<Designation> designations = designationService.getAllDesignations();
 
@@ -26,7 +27,7 @@ public class DesignationController {
     }
 
     @PostMapping("/")
-    public Designation addDepartment(@Valid @RequestBody Designation designation) {
+    public Designation addDesignation(@Valid @RequestBody Designation designation) {
 
         Designation desg = designationService.saveDesignation(designation, new Organization());
 
@@ -34,7 +35,7 @@ public class DesignationController {
     }
 
     @PatchMapping("/{id}")
-    public String updateDepartment(@Valid @RequestBody Designation designation, @PathVariable("id") Integer id) {
+    public String updateDesignation(@Valid @RequestBody Designation designation, @PathVariable("id") Integer id) {
 
         String result = designationService.updateDesignation(designation, id);
 
@@ -42,7 +43,7 @@ public class DesignationController {
     }
 
     @DeleteMapping("/{id}")
-    public String deleteDepartment(@PathVariable("id") Integer id) {
+    public String deleteDesignation(@PathVariable("id") Integer id) {
 
         String result = designationService.deleteDesignation(id);
 

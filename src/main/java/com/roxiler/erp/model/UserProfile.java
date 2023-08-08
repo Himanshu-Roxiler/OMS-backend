@@ -10,7 +10,7 @@ import java.util.Date;
 @Entity
 @Table(name = "user_profile")
 @Data
-public class UserProfile {
+public class UserProfile extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

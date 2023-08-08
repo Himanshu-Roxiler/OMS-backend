@@ -12,7 +12,7 @@ import java.util.Set;
 @Entity
 @Table(name = "user_role")
 @Data
-public class UserRole {
+public class UserRole extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
