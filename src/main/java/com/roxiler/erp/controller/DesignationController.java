@@ -1,0 +1,52 @@
+package com.roxiler.erp.controller;
+
+import com.roxiler.erp.model.Designation;
+import com.roxiler.erp.model.Organization;
+import com.roxiler.erp.service.DesignationService;
+import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
+@RestController("/designation")
+public class DesignationController {
+
+    @Autowired
+    private DesignationService designationService;
+
+    @GetMapping("/")
+    public Iterable<Designation> getAllDepartments() {
+
+        Iterable<Designation> designations = designationService.getAllDesignations();
+
+        for(Designation desg: designations) {
+            System.out.println("DESIGNATION: " + desg.getName());
+        }
+
+        return designations;
+    }
+
+    @PostMapping("/")
+    public Designation addDepartment(@Valid @RequestBody Designation designation) {
+
+        Designation desg = designationService.saveDesignation(designation, new Organization());
+
+        return desg;
+    }
+
+    @PatchMapping("/{id}")
+    public String updateDepartment(@Valid @RequestBody Designation designation, @PathVariable("id") Integer id) {
+
+        String result = designationService.updateDesignation(designation, id);
+
+        return result;
+    }
+
+    @DeleteMapping("/{id}")
+    public String deleteDepartment(@PathVariable("id") Integer id) {
+
+        String result = designationService.deleteDesignation(id);
+
+        return result;
+    }
+
+}

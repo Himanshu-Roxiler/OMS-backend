@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
-import org.hibernate.annotations.GenericGenerator;
 
 import java.util.Date;
 
@@ -49,6 +48,7 @@ public class UserProfile {
 
     @Column(name="monthly_ctc", nullable = true)
     private String monthlyCtc;
+
     @Column(name="language", nullable = true)
     private String language;
 

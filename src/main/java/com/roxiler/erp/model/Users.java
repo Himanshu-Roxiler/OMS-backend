@@ -46,7 +46,7 @@ public class Users {
     private String passwordResetToken;
 
     @Column(name="active_organization", nullable = true)
-    private String activeOrganization;
+    private Integer activeOrganization;
 
     @ManyToOne(fetch = FetchType.EAGER, optional = true)
     @JoinColumn(
