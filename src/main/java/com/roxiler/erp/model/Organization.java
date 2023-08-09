@@ -1,15 +1,19 @@
 package com.roxiler.erp.model;
 
 import jakarta.persistence.*;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
-import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.*;
 
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
 @Table(name = "organization")
+@Where(clause = "deleted_at IS NULL")
 @Data
 public class Organization extends BaseEntity{
 
@@ -49,23 +53,27 @@ public class Organization extends BaseEntity{
             cascade = CascadeType.PERSIST,
             targetEntity = Users.class
     )
-    private Set<Users> users;
+    private Set<Users> users = new HashSet<>();
 
     @OneToMany(
             mappedBy = "organization",
             fetch = FetchType.LAZY,
-            cascade = CascadeType.PERSIST,
+            cascade = CascadeType.REMOVE,
+            orphanRemoval = true,
             targetEntity = Department.class
     )
-    private Set<Department> departments;
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    private Set<Department> departments = new HashSet<>();
 
     @OneToMany(
             mappedBy = "organization",
             fetch = FetchType.LAZY,
-            cascade = CascadeType.PERSIST,
+            cascade = CascadeType.REMOVE,
+            orphanRemoval = true,
             targetEntity = Designation.class
     )
-    private Set<Designation> designations;
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    private Set<Designation> designations = new HashSet<>();
 
     @OneToMany(
             mappedBy = "organization",
@@ -73,5 +81,5 @@ public class Organization extends BaseEntity{
             cascade = CascadeType.PERSIST,
             targetEntity = UserRole.class
     )
-    private Set<UserRole> roles;
+    private Set<UserRole> roles = new HashSet<>();
 }

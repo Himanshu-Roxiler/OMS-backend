@@ -6,9 +6,11 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Where;
 
 @Entity
 @Table(name = "users")
+@Where(clause = "deleted_at IS NULL")
 @Data
 public class Users extends  BaseEntity {
 

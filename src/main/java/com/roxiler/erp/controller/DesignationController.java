@@ -29,7 +29,7 @@ public class DesignationController {
     @PostMapping("/")
     public Designation addDesignation(@Valid @RequestBody Designation designation) {
 
-        Designation desg = designationService.saveDesignation(designation, new Organization());
+        Designation desg = designationService.saveDesignation(designation, 1);
 
         return desg;
     }

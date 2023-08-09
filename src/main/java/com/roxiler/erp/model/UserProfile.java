@@ -4,11 +4,13 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
+import org.hibernate.annotations.Where;
 
 import java.util.Date;
 
 @Entity
 @Table(name = "user_profile")
+@Where(clause = "deleted_at IS NULL")
 @Data
 public class UserProfile extends BaseEntity {
 

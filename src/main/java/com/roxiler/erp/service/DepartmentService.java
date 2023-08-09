@@ -7,6 +7,7 @@ import com.roxiler.erp.repository.DepartmentRepository;
 import com.roxiler.erp.repository.UsersRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -17,14 +18,18 @@ public class DepartmentService {
     @Autowired
     private DepartmentRepository departmentRepository;
 
+    @Autowired
+    private OrganizationService organizationService;
+
     public Iterable<Department> getAllDepartments() {
         Iterable<Department> departments = departmentRepository.findAll();
 
         return departments;
     }
 
-    public Department saveDepartment(Department department, Organization org) {
+    public Department saveDepartment(Department department, Integer orgId) {
         /*The organization needs to be replaced by finding it using org repository*/
+        Organization org = organizationService.getOrganization(orgId);
         department.setOrganization(org);
         Department departments = departmentRepository.save(department);
 
@@ -52,7 +57,8 @@ public class DepartmentService {
 
     public String deleteDepartment(Integer id) {
 
-        departmentRepository.deleteById(id);
+        String deletedBy = SecurityContextHolder.getContext().getAuthentication().getName();
+        departmentRepository.softDeleteById(id, deletedBy);
 
         return "Department deleted Successfully";
     }

@@ -5,11 +5,13 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Where;
 
 import java.util.Set;
 
 @Entity
 @Table(name = "department")
+@Where(clause = "deleted_at IS NULL")
 @Data
 public class Department extends BaseEntity{
 
@@ -28,11 +30,10 @@ public class Department extends BaseEntity{
     @Column(name="description")
     private String description;
 
-    @ManyToOne(fetch = FetchType.EAGER, optional = true)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(
             name = "organization_id",
-            referencedColumnName = "id",
-            nullable = true
+            referencedColumnName = "id"
     )
     private Organization organization;
 

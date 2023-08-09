@@ -7,6 +7,7 @@ import com.roxiler.erp.repository.DesignationRepository;
 import com.roxiler.erp.repository.UsersRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -67,7 +68,8 @@ public class UsersService {
 
     public String deleteUser(Integer id) {
 
-        usersRepository.deleteById(id);
+        String deletedBy = SecurityContextHolder.getContext().getAuthentication().getName();
+        usersRepository.softDeleteById(id, deletedBy);
 
         return "User deleted Successfully";
     }

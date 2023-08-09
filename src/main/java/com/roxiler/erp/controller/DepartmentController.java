@@ -29,7 +29,7 @@ public class DepartmentController {
     @PostMapping("/")
     public Department addDepartment(@Valid @RequestBody Department department) {
 
-        Department dept = departmentService.saveDepartment(department, new Organization());
+        Department dept = departmentService.saveDepartment(department, 1);
 
         return dept;
     }

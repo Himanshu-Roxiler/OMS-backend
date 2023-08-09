@@ -5,11 +5,13 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Where;
 
 import java.util.Set;
 
 @Entity
 @Table(name = "designation")
+@Where(clause = "deleted_at IS NULL")
 @Data
 public class Designation extends BaseEntity {
 

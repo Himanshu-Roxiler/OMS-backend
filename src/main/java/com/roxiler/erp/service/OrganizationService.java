@@ -7,7 +7,9 @@ import com.roxiler.erp.repository.DesignationRepository;
 import com.roxiler.erp.repository.OrganizationRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -16,12 +18,6 @@ public class OrganizationService {
 
     @Autowired
     private OrganizationRepository organizationRepository;
-
-    @Autowired
-    private DesignationService designationService;
-
-    @Autowired
-    private DepartmentService departmentService;
 
     public Iterable<Organization> getAllOrganizations() {
         Iterable<Organization> users = organizationRepository.findAll();
@@ -60,10 +56,22 @@ public class OrganizationService {
         return "Organization updated successfully";
     }
 
+
     public String deleteOrganization(Integer id) {
 
-        organizationRepository.deleteById(id);
+        String deletedBy = SecurityContextHolder.getContext().getAuthentication().getName();
+        organizationRepository.softDeleteById(id, deletedBy);
 
         return "Organization deleted Successfully";
+    }
+
+    public Organization getOrganization(Integer id) {
+        Optional<Organization> organization = organizationRepository.findById(id);
+
+        if(organization.isEmpty()) {
+            throw new EntityNotFoundException();
+        }
+
+        return organization.get();
     }
 }
