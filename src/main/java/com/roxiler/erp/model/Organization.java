@@ -1,20 +1,29 @@
 package com.roxiler.erp.model;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
-import lombok.Data;
+import lombok.*;
 import org.hibernate.annotations.*;
 
 import java.util.HashSet;
 import java.util.Set;
 
+
 @Entity
 @Table(name = "organization")
 @Where(clause = "deleted_at IS NULL")
-@Data
+@Getter
+@Setter
+@JsonIdentityInfo(
+        generator = ObjectIdGenerators.PropertyGenerator.class,
+        property = "id")
 public class Organization extends BaseEntity{
 
     @Id
@@ -58,21 +67,18 @@ public class Organization extends BaseEntity{
     @OneToMany(
             mappedBy = "organization",
             fetch = FetchType.LAZY,
-            cascade = CascadeType.REMOVE,
-            orphanRemoval = true,
+            cascade = CascadeType.PERSIST,
             targetEntity = Department.class
     )
-    @OnDelete(action = OnDeleteAction.CASCADE)
+    //@JsonManagedReference
     private Set<Department> departments = new HashSet<>();
 
     @OneToMany(
             mappedBy = "organization",
             fetch = FetchType.LAZY,
-            cascade = CascadeType.REMOVE,
-            orphanRemoval = true,
+            cascade = CascadeType.PERSIST,
             targetEntity = Designation.class
     )
-    @OnDelete(action = OnDeleteAction.CASCADE)
     private Set<Designation> designations = new HashSet<>();
 
     @OneToMany(

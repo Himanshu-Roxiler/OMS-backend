@@ -4,13 +4,16 @@ import com.roxiler.erp.model.Department;
 import com.roxiler.erp.model.Department;
 import com.roxiler.erp.model.Organization;
 import com.roxiler.erp.repository.DepartmentRepository;
+import com.roxiler.erp.repository.OrganizationRepository;
 import com.roxiler.erp.repository.UsersRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 public class DepartmentService {
@@ -19,7 +22,7 @@ public class DepartmentService {
     private DepartmentRepository departmentRepository;
 
     @Autowired
-    private OrganizationService organizationService;
+    private OrganizationRepository organizationRepository;
 
     public Iterable<Department> getAllDepartments() {
         Iterable<Department> departments = departmentRepository.findAll();
@@ -28,12 +31,24 @@ public class DepartmentService {
     }
 
     public Department saveDepartment(Department department, Integer orgId) {
-        /*The organization needs to be replaced by finding it using org repository*/
-        Organization org = organizationService.getOrganization(orgId);
-        department.setOrganization(org);
-        Department departments = departmentRepository.save(department);
 
-        return department;
+        Optional<Organization> org = organizationRepository.findById(orgId);
+        if(org.isPresent()) {
+            Organization organization = org.get();
+            System.out.println("\nDEPT ORG: " + organization + "\n");
+            department.setOrganization(organization);
+            Department dept = departmentRepository.save(department);
+            System.out.println("\nDEPT: " + dept + "\n");
+            organization.getDepartments().add(dept);
+            System.out.println("\nORG WITH DEPT: " + organization + "\n");
+            //organization.setDepartments(departments);
+
+            //organizationRepository.save(organization);
+            return dept;
+        }
+
+        return null;
+
     }
 
     public String updateDepartment(Department department, Integer id) {

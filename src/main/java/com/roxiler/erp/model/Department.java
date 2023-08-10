@@ -1,18 +1,28 @@
 package com.roxiler.erp.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
-import lombok.Data;
+import lombok.*;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Where;
 
 import java.util.Set;
 
+
 @Entity
 @Table(name = "department")
 @Where(clause = "deleted_at IS NULL")
-@Data
+@Getter
+@Setter
+@JsonIdentityInfo(
+        generator = ObjectIdGenerators.PropertyGenerator.class,
+        property = "id")
 public class Department extends BaseEntity{
 
     @Id
@@ -30,11 +40,14 @@ public class Department extends BaseEntity{
     @Column(name="description")
     private String description;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.EAGER, optional = true)
     @JoinColumn(
             name = "organization_id",
-            referencedColumnName = "id"
+            referencedColumnName = "id",
+            nullable = true
     )
+    //@EqualsAndHashCode.Exclude
+    //@JsonBackReference
     private Organization organization;
 
     @OneToMany(

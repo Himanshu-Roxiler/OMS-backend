@@ -7,10 +7,12 @@ import com.roxiler.erp.repository.DesignationRepository;
 import com.roxiler.erp.repository.OrganizationRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Service
@@ -19,10 +21,24 @@ public class OrganizationService {
     @Autowired
     private OrganizationRepository organizationRepository;
 
-    public Iterable<Organization> getAllOrganizations() {
-        Iterable<Organization> users = organizationRepository.findAll();
+    @Autowired
+    private DepartmentRepository departmentRepository;
 
-        return users;
+    @Autowired
+    private DesignationRepository designationRepository;
+
+    @Transactional
+    @EntityGraph(value = "departments")
+    public Iterable<Organization> findPopulatedOrganizations() {
+        return organizationRepository.findAll();
+    }
+
+    @Transactional
+    public Iterable<Organization> getAllOrganizations() {
+        Iterable<Organization> organizations = organizationRepository.findAll();
+        //Iterable<Organization> organizations = organizationRepository.getPopulatedOrganizations();
+
+        return organizations;
     }
 
     public Organization saveOrganization(Organization organization) {
@@ -60,7 +76,8 @@ public class OrganizationService {
     public String deleteOrganization(Integer id) {
 
         String deletedBy = SecurityContextHolder.getContext().getAuthentication().getName();
-        organizationRepository.softDeleteById(id, deletedBy);
+        //organizationRepository.softDeleteById(id, deletedBy);
+        this.softDeleteOrganization(id);
 
         return "Organization deleted Successfully";
     }
@@ -73,5 +90,31 @@ public class OrganizationService {
         }
 
         return organization.get();
+    }
+
+    @Transactional
+    public void softDeleteOrganization(Integer id) {
+        String deletedBy = SecurityContextHolder.getContext().getAuthentication().getName();
+
+        // Retrieve the organization
+        Organization organization = organizationRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Organization not found"));
+
+        // Soft delete each department
+        for (Department department : organization.getDepartments()) {
+            department.setDeletedAt(LocalDateTime.now());
+            department.setDeletedBy(deletedBy);
+            departmentRepository.save(department);
+        }
+        for (Designation designation : organization.getDesignations()) {
+            designation.setDeletedAt(LocalDateTime.now());
+            designation.setDeletedBy(deletedBy);
+            designationRepository.save(designation);
+        }
+
+        // Soft delete the organization
+        organization.setDeletedAt(LocalDateTime.now());
+        organization.setDeletedBy(deletedBy);
+        organizationRepository.save(organization);
     }
 }
