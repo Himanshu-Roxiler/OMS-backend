@@ -1,11 +1,11 @@
 package com.roxiler.erp.service;
 
+import com.roxiler.erp.model.*;
 import com.roxiler.erp.model.Designation;
 import com.roxiler.erp.model.Designation;
-import com.roxiler.erp.model.Designation;
-import com.roxiler.erp.model.Organization;
 import com.roxiler.erp.repository.DepartmentRepository;
 import com.roxiler.erp.repository.DesignationRepository;
+import com.roxiler.erp.repository.OrganizationRepository;
 import com.roxiler.erp.repository.UsersRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +21,7 @@ public class DesignationService {
     private DesignationRepository designationRepository;
 
     @Autowired
-    private OrganizationService organizationService;
+    private OrganizationRepository organizationRepository;
 
     public Iterable<Designation> getAllDesignations() {
         Iterable<Designation> designations = designationRepository.findAll();
@@ -30,12 +30,19 @@ public class DesignationService {
     }
 
     public Designation saveDesignation(Designation designation, Integer orgId) {
-        /*The organization needs to be replaced by finding it using org repository*/
-        Organization org = organizationService.getOrganization(orgId);
-        designation.setOrganization(org);
-        Designation designations = designationRepository.save(designation);
+        Optional<Organization> org = organizationRepository.findById(orgId);
+        if(org.isPresent()) {
+            Organization organization = org.get();
+            designation.setOrganization(organization);
+            Designation desg = designationRepository.save(designation);
+            organization.getDesignations().add(desg);
+            //organization.setDepartments(departments);
 
-        return designation;
+            organizationRepository.save(organization);
+            return desg;
+        }
+
+        return null;
     }
 
     public String updateDesignation(Designation designation, Integer id) {

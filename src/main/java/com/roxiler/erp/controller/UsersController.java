@@ -1,5 +1,6 @@
 package com.roxiler.erp.controller;
 
+import com.roxiler.erp.dto.users.CreateUsersDto;
 import com.roxiler.erp.model.Users;
 import com.roxiler.erp.model.Organization;
 import com.roxiler.erp.service.UsersService;
@@ -27,9 +28,9 @@ public class UsersController {
     }
 
     @PostMapping("/")
-    public Users addUser(@Valid @RequestBody Users user) {
+    public Users addUser(@Valid @RequestBody CreateUsersDto user) {
 
-        Users newUser = usersService.saveUser(user, new Organization());
+        Users newUser = usersService.saveUser(user);
 
         return newUser;
     }

@@ -35,15 +35,12 @@ public class DepartmentService {
         Optional<Organization> org = organizationRepository.findById(orgId);
         if(org.isPresent()) {
             Organization organization = org.get();
-            System.out.println("\nDEPT ORG: " + organization + "\n");
             department.setOrganization(organization);
             Department dept = departmentRepository.save(department);
-            System.out.println("\nDEPT: " + dept + "\n");
             organization.getDepartments().add(dept);
-            System.out.println("\nORG WITH DEPT: " + organization + "\n");
             //organization.setDepartments(departments);
 
-            //organizationRepository.save(organization);
+            organizationRepository.save(organization);
             return dept;
         }
 

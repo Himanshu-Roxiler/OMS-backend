@@ -1,17 +1,25 @@
 package com.roxiler.erp.model;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Where;
 
 @Entity
 @Table(name = "users")
 @Where(clause = "deleted_at IS NULL")
-@Data
+@Getter
+@Setter
+@JsonIdentityInfo(
+        generator = ObjectIdGenerators.PropertyGenerator.class,
+        property = "id")
 public class Users extends  BaseEntity {
 
     @Id
@@ -52,7 +60,7 @@ public class Users extends  BaseEntity {
 
     @ManyToOne(fetch = FetchType.EAGER, optional = true)
     @JoinColumn(
-            name = "organization_id",
+            name = "organization",
             referencedColumnName = "id",
             nullable = true
     )
@@ -60,21 +68,21 @@ public class Users extends  BaseEntity {
 
     @ManyToOne(fetch = FetchType.EAGER, optional = true)
     @JoinColumn(
-            name = "department_id",
+            name = "department",
             referencedColumnName = "id",
             nullable = true
     )
-    private Department departmentId;
+    private Department department;
 
     @ManyToOne(fetch = FetchType.EAGER, optional = true)
     @JoinColumn(
-            name = "designation_id",
+            name = "designation",
             referencedColumnName = "id",
             nullable = true
     )
-    private Designation designationId;
+    private Designation designation;
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, targetEntity = UserProfile.class)
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, targetEntity = UserProfile.class, optional = true)
     @JoinColumn(
             name="user_profile",
             referencedColumnName = "id",

@@ -12,6 +12,7 @@ import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Where;
 
+import java.util.HashSet;
 import java.util.Set;
 
 
@@ -51,10 +52,10 @@ public class Department extends BaseEntity{
     private Organization organization;
 
     @OneToMany(
-            mappedBy = "departmentId",
+            mappedBy = "department",
             fetch = FetchType.LAZY,
             cascade = CascadeType.PERSIST,
             targetEntity = Users.class
     )
-    private Set<Users> users;
+    private Set<Users> users = new HashSet<>();
 }

@@ -1,9 +1,13 @@
 package com.roxiler.erp.model;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.annotations.Where;
 
 import java.util.Date;
@@ -11,7 +15,11 @@ import java.util.Date;
 @Entity
 @Table(name = "user_profile")
 @Where(clause = "deleted_at IS NULL")
-@Data
+@Getter
+@Setter
+@JsonIdentityInfo(
+        generator = ObjectIdGenerators.PropertyGenerator.class,
+        property = "id")
 public class UserProfile extends BaseEntity {
 
     @Id
