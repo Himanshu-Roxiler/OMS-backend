@@ -3,6 +3,7 @@ package com.roxiler.erp.repository;
 import com.roxiler.erp.model.Designation;
 import com.roxiler.erp.model.Users;
 import lombok.Data;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
@@ -12,7 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @Repository
-public interface DesignationRepository extends CrudRepository<Designation, Integer> {
+public interface DesignationRepository extends JpaRepository<Designation, Integer> {
 
     @Modifying
     @Transactional

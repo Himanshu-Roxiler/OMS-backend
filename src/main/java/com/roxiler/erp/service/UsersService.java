@@ -1,6 +1,7 @@
 package com.roxiler.erp.service;
 
 import com.roxiler.erp.dto.users.CreateUsersDto;
+import com.roxiler.erp.dto.users.UpdateUserDto;
 import com.roxiler.erp.model.*;
 import com.roxiler.erp.model.Users;
 import com.roxiler.erp.repository.DepartmentRepository;
@@ -30,12 +31,6 @@ public class UsersService {
 
     @Autowired
     private DesignationRepository designationRepository;
-
-    //@Autowired
-    //private DesignationService designationService;
-
-    //@Autowired
-    //private DepartmentService departmentService;
 
     public Iterable<Users> getAllUsers() {
         Iterable<Users> users = usersRepository.findAll();
@@ -93,26 +88,43 @@ public class UsersService {
             throw new EntityNotFoundException("Designation doesn't exist");
         }
 
-        Users users = usersRepository.save(newUser);
+        Users savedUser = usersRepository.save(newUser);
         organizationRepository.save(organization.get());
         departmentRepository.save(department.get());
         designationRepository.save(designation.get());
 
-        return newUser;
+        System.out.println("USER DEPARTMENT: " + savedUser.getDepartment().getName());
+        return savedUser;
     }
 
-    public String updateUser(Users user, Integer id) {
+    public String updateUser(UpdateUserDto user, Integer id) {
 
 
         Optional<Users> userToUpdate = usersRepository.findById(id);
 
         userToUpdate.ifPresent(u -> {
+            Optional<Department> department = departmentRepository.findById(user.getDeptId());
+            Optional<Designation> designation = designationRepository.findById(user.getDesgId());
             u.setFirstName(user.getFirstName());
             u.setLastName(user.getLastName());
             u.setEmail(user.getEmail());
             u.setUsername(user.getUsername());
-            //u.setDepartmentId(user.getDepartmentId());
-            //u.setDesignationId(user.getDesignationId());
+
+            if(department.isPresent()) {
+                System.out.println("\n DEPARTMENT: \n" + department.get().getName());
+                u.setDepartment(department.get());
+                department.get().getUsers().add(u);
+            } else {
+                throw new EntityNotFoundException("Department doesn't exist");
+            }
+
+            if(designation.isPresent()) {
+                System.out.println("\n DESIGNATION: \n" + designation.get());
+                u.setDesignation(designation.get());
+                designation.get().getUsers().add(u);
+            } else {
+                throw new EntityNotFoundException("Designation doesn't exist");
+            }
         });
 
         if(userToUpdate.isEmpty()) {
@@ -127,7 +139,29 @@ public class UsersService {
     public String deleteUser(Integer id) {
 
         String deletedBy = SecurityContextHolder.getContext().getAuthentication().getName();
+        Optional<Users> user = usersRepository.findById(id);
         usersRepository.softDeleteById(id, deletedBy);
+        if(user.isPresent()) {
+            Optional<Department> department = departmentRepository.findById(user.get().getDepartment().getId());
+            Optional<Designation> designation = designationRepository.findById(user.get().getDesignation().getId());
+            Optional<Organization> organization = organizationRepository.findById(user.get().getOrganization().getId());
+
+            if(department.isPresent()) {
+                department.get().getUsers().remove(user.get());
+                departmentRepository.save(department.get());
+            }
+
+            if(designation.isPresent()) {
+                designation.get().getUsers().remove(user.get());
+                designationRepository.save(designation.get());
+            }
+
+            if(organization.isPresent()) {
+                organization.get().getUsers().remove(user.get());
+                organizationRepository.save(organization.get());
+            }
+        }
+
 
         return "User deleted Successfully";
     }

@@ -1,6 +1,7 @@
 package com.roxiler.erp.controller;
 
 import com.roxiler.erp.dto.users.CreateUsersDto;
+import com.roxiler.erp.dto.users.UpdateUserDto;
 import com.roxiler.erp.model.Users;
 import com.roxiler.erp.model.Organization;
 import com.roxiler.erp.service.UsersService;
@@ -36,7 +37,7 @@ public class UsersController {
     }
 
     @PatchMapping("/{id}")
-    public String updateUser(@Valid @RequestBody Users user, @PathVariable("id") Integer id) {
+    public String updateUser(@Valid @RequestBody UpdateUserDto user, @PathVariable("id") Integer id) {
 
         String result = usersService.updateUser(user, id);
 
