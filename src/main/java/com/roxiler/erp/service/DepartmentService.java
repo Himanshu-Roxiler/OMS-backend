@@ -1,5 +1,7 @@
 package com.roxiler.erp.service;
 
+import com.roxiler.erp.dto.department.CreateDepartmentDto;
+import com.roxiler.erp.dto.department.UpdateDepartmentDto;
 import com.roxiler.erp.model.Department;
 import com.roxiler.erp.model.Department;
 import com.roxiler.erp.model.Organization;
@@ -30,16 +32,17 @@ public class DepartmentService {
         return departments;
     }
 
-    public Department saveDepartment(Department department, Integer orgId) {
+    public Department saveDepartment(CreateDepartmentDto department, Integer orgId) {
 
+        Department dept = new Department();
         Optional<Organization> org = organizationRepository.findById(orgId);
         if(org.isPresent()) {
             Organization organization = org.get();
-            department.setOrganization(organization);
-            Department dept = departmentRepository.save(department);
+            dept.setOrganization(organization);
+            dept.setName(department.getName());
+            dept.setDescription(department.getDescription());
+            departmentRepository.save(dept);
             organization.getDepartments().add(dept);
-            //organization.setDepartments(departments);
-
             organizationRepository.save(organization);
             return dept;
         }
@@ -48,7 +51,7 @@ public class DepartmentService {
 
     }
 
-    public String updateDepartment(Department department, Integer id) {
+    public String updateDepartment(UpdateDepartmentDto department, Integer id) {
 
 
         Optional<Department> deptToUpdate = departmentRepository.findById(id);
@@ -70,14 +73,26 @@ public class DepartmentService {
     public String deleteDepartment(Integer id) {
 
         String deletedBy = SecurityContextHolder.getContext().getAuthentication().getName();
-        departmentRepository.softDeleteById(id, deletedBy);
+        Optional<Department> dept = departmentRepository.findById(id);
+
+        if(dept.isPresent()) {
+            Optional<Organization> organization = organizationRepository.findById(dept.get().getOrganization().getId());
+
+            if(organization.isPresent()) {
+                organization.get().getDepartments().remove(dept.get());
+                organizationRepository.save(organization.get());
+            }
+
+            departmentRepository.softDeleteById(id, deletedBy);
+        }
+
 
         return "Department deleted Successfully";
     }
 
     public Department getDepartmentById(Integer id) {
-        Optional<Department> dept = departmentRepository.findById(id);
 
+        Optional<Department> dept = departmentRepository.findById(id);
         if(dept.isEmpty()) {
             throw new EntityNotFoundException();
         }

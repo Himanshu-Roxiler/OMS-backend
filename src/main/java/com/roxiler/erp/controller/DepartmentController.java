@@ -1,5 +1,7 @@
 package com.roxiler.erp.controller;
 
+import com.roxiler.erp.dto.department.CreateDepartmentDto;
+import com.roxiler.erp.dto.department.UpdateDepartmentDto;
 import com.roxiler.erp.model.Department;
 import com.roxiler.erp.model.Organization;
 import com.roxiler.erp.service.DepartmentService;
@@ -27,7 +29,7 @@ public class DepartmentController {
     }
 
     @PostMapping("/")
-    public Department addDepartment(@Valid @RequestBody Department department) {
+    public Department addDepartment(@Valid @RequestBody CreateDepartmentDto department) {
 
         Department dept = departmentService.saveDepartment(department, 1);
 
@@ -35,7 +37,7 @@ public class DepartmentController {
     }
 
     @PatchMapping("/{id}")
-    public String updateDepartment(@Valid @RequestBody Department department, @PathVariable("id") Integer id) {
+    public String updateDepartment(@Valid @RequestBody UpdateDepartmentDto department, @PathVariable("id") Integer id) {
 
         String result = departmentService.updateDepartment(department, id);
 

@@ -1,5 +1,7 @@
 package com.roxiler.erp.service;
 
+import com.roxiler.erp.dto.designation.CreateDesignationDto;
+import com.roxiler.erp.dto.designation.UpdateDesignationDto;
 import com.roxiler.erp.model.*;
 import com.roxiler.erp.model.Designation;
 import com.roxiler.erp.model.Designation;
@@ -29,12 +31,15 @@ public class DesignationService {
         return designations;
     }
 
-    public Designation saveDesignation(Designation designation, Integer orgId) {
+    public Designation saveDesignation(CreateDesignationDto designation, Integer orgId) {
         Optional<Organization> org = organizationRepository.findById(orgId);
+        Designation newDesg = new Designation();
         if(org.isPresent()) {
             Organization organization = org.get();
-            designation.setOrganization(organization);
-            Designation desg = designationRepository.save(designation);
+            newDesg.setOrganization(organization);
+            newDesg.setName(designation.getName());
+            newDesg.setDescription(designation.getDescription());
+            Designation desg = designationRepository.save(newDesg);
             organization.getDesignations().add(desg);
             //organization.setDepartments(departments);
 
@@ -45,7 +50,7 @@ public class DesignationService {
         return null;
     }
 
-    public String updateDesignation(Designation designation, Integer id) {
+    public String updateDesignation(UpdateDesignationDto designation, Integer id) {
 
 
         Optional<Designation> desgToUpdate = designationRepository.findById(id);
@@ -67,7 +72,20 @@ public class DesignationService {
     public String deleteDesignation(Integer id) {
 
         String deletedBy = SecurityContextHolder.getContext().getAuthentication().getName();
-        designationRepository.softDeleteById(id, deletedBy);
+        Optional<Designation> desg = designationRepository.findById(id);
+
+        if(desg.isPresent()) {
+            Optional<Organization> organization = organizationRepository.findById(desg.get().getOrganization().getId());
+
+
+            if(organization.isPresent()) {
+                organization.get().getDesignations().remove(desg.get());
+                organizationRepository.save(organization.get());
+            }
+
+            designationRepository.softDeleteById(id, deletedBy);
+        }
+
 
         return "Designation deleted Successfully";
     }

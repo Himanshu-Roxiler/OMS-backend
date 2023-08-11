@@ -1,5 +1,7 @@
 package com.roxiler.erp.controller;
 
+import com.roxiler.erp.dto.designation.CreateDesignationDto;
+import com.roxiler.erp.dto.designation.UpdateDesignationDto;
 import com.roxiler.erp.model.Designation;
 import com.roxiler.erp.model.Organization;
 import com.roxiler.erp.service.DesignationService;
@@ -27,7 +29,7 @@ public class DesignationController {
     }
 
     @PostMapping("/")
-    public Designation addDesignation(@Valid @RequestBody Designation designation) {
+    public Designation addDesignation(@Valid @RequestBody CreateDesignationDto designation) {
 
         Designation desg = designationService.saveDesignation(designation, 1);
 
@@ -35,7 +37,7 @@ public class DesignationController {
     }
 
     @PatchMapping("/{id}")
-    public String updateDesignation(@Valid @RequestBody Designation designation, @PathVariable("id") Integer id) {
+    public String updateDesignation(@Valid @RequestBody UpdateDesignationDto designation, @PathVariable("id") Integer id) {
 
         String result = designationService.updateDesignation(designation, id);
 

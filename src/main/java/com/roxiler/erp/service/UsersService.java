@@ -140,7 +140,7 @@ public class UsersService {
 
         String deletedBy = SecurityContextHolder.getContext().getAuthentication().getName();
         Optional<Users> user = usersRepository.findById(id);
-        usersRepository.softDeleteById(id, deletedBy);
+
         if(user.isPresent()) {
             Optional<Department> department = departmentRepository.findById(user.get().getDepartment().getId());
             Optional<Designation> designation = designationRepository.findById(user.get().getDesignation().getId());
@@ -160,6 +160,8 @@ public class UsersService {
                 organization.get().getUsers().remove(user.get());
                 organizationRepository.save(organization.get());
             }
+
+            usersRepository.softDeleteById(id, deletedBy);
         }
 
 
