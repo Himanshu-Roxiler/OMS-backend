@@ -1,5 +1,7 @@
 package com.roxiler.erp.controller;
 
+import com.roxiler.erp.dto.profile.CreateUserProfileDto;
+import com.roxiler.erp.dto.profile.UpdateUserProfileDto;
 import com.roxiler.erp.model.ResponseObject;
 import com.roxiler.erp.model.UserProfile;
 import com.roxiler.erp.service.UserProfileService;
@@ -31,7 +33,7 @@ public class UsersProfileController {
     }
 
     @PostMapping("/")
-    public ResponseEntity<ResponseObject> addUserProfile(@Valid @RequestBody UserProfile userProfile) {
+    public ResponseEntity<ResponseObject> addUserProfile(@Valid @RequestBody CreateUserProfileDto userProfile) {
 
         UserProfile newUserProfile = userProfileService.saveUser(userProfile);
         ResponseObject responseObject = new ResponseObject();
@@ -44,7 +46,7 @@ public class UsersProfileController {
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<ResponseObject> updateUserProfile(@Valid @RequestBody UserProfile userProfile, @PathVariable("id") Integer id) {
+    public ResponseEntity<ResponseObject> updateUserProfile(@Valid @RequestBody UpdateUserProfileDto userProfile, @PathVariable("id") Integer id) {
 
         UserProfile updatedUserProfile = userProfileService.updateUser(userProfile, id);
         ResponseObject responseObject = new ResponseObject();

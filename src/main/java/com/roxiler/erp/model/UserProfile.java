@@ -62,6 +62,13 @@ public class UserProfile extends BaseEntity {
     @Column(name="language", nullable = true)
     private String language;
 
+    @OneToOne(
+            mappedBy = "userProfile",
+            fetch = FetchType.LAZY,
+            cascade = CascadeType.ALL,
+            targetEntity = Users.class
+    )
+    private Users user;
 }
 
 

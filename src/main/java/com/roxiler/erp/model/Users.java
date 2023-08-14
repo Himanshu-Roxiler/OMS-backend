@@ -86,7 +86,7 @@ public class Users extends  BaseEntity {
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, targetEntity = UserProfile.class, optional = true)
     @JoinColumn(
             name="user_profile",
-            referencedColumnName = "id",
+            referencedColumnName = "user",
             nullable = true
     )
     private UserProfile userProfile;
