@@ -50,7 +50,7 @@ public class OrganizationService {
         return organization;
     }
 
-    public String updateOrganization(Organization organization, Integer id) {
+    public Organization updateOrganization(Organization organization, Integer id) {
 
 
         Optional<Organization> orgToUpdate = organizationRepository.findById(id);
@@ -69,17 +69,15 @@ public class OrganizationService {
 
         Organization updatedOrg = organizationRepository.save(orgToUpdate.get());
 
-        return "Organization updated successfully";
+        return updatedOrg;
     }
 
 
-    public String deleteOrganization(Integer id) {
+    public void deleteOrganization(Integer id) {
 
         String deletedBy = SecurityContextHolder.getContext().getAuthentication().getName();
         //organizationRepository.softDeleteById(id, deletedBy);
         this.softDeleteOrganization(id);
-
-        return "Organization deleted Successfully";
     }
 
     public Organization getOrganization(Integer id) {

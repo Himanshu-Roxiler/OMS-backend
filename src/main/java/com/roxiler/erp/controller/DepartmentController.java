@@ -3,10 +3,12 @@ package com.roxiler.erp.controller;
 import com.roxiler.erp.dto.department.CreateDepartmentDto;
 import com.roxiler.erp.dto.department.UpdateDepartmentDto;
 import com.roxiler.erp.model.Department;
-import com.roxiler.erp.model.Organization;
+import com.roxiler.erp.model.ResponseObject;
 import com.roxiler.erp.service.DepartmentService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController()
@@ -17,39 +19,67 @@ public class DepartmentController {
     private DepartmentService departmentService;
 
     @GetMapping("/")
-    public Iterable<Department> getAllDepartments() {
+    public ResponseEntity<ResponseObject> getAllDepartments() {
 
         Iterable<Department> departments = departmentService.getAllDepartments();
+        ResponseObject responseObject = new ResponseObject();
+        responseObject.setIs_success(true);
+        responseObject.setMessage("Successfully fetched departments");
+        responseObject.setData(departments);
+        ResponseEntity<ResponseObject> response = new ResponseEntity<>(responseObject, HttpStatus.OK);
 
-        for(Department dept: departments) {
-            System.out.println("DEPARTMENT: " + dept.getName());
-        }
-
-        return departments;
+        return response;
     }
 
     @PostMapping("/")
-    public Department addDepartment(@Valid @RequestBody CreateDepartmentDto department) {
+    public ResponseEntity<ResponseObject> addDepartment(@Valid @RequestBody CreateDepartmentDto department) {
 
         Department dept = departmentService.saveDepartment(department, 1);
+        ResponseObject responseObject = new ResponseObject();
+        responseObject.setIs_success(true);
+        responseObject.setMessage("Successfully created department");
+        responseObject.setData(dept);
+        ResponseEntity<ResponseObject> response = new ResponseEntity<>(responseObject, HttpStatus.OK);
 
-        return dept;
+        return response;
     }
 
     @PatchMapping("/{id}")
-    public String updateDepartment(@Valid @RequestBody UpdateDepartmentDto department, @PathVariable("id") Integer id) {
+    public ResponseEntity<ResponseObject> updateDepartment(@Valid @RequestBody UpdateDepartmentDto department, @PathVariable("id") Integer id) {
 
-        String result = departmentService.updateDepartment(department, id);
+        Department dept = departmentService.updateDepartment(department, id);
+        ResponseObject responseObject = new ResponseObject();
+        responseObject.setIs_success(true);
+        responseObject.setMessage("Successfully updated department");
+        responseObject.setData(dept);
+        ResponseEntity<ResponseObject> response = new ResponseEntity<>(responseObject, HttpStatus.OK);
 
-        return result;
+        return response;
     }
 
     @DeleteMapping("/{id}")
-    public String deleteDepartment(@PathVariable("id") Integer id) {
+    public ResponseEntity<ResponseObject> deleteDepartment(@PathVariable("id") Integer id) {
 
-        String result = departmentService.deleteDepartment(id);
+        departmentService.deleteDepartment(id);
+        ResponseObject responseObject = new ResponseObject();
+        responseObject.setIs_success(true);
+        responseObject.setMessage("Successfully deleted department");
+        ResponseEntity<ResponseObject> response = new ResponseEntity<>(responseObject, HttpStatus.OK);
 
-        return result;
+        return response;
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<ResponseObject> getAllDepartments(@PathVariable("id") Integer id) {
+
+        Department departments = departmentService.getDepartmentById(id);
+        ResponseObject responseObject = new ResponseObject();
+        responseObject.setIs_success(true);
+        responseObject.setMessage("Successfully fetched department");
+        responseObject.setData(departments);
+        ResponseEntity<ResponseObject> response = new ResponseEntity<>(responseObject, HttpStatus.OK);
+
+        return response;
     }
 
 }

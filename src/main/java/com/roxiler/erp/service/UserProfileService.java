@@ -29,7 +29,7 @@ public class UserProfileService {
         return user;
     }
 
-    public String updateUser(UserProfile userProfile, Integer id) {
+    public UserProfile updateUser(UserProfile userProfile, Integer id) {
 
 
         Optional<UserProfile> user = userProfileRepository.findById(id);
@@ -45,7 +45,7 @@ public class UserProfileService {
 
         UserProfile updatedUser = userProfileRepository.save(user.get());
 
-        return "User updated successfully";
+        return updatedUser;
     }
 
     public String deleteUser(Integer id) {

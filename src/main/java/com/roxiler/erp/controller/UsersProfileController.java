@@ -1,9 +1,12 @@
 package com.roxiler.erp.controller;
 
+import com.roxiler.erp.model.ResponseObject;
 import com.roxiler.erp.model.UserProfile;
 import com.roxiler.erp.service.UserProfileService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController()
@@ -14,39 +17,55 @@ public class UsersProfileController {
     private UserProfileService userProfileService;
 
     @GetMapping("/")
-    public Iterable<UserProfile> getAllUserProfiles() {
+    public ResponseEntity<ResponseObject> getAllUserProfiles() {
 
         Iterable<UserProfile> userProfiles = userProfileService.getAllUsers();
 
-        for(UserProfile userProfile: userProfiles) {
-            System.out.println("USER: " + userProfile.getFirstName() + " " + userProfile.getLastName());
-        }
+        ResponseObject responseObject = new ResponseObject();
+        responseObject.setIs_success(true);
+        responseObject.setMessage("Successfully fetched user profiles");
+        responseObject.setData(userProfiles);
+        ResponseEntity<ResponseObject> response = new ResponseEntity<>(responseObject, HttpStatus.OK);
 
-        return userProfiles;
+        return response;
     }
 
     @PostMapping("/")
-    public UserProfile addUserProfile(@Valid @RequestBody UserProfile userProfile) {
+    public ResponseEntity<ResponseObject> addUserProfile(@Valid @RequestBody UserProfile userProfile) {
 
         UserProfile newUserProfile = userProfileService.saveUser(userProfile);
+        ResponseObject responseObject = new ResponseObject();
+        responseObject.setIs_success(true);
+        responseObject.setMessage("Successfully created user profile");
+        responseObject.setData(newUserProfile);
+        ResponseEntity<ResponseObject> response = new ResponseEntity<>(responseObject, HttpStatus.OK);
 
-        return newUserProfile;
+        return response;
     }
 
     @PatchMapping("/{id}")
-    public String updateUserProfile(@Valid @RequestBody UserProfile userProfile, @PathVariable("id") Integer id) {
+    public ResponseEntity<ResponseObject> updateUserProfile(@Valid @RequestBody UserProfile userProfile, @PathVariable("id") Integer id) {
 
-        String result = userProfileService.updateUser(userProfile, id);
+        UserProfile updatedUserProfile = userProfileService.updateUser(userProfile, id);
+        ResponseObject responseObject = new ResponseObject();
+        responseObject.setIs_success(true);
+        responseObject.setMessage("Successfully updated user profile");
+        responseObject.setData(updatedUserProfile);
+        ResponseEntity<ResponseObject> response = new ResponseEntity<>(responseObject, HttpStatus.OK);
 
-        return result;
+        return response;
     }
 
     @DeleteMapping("/{id}")
-    public String deleteUserProfile(@PathVariable("id") Integer id) {
+    public ResponseEntity<ResponseObject> deleteUserProfile(@PathVariable("id") Integer id) {
 
         String result = userProfileService.deleteUser(id);
+        ResponseObject responseObject = new ResponseObject();
+        responseObject.setIs_success(true);
+        responseObject.setMessage("Successfully deleted user profile");
+        ResponseEntity<ResponseObject> response = new ResponseEntity<>(responseObject, HttpStatus.OK);
 
-        return result;
+        return response;
     }
 
 }

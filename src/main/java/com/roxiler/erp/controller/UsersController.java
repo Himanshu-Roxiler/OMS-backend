@@ -2,11 +2,14 @@ package com.roxiler.erp.controller;
 
 import com.roxiler.erp.dto.users.CreateUsersDto;
 import com.roxiler.erp.dto.users.UpdateUserDto;
+import com.roxiler.erp.model.ResponseObject;
 import com.roxiler.erp.model.Users;
 import com.roxiler.erp.model.Organization;
 import com.roxiler.erp.service.UsersService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController()
@@ -17,39 +20,54 @@ public class UsersController {
     private UsersService usersService;
 
     @GetMapping("/")
-    public Iterable<Users> getAllUsers() {
+    public ResponseEntity<ResponseObject> getAllUsers() {
 
         Iterable<Users> users = usersService.getAllUsers();
+        ResponseObject responseObject = new ResponseObject();
+        responseObject.setIs_success(true);
+        responseObject.setMessage("Successfully fetched users");
+        responseObject.setData(users);
+        ResponseEntity<ResponseObject> response = new ResponseEntity<>(responseObject, HttpStatus.OK);
 
-        for(Users user: users) {
-            System.out.println("DEPARTMENT: " + user.getFirstName() + " " + user.getLastName());
-        }
-
-        return users;
+        return response;
     }
 
     @PostMapping("/")
-    public Users addUser(@Valid @RequestBody CreateUsersDto user) {
+    public ResponseEntity<ResponseObject> addUser(@Valid @RequestBody CreateUsersDto user) {
 
         Users newUser = usersService.saveUser(user);
+        ResponseObject responseObject = new ResponseObject();
+        responseObject.setIs_success(true);
+        responseObject.setMessage("Successfully created user");
+        responseObject.setData(newUser);
+        ResponseEntity<ResponseObject> response = new ResponseEntity<>(responseObject, HttpStatus.OK);
 
-        return newUser;
+        return response;
     }
 
     @PatchMapping("/{id}")
-    public String updateUser(@Valid @RequestBody UpdateUserDto user, @PathVariable("id") Integer id) {
+    public ResponseEntity<ResponseObject> updateUser(@Valid @RequestBody UpdateUserDto user, @PathVariable("id") Integer id) {
 
-        String result = usersService.updateUser(user, id);
+        Users updatedUser = usersService.updateUser(user, id);
+        ResponseObject responseObject = new ResponseObject();
+        responseObject.setIs_success(true);
+        responseObject.setMessage("Successfully updated user");
+        responseObject.setData(updatedUser);
+        ResponseEntity<ResponseObject> response = new ResponseEntity<>(responseObject, HttpStatus.OK);
 
-        return result;
+        return response;
     }
 
     @DeleteMapping("/{id}")
-    public String deleteUser(@PathVariable("id") Integer id) {
+    public ResponseEntity<ResponseObject> deleteUser(@PathVariable("id") Integer id) {
 
-        String result = usersService.deleteUser(id);
+        usersService.deleteUser(id);
+        ResponseObject responseObject = new ResponseObject();
+        responseObject.setIs_success(true);
+        responseObject.setMessage("Successfully deleted user");
+        ResponseEntity<ResponseObject> response = new ResponseEntity<>(responseObject, HttpStatus.OK);
 
-        return result;
+        return response;
     }
 
 }

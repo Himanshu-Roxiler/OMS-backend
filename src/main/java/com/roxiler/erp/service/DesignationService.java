@@ -50,7 +50,7 @@ public class DesignationService {
         return null;
     }
 
-    public String updateDesignation(UpdateDesignationDto designation, Integer id) {
+    public Designation updateDesignation(UpdateDesignationDto designation, Integer id) {
 
 
         Optional<Designation> desgToUpdate = designationRepository.findById(id);
@@ -66,10 +66,10 @@ public class DesignationService {
 
         Designation updatedDesignation = designationRepository.save(desgToUpdate.get());
 
-        return "Designation updated successfully";
+        return updatedDesignation;
     }
 
-    public String deleteDesignation(Integer id) {
+    public void deleteDesignation(Integer id) {
 
         String deletedBy = SecurityContextHolder.getContext().getAuthentication().getName();
         Optional<Designation> desg = designationRepository.findById(id);
@@ -85,9 +85,6 @@ public class DesignationService {
 
             designationRepository.softDeleteById(id, deletedBy);
         }
-
-
-        return "Designation deleted Successfully";
     }
     public Designation getDesignationById(Integer id) {
         Optional<Designation> desg = designationRepository.findById(id);

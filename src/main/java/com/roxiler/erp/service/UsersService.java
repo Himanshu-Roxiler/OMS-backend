@@ -97,7 +97,7 @@ public class UsersService {
         return savedUser;
     }
 
-    public String updateUser(UpdateUserDto user, Integer id) {
+    public Users updateUser(UpdateUserDto user, Integer id) {
 
 
         Optional<Users> userToUpdate = usersRepository.findById(id);
@@ -133,10 +133,10 @@ public class UsersService {
 
         Users updatedUser = usersRepository.save(userToUpdate.get());
 
-        return "User updated successfully";
+        return updatedUser;
     }
 
-    public String deleteUser(Integer id) {
+    public void deleteUser(Integer id) {
 
         String deletedBy = SecurityContextHolder.getContext().getAuthentication().getName();
         Optional<Users> user = usersRepository.findById(id);
@@ -163,8 +163,5 @@ public class UsersService {
 
             usersRepository.softDeleteById(id, deletedBy);
         }
-
-
-        return "User deleted Successfully";
     }
 }

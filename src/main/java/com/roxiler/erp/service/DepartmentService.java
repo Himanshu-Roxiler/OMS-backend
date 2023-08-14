@@ -5,6 +5,7 @@ import com.roxiler.erp.dto.department.UpdateDepartmentDto;
 import com.roxiler.erp.model.Department;
 import com.roxiler.erp.model.Department;
 import com.roxiler.erp.model.Organization;
+import com.roxiler.erp.model.ResponseObject;
 import com.roxiler.erp.repository.DepartmentRepository;
 import com.roxiler.erp.repository.OrganizationRepository;
 import com.roxiler.erp.repository.UsersRepository;
@@ -44,14 +45,14 @@ public class DepartmentService {
             departmentRepository.save(dept);
             organization.getDepartments().add(dept);
             organizationRepository.save(organization);
+
             return dept;
+        } else {
+            throw new EntityNotFoundException("Organization associated with user not found");
         }
-
-        return null;
-
     }
 
-    public String updateDepartment(UpdateDepartmentDto department, Integer id) {
+    public Department updateDepartment(UpdateDepartmentDto department, Integer id) {
 
 
         Optional<Department> deptToUpdate = departmentRepository.findById(id);
@@ -67,10 +68,10 @@ public class DepartmentService {
 
         Department updatedDepartment = departmentRepository.save(deptToUpdate.get());
 
-        return "Department updated successfully";
+        return updatedDepartment;
     }
 
-    public String deleteDepartment(Integer id) {
+    public void deleteDepartment(Integer id) {
 
         String deletedBy = SecurityContextHolder.getContext().getAuthentication().getName();
         Optional<Department> dept = departmentRepository.findById(id);
@@ -85,9 +86,6 @@ public class DepartmentService {
 
             departmentRepository.softDeleteById(id, deletedBy);
         }
-
-
-        return "Department deleted Successfully";
     }
 
     public Department getDepartmentById(Integer id) {

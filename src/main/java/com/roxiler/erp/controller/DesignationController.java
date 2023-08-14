@@ -4,9 +4,12 @@ import com.roxiler.erp.dto.designation.CreateDesignationDto;
 import com.roxiler.erp.dto.designation.UpdateDesignationDto;
 import com.roxiler.erp.model.Designation;
 import com.roxiler.erp.model.Organization;
+import com.roxiler.erp.model.ResponseObject;
 import com.roxiler.erp.service.DesignationService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController()
@@ -17,39 +20,55 @@ public class DesignationController {
     private DesignationService designationService;
 
     @GetMapping("/")
-    public Iterable<Designation> getAllDesignations() {
+    public ResponseEntity<ResponseObject> getAllDesignations() {
 
         Iterable<Designation> designations = designationService.getAllDesignations();
 
-        for(Designation desg: designations) {
-            System.out.println("DESIGNATION: " + desg.getName());
-        }
+        ResponseObject responseObject = new ResponseObject();
+        responseObject.setIs_success(true);
+        responseObject.setMessage("Successfully fetched departments");
+        responseObject.setData(designations);
+        ResponseEntity<ResponseObject> response = new ResponseEntity<>(responseObject, HttpStatus.OK);
 
-        return designations;
+        return response;
     }
 
     @PostMapping("/")
-    public Designation addDesignation(@Valid @RequestBody CreateDesignationDto designation) {
+    public ResponseEntity<ResponseObject> addDesignation(@Valid @RequestBody CreateDesignationDto designation) {
 
         Designation desg = designationService.saveDesignation(designation, 1);
+        ResponseObject responseObject = new ResponseObject();
+        responseObject.setIs_success(true);
+        responseObject.setMessage("Successfully created departments");
+        responseObject.setData(desg);
+        ResponseEntity<ResponseObject> response = new ResponseEntity<>(responseObject, HttpStatus.OK);
 
-        return desg;
+        return response;
     }
 
     @PatchMapping("/{id}")
-    public String updateDesignation(@Valid @RequestBody UpdateDesignationDto designation, @PathVariable("id") Integer id) {
+    public ResponseEntity<ResponseObject> updateDesignation(@Valid @RequestBody UpdateDesignationDto designation, @PathVariable("id") Integer id) {
 
-        String result = designationService.updateDesignation(designation, id);
+        Designation desg = designationService.updateDesignation(designation, id);
+        ResponseObject responseObject = new ResponseObject();
+        responseObject.setIs_success(true);
+        responseObject.setMessage("Successfully updated designation");
+        responseObject.setData(desg);
+        ResponseEntity<ResponseObject> response = new ResponseEntity<>(responseObject, HttpStatus.OK);
 
-        return result;
+        return response;
     }
 
     @DeleteMapping("/{id}")
-    public String deleteDesignation(@PathVariable("id") Integer id) {
+    public ResponseEntity<ResponseObject> deleteDesignation(@PathVariable("id") Integer id) {
 
-        String result = designationService.deleteDesignation(id);
+        designationService.deleteDesignation(id);
+        ResponseObject responseObject = new ResponseObject();
+        responseObject.setIs_success(true);
+        responseObject.setMessage("Successfully deleted designation");
+        ResponseEntity<ResponseObject> response = new ResponseEntity<>(responseObject, HttpStatus.OK);
 
-        return result;
+        return response;
     }
 
 }

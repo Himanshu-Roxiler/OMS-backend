@@ -2,9 +2,12 @@ package com.roxiler.erp.controller;
 
 import com.roxiler.erp.model.Organization;
 import com.roxiler.erp.model.Organization;
+import com.roxiler.erp.model.ResponseObject;
 import com.roxiler.erp.service.OrganizationService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController()
@@ -15,39 +18,55 @@ public class OrganizationController {
     private OrganizationService organizationService;
 
     @GetMapping("/")
-    public Iterable<Organization> getAllOrganizations() {
+    public ResponseEntity<ResponseObject> getAllOrganizations() {
 
         Iterable<Organization> organizations = organizationService.getAllOrganizations();
 
-        for(Organization organization: organizations) {
-            System.out.println("ORGANIZATION: " + organization.getName());
-        }
+        ResponseObject responseObject = new ResponseObject();
+        responseObject.setIs_success(true);
+        responseObject.setMessage("Successfully fetched organizations");
+        responseObject.setData(organizations);
+        ResponseEntity<ResponseObject> response = new ResponseEntity<>(responseObject, HttpStatus.OK);
 
-        return organizations;
+        return response;
     }
 
     @PostMapping("/")
-    public Organization addOrganization(@Valid @RequestBody Organization organization) {
+    public ResponseEntity<ResponseObject> addOrganization(@Valid @RequestBody Organization organization) {
 
         Organization newOrganization = organizationService.saveOrganization(organization);
+        ResponseObject responseObject = new ResponseObject();
+        responseObject.setIs_success(true);
+        responseObject.setMessage("Successfully created organization");
+        responseObject.setData(newOrganization);
+        ResponseEntity<ResponseObject> response = new ResponseEntity<>(responseObject, HttpStatus.OK);
 
-        return newOrganization;
+        return response;
     }
 
     @PatchMapping("/{id}")
-    public String updateOrganization(@Valid @RequestBody Organization organization, @PathVariable("id") Integer id) {
+    public ResponseEntity<ResponseObject> updateOrganization(@Valid @RequestBody Organization organization, @PathVariable("id") Integer id) {
 
-        String result = organizationService.updateOrganization(organization, id);
+        Organization org = organizationService.updateOrganization(organization, id);
+        ResponseObject responseObject = new ResponseObject();
+        responseObject.setIs_success(true);
+        responseObject.setMessage("Successfully updated organization");
+        responseObject.setData(org);
+        ResponseEntity<ResponseObject> response = new ResponseEntity<>(responseObject, HttpStatus.OK);
 
-        return result;
+        return response;
     }
 
     @DeleteMapping("/{id}")
-    public String deleteOrganization(@PathVariable("id") Integer id) {
+    public ResponseEntity<ResponseObject> deleteOrganization(@PathVariable("id") Integer id) {
 
-        String result = organizationService.deleteOrganization(id);
+        organizationService.softDeleteOrganization(id);
+        ResponseObject responseObject = new ResponseObject();
+        responseObject.setIs_success(true);
+        responseObject.setMessage("Successfully deleted organization");
+        ResponseEntity<ResponseObject> response = new ResponseEntity<>(responseObject, HttpStatus.OK);
 
-        return result;
+        return response;
     }
 
 }
