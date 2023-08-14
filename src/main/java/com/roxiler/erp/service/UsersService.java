@@ -1,5 +1,6 @@
 package com.roxiler.erp.service;
 
+import com.roxiler.erp.dto.auth.UserSignupDto;
 import com.roxiler.erp.dto.users.CreateUsersDto;
 import com.roxiler.erp.dto.users.UpdateUserDto;
 import com.roxiler.erp.model.*;
@@ -12,6 +13,7 @@ import jakarta.persistence.EntityNotFoundException;
 import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.swing.text.html.Option;
@@ -19,6 +21,9 @@ import java.util.Optional;
 
 @Service
 public class UsersService {
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Autowired
     private UsersRepository usersRepository;
@@ -31,6 +36,19 @@ public class UsersService {
 
     @Autowired
     private DesignationRepository designationRepository;
+
+    public Users userSignUp(UserSignupDto user) {
+        Users newUser = new Users();
+        newUser.setFirstName(user.getFirstName());
+        newUser.setLastName(user.getLastName());
+        newUser.setUsername(user.getUsername());
+        newUser.setEmail(user.getEmail());
+        String hashedPassword = passwordEncoder.encode(user.getPassword());
+        newUser.setPassword(hashedPassword);
+
+        Users savedUser = usersRepository.save(newUser);
+        return savedUser;
+    }
 
     public Iterable<Users> getAllUsers() {
         Iterable<Users> users = usersRepository.findAll();
@@ -63,7 +81,8 @@ public class UsersService {
         newUser.setLastName(user.getLastName());
         newUser.setUsername(user.getUsername());
         newUser.setEmail(user.getEmail());
-        newUser.setPassword(user.getPassword());
+        String hashedPassword = passwordEncoder.encode(user.getPassword());
+        newUser.setPassword(hashedPassword);
         if(organization.isPresent()) {
             newUser.setOrganization(organization.get());
             newUser.setActiveOrganization(organization.get().getId());
@@ -93,7 +112,6 @@ public class UsersService {
         departmentRepository.save(department.get());
         designationRepository.save(designation.get());
 
-        System.out.println("USER DEPARTMENT: " + savedUser.getDepartment().getName());
         return savedUser;
     }
 

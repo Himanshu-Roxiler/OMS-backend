@@ -5,14 +5,17 @@ import com.roxiler.erp.model.Organization;
 import com.roxiler.erp.repository.DepartmentRepository;
 import com.roxiler.erp.repository.DesignationRepository;
 import com.roxiler.erp.repository.OrganizationRepository;
+import com.roxiler.erp.repository.UsersRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.EntityGraph;
+import org.springframework.security.access.AuthorizationServiceException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -26,6 +29,9 @@ public class OrganizationService {
 
     @Autowired
     private DesignationRepository designationRepository;
+
+    @Autowired
+    private UsersRepository usersRepository;
 
     @Transactional
     @EntityGraph(value = "departments")
@@ -41,18 +47,27 @@ public class OrganizationService {
         return organizations;
     }
 
-    public Organization saveOrganization(Organization organization) {
+    public Organization saveOrganization(Organization organization, Integer userId) {
 
         //Department dept = departmentService.getDepartmentById(organization.getDepartmentId().getId());
         //Designation desg = designationService.getDesignationById(organization.getDesignationId().getId());
-        Organization users = organizationRepository.save(organization);
+        Optional<Users> user = usersRepository.findById(userId);
+        if(user.isPresent()) {
+            organization.getUsers().add(user.get());
+            Organization org = organizationRepository.save(organization);
+            user.get().setOrganization(org);
+            usersRepository.save(user.get());
+        }
 
         return organization;
     }
 
-    public Organization updateOrganization(Organization organization, Integer id) {
+    public Organization updateOrganization(Organization organization, Integer id, String userEmail) {
 
-
+        Users user = usersRepository.readByEmail(userEmail);
+        if(!Objects.equals(user.getOrganization().getId(), id)) {
+            throw new AuthorizationServiceException("You are not allowed to perform this action");
+        }
         Optional<Organization> orgToUpdate = organizationRepository.findById(id);
 
         orgToUpdate.ifPresent(org -> {
@@ -73,11 +88,14 @@ public class OrganizationService {
     }
 
 
-    public void deleteOrganization(Integer id) {
-
+    public void deleteOrganization(Integer id, String userEmail) {
+        Users user = usersRepository.readByEmail(userEmail);
+        if(!Objects.equals(user.getOrganization().getId(), id)) {
+            throw new AuthorizationServiceException("You are not allowed to perform this action");
+        }
         String deletedBy = SecurityContextHolder.getContext().getAuthentication().getName();
         //organizationRepository.softDeleteById(id, deletedBy);
-        this.softDeleteOrganization(id);
+        this.softDeleteOrganization(id, userEmail);
     }
 
     public Organization getOrganization(Integer id) {
@@ -91,7 +109,11 @@ public class OrganizationService {
     }
 
     @Transactional
-    public void softDeleteOrganization(Integer id) {
+    public void softDeleteOrganization(Integer id, String userEmail) {
+        Users user = usersRepository.readByEmail(userEmail);
+        if(!Objects.equals(user.getOrganization().getId(), id)) {
+            throw new AuthorizationServiceException("You are not allowed to perform this action");
+        }
         String deletedBy = SecurityContextHolder.getContext().getAuthentication().getName();
 
         // Retrieve the organization
