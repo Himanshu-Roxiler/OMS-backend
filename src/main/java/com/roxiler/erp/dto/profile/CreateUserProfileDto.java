@@ -20,7 +20,6 @@ public class CreateUserProfileDto {
     @Size(min=3, message = "Length should not be less than 3")
     private String lastName;
 
-    @NotBlank(message = "DOB should not be blank")
     @Temporal(TemporalType.DATE)
     private Date dateOfBirth;
 

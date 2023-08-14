@@ -17,6 +17,6 @@ public interface DesignationRepository extends JpaRepository<Designation, Intege
 
     @Modifying
     @Transactional
-    @Query("UPDATE Organization org SET org.deletedAt = CURRENT_TIMESTAMP, org.deletedBy = :deletedBy WHERE org.id = :id")
+    @Query("UPDATE Designation desg SET desg.deletedAt = CURRENT_TIMESTAMP, desg.deletedBy = :deletedBy WHERE desg.id = :id")
     void softDeleteById(Integer id, String deletedBy);
 }

@@ -16,6 +16,6 @@ public interface UserProfileRepository extends JpaRepository<UserProfile, Intege
 
     @Modifying
     @Transactional
-    @Query("UPDATE Organization org SET org.deletedAt = CURRENT_TIMESTAMP, org.deletedBy = :deletedBy WHERE org.id = :id")
+    @Query("UPDATE UserProfile userProfile SET userProfile.deletedAt = CURRENT_TIMESTAMP, userProfile.deletedBy = :deletedBy WHERE userProfile.id = :id")
     void softDeleteById(Integer id, String deletedBy);
 }

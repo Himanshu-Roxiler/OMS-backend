@@ -17,6 +17,6 @@ public interface DepartmentRepository extends JpaRepository<Department, Integer>
 
     @Modifying
     @Transactional
-    @Query("UPDATE Organization org SET org.deletedAt = CURRENT_TIMESTAMP, org.deletedBy = :deletedBy WHERE org.id = :id")
+    @Query("UPDATE Department dept SET dept.deletedAt = CURRENT_TIMESTAMP, dept.deletedBy = :deletedBy WHERE dept.id = :id")
     void softDeleteById(Integer id, String deletedBy);
 }
