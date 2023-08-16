@@ -1,5 +1,6 @@
 package com.roxiler.erp.service;
 
+import com.roxiler.erp.interfaces.RequiredPermission;
 import com.roxiler.erp.model.*;
 import com.roxiler.erp.model.Organization;
 import com.roxiler.erp.repository.DepartmentRepository;
@@ -47,12 +48,13 @@ public class OrganizationService {
         return organizations;
     }
 
+    @RequiredPermission(permission = "admin")
     public Organization saveOrganization(Organization organization, Integer userId) {
 
         //Department dept = departmentService.getDepartmentById(organization.getDepartmentId().getId());
         //Designation desg = designationService.getDesignationById(organization.getDesignationId().getId());
         Optional<Users> user = usersRepository.findById(userId);
-        if(user.isPresent()) {
+        if (user.isPresent()) {
             organization.getUsers().add(user.get());
             Organization org = organizationRepository.save(organization);
             user.get().setOrganization(org);
@@ -65,7 +67,7 @@ public class OrganizationService {
     public Organization updateOrganization(Organization organization, Integer id, String userEmail) {
 
         Users user = usersRepository.readByEmail(userEmail);
-        if(!Objects.equals(user.getOrganization().getId(), id)) {
+        if (!Objects.equals(user.getOrganization().getId(), id)) {
             throw new AuthorizationServiceException("You are not allowed to perform this action");
         }
         Optional<Organization> orgToUpdate = organizationRepository.findById(id);
@@ -78,7 +80,7 @@ public class OrganizationService {
             org.setCountry(organization.getCountry());
         });
 
-        if(orgToUpdate.isEmpty()) {
+        if (orgToUpdate.isEmpty()) {
             throw new EntityNotFoundException();
         }
 
@@ -90,7 +92,7 @@ public class OrganizationService {
 
     public void deleteOrganization(Integer id, String userEmail) {
         Users user = usersRepository.readByEmail(userEmail);
-        if(!Objects.equals(user.getOrganization().getId(), id)) {
+        if (!Objects.equals(user.getOrganization().getId(), id)) {
             throw new AuthorizationServiceException("You are not allowed to perform this action");
         }
         String deletedBy = SecurityContextHolder.getContext().getAuthentication().getName();
@@ -101,7 +103,7 @@ public class OrganizationService {
     public Organization getOrganization(Integer id) {
         Optional<Organization> organization = organizationRepository.findById(id);
 
-        if(organization.isEmpty()) {
+        if (organization.isEmpty()) {
             throw new EntityNotFoundException();
         }
 
@@ -111,7 +113,7 @@ public class OrganizationService {
     @Transactional
     public void softDeleteOrganization(Integer id, String userEmail) {
         Users user = usersRepository.readByEmail(userEmail);
-        if(!Objects.equals(user.getOrganization().getId(), id)) {
+        if (!Objects.equals(user.getOrganization().getId(), id)) {
             throw new AuthorizationServiceException("You are not allowed to perform this action");
         }
         String deletedBy = SecurityContextHolder.getContext().getAuthentication().getName();
