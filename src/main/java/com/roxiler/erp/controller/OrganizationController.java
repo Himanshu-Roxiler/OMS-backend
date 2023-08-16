@@ -34,8 +34,10 @@ public class OrganizationController {
     }
 
     @PostMapping("")
-    public ResponseEntity<ResponseObject> addOrganization(@AuthenticationPrincipal UserDto user, @Valid @RequestBody Organization organization) {
-
+    public ResponseEntity<ResponseObject> addOrganization(
+            @AuthenticationPrincipal UserDto user,
+            @Valid @RequestBody Organization organization
+    ) {
         Organization newOrganization = organizationService.saveOrganization(organization, user.getId());
         ResponseObject responseObject = new ResponseObject();
         responseObject.setIs_success(true);
@@ -47,8 +49,11 @@ public class OrganizationController {
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<ResponseObject> updateOrganization(@AuthenticationPrincipal UserDto user, @Valid @RequestBody Organization organization, @PathVariable("id") Integer id) {
-
+    public ResponseEntity<ResponseObject> updateOrganization(
+            @AuthenticationPrincipal UserDto user,
+            @Valid @RequestBody Organization organization,
+            @PathVariable("id") Integer id
+    ) {
         Organization org = organizationService.updateOrganization(organization, id, user.getEmail());
         ResponseObject responseObject = new ResponseObject();
         responseObject.setIs_success(true);
@@ -60,8 +65,10 @@ public class OrganizationController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<ResponseObject> deleteOrganization(@AuthenticationPrincipal UserDto user, @PathVariable("id") Integer id) {
-
+    public ResponseEntity<ResponseObject> deleteOrganization(
+            @AuthenticationPrincipal UserDto user,
+            @PathVariable("id") Integer id
+    ) {
         organizationService.softDeleteOrganization(id, user.getEmail());
         ResponseObject responseObject = new ResponseObject();
         responseObject.setIs_success(true);

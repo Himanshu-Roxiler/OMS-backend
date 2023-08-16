@@ -18,6 +18,7 @@ import org.springframework.security.web.firewall.RequestRejectedException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -37,9 +38,9 @@ public class UserProfileService {
     }
 
     @RequiredPermission(permission = PermissionConstants.PROFILE)
-    public UserProfile saveUser(CreateUserProfileDto userProfile) {
+    public UserProfile saveUser(CreateUserProfileDto userProfile, Integer userId) {
 
-        Optional<Users> user = usersRepository.findById(1);
+        Optional<Users> user = usersRepository.findById(userId);
         if (user.isPresent()) {
 
             UserProfile newUserProfile = new UserProfile();
@@ -66,8 +67,11 @@ public class UserProfileService {
     }
 
     @RequiredPermission(permission = PermissionConstants.PROFILE)
-    public UserProfile updateUser(UpdateUserProfileDto userProfile, Integer id) {
+    public UserProfile updateUser(UpdateUserProfileDto userProfile, Integer id, Integer uId) {
 
+        if (!Objects.equals(id, uId)) {
+            throw new AuthorizationServiceException("You are not allowed to perform this action");
+        }
         Optional<UserProfile> userProf = userProfileRepository.findById(id);
         if (userProf.isPresent()) {
             Integer userId = userProf.get().getUser().getId();
@@ -98,8 +102,11 @@ public class UserProfileService {
     }
 
     @RequiredPermission(permission = PermissionConstants.PROFILE)
-    public String deleteUser(Integer id) {
+    public String deleteUser(Integer id, Integer userId) {
 
+        if (!Objects.equals(id, userId)) {
+            throw new AuthorizationServiceException("You are not allowed to perform this action");
+        }
         String deletedBy = SecurityContextHolder.getContext().getAuthentication().getName();
         userProfileRepository.softDeleteById(id, deletedBy);
 

@@ -1,5 +1,6 @@
 package com.roxiler.erp.controller;
 
+import com.roxiler.erp.dto.auth.UserDto;
 import com.roxiler.erp.dto.designation.CreateDesignationDto;
 import com.roxiler.erp.dto.designation.UpdateDesignationDto;
 import com.roxiler.erp.model.Designation;
@@ -10,6 +11,7 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController()
@@ -34,9 +36,11 @@ public class DesignationController {
     }
 
     @PostMapping("/")
-    public ResponseEntity<ResponseObject> addDesignation(@Valid @RequestBody CreateDesignationDto designation) {
-
-        Designation desg = designationService.saveDesignation(designation, 1);
+    public ResponseEntity<ResponseObject> addDesignation(
+            @AuthenticationPrincipal UserDto userDto,
+            @Valid @RequestBody CreateDesignationDto designation
+    ) {
+        Designation desg = designationService.saveDesignation(designation, userDto.getOrgId());
         ResponseObject responseObject = new ResponseObject();
         responseObject.setIs_success(true);
         responseObject.setMessage("Successfully created departments");
@@ -47,9 +51,12 @@ public class DesignationController {
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<ResponseObject> updateDesignation(@Valid @RequestBody UpdateDesignationDto designation, @PathVariable("id") Integer id) {
-
-        Designation desg = designationService.updateDesignation(designation, id);
+    public ResponseEntity<ResponseObject> updateDesignation(
+            @AuthenticationPrincipal UserDto userDto,
+            @Valid @RequestBody UpdateDesignationDto designation,
+            @PathVariable("id") Integer id
+    ) {
+        Designation desg = designationService.updateDesignation(designation, id, userDto.getEmail());
         ResponseObject responseObject = new ResponseObject();
         responseObject.setIs_success(true);
         responseObject.setMessage("Successfully updated designation");
@@ -60,9 +67,11 @@ public class DesignationController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<ResponseObject> deleteDesignation(@PathVariable("id") Integer id) {
-
-        designationService.deleteDesignation(id);
+    public ResponseEntity<ResponseObject> deleteDesignation(
+            @AuthenticationPrincipal UserDto userDto,
+            @PathVariable("id") Integer id
+    ) {
+        designationService.deleteDesignation(id, userDto.getEmail());
         ResponseObject responseObject = new ResponseObject();
         responseObject.setIs_success(true);
         responseObject.setMessage("Successfully deleted designation");

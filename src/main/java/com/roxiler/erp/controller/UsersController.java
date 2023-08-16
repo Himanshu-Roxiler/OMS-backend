@@ -1,5 +1,6 @@
 package com.roxiler.erp.controller;
 
+import com.roxiler.erp.dto.auth.UserDto;
 import com.roxiler.erp.dto.users.CreateUsersDto;
 import com.roxiler.erp.dto.users.UpdateUserDto;
 import com.roxiler.erp.model.ResponseObject;
@@ -10,6 +11,7 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController()
@@ -33,9 +35,11 @@ public class UsersController {
     }
 
     @PostMapping("/")
-    public ResponseEntity<ResponseObject> addUser(@Valid @RequestBody CreateUsersDto user) {
-
-        Users newUser = usersService.saveUser(user);
+    public ResponseEntity<ResponseObject> addUser(
+            @AuthenticationPrincipal UserDto userDto,
+            @Valid @RequestBody CreateUsersDto user
+    ) {
+        Users newUser = usersService.saveUser(user, userDto.getEmail());
         ResponseObject responseObject = new ResponseObject();
         responseObject.setIs_success(true);
         responseObject.setMessage("Successfully created user");

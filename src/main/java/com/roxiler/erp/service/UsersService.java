@@ -71,14 +71,21 @@ public class UsersService {
     }
 
 
-    @RequiredPermission(permission = PermissionConstants.USERS)
-    public Users saveUser(CreateUsersDto user) {
+    @RequiredPermission(permission = PermissionConstants.ADMIN)
+    public Users saveUser(CreateUsersDto user, String email) {
 
         //Department dept = departmentService.getDepartmentById(user.getDepartmentId().getId());
         //Designation desg = designationService.getDesignationById(user.getDesignationId().getId());
-        Optional<Organization> organization = organizationRepository.findById(user.getOrgId());
-        Optional<Department> department = departmentRepository.findById(user.getDeptId());
-        Optional<Designation> designation = designationRepository.findById(user.getDesgId());
+        Users adminUser = usersRepository.readByEmail(email);
+        Optional<Organization> organization = organizationRepository.findById(adminUser.getOrganization().getId());
+        if (organization.isEmpty()) {
+            throw new EntityNotFoundException("Organization doesn't exist");
+        }
+        //Organization organization = organizationRepository.readById(adminUser.getOrganization().getId());
+        //Optional<Department> department = departmentRepository.findById(user.getDeptId());
+        Optional<Department> department = departmentRepository.getDeptWithOrg(user.getDeptId(), organization.get());
+        //Optional<Designation> designation = designationRepository.findById(user.getDesgId());
+        Optional<Designation> designation = designationRepository.getDesgWithOrg(user.getDesgId(), organization.get());
         //user.setDepartmentId(dept);
         //user.setDesignationId(desg);
         Users newUser = new Users();
@@ -88,13 +95,13 @@ public class UsersService {
         newUser.setEmail(user.getEmail());
         String hashedPassword = passwordEncoder.encode(user.getPassword());
         newUser.setPassword(hashedPassword);
-        if (organization.isPresent()) {
-            newUser.setOrganization(organization.get());
-            newUser.setActiveOrganization(organization.get().getId());
-            organization.get().getUsers().add(newUser);
-        } else {
-            throw new EntityNotFoundException("Organization doesn't exist");
-        }
+//        if (organization.isPresent()) {
+        newUser.setOrganization(organization.get());
+        newUser.setActiveOrganization(organization.get().getId());
+        organization.get().getUsers().add(newUser);
+//        } else {
+//            throw new EntityNotFoundException("Organization doesn't exist");
+//        }
 
         if (department.isPresent()) {
             System.out.println("\n DEPARTMENT: \n" + department.get().getName());
@@ -120,7 +127,7 @@ public class UsersService {
         return savedUser;
     }
 
-    @RequiredPermission(permission = PermissionConstants.USERS)
+    @RequiredPermission(permission = PermissionConstants.ADMIN)
     public Users updateUser(UpdateUserDto user, Integer id) {
 
 
@@ -131,7 +138,7 @@ public class UsersService {
             Optional<Designation> designation = designationRepository.findById(user.getDesgId());
             u.setFirstName(user.getFirstName());
             u.setLastName(user.getLastName());
-            u.setEmail(user.getEmail());
+            //u.setEmail(user.getEmail());
             u.setUsername(user.getUsername());
 
             if (department.isPresent()) {
@@ -160,7 +167,7 @@ public class UsersService {
         return updatedUser;
     }
 
-    @RequiredPermission(permission = PermissionConstants.USERS)
+    @RequiredPermission(permission = PermissionConstants.ADMIN)
     public void deleteUser(Integer id) {
 
         String deletedBy = SecurityContextHolder.getContext().getAuthentication().getName();

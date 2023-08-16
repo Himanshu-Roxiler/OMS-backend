@@ -13,9 +13,11 @@ import com.roxiler.erp.repository.OrganizationRepository;
 import com.roxiler.erp.repository.UsersRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.AuthorizationServiceException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -26,6 +28,9 @@ public class DesignationService {
 
     @Autowired
     private OrganizationRepository organizationRepository;
+
+    @Autowired
+    private UsersRepository usersRepository;
 
     public Iterable<Designation> getAllDesignations() {
         Iterable<Designation> designations = designationRepository.findAll();
@@ -54,14 +59,18 @@ public class DesignationService {
     }
 
     @RequiredPermission(permission = PermissionConstants.DESIGNATION)
-    public Designation updateDesignation(UpdateDesignationDto designation, Integer id) {
+    public Designation updateDesignation(UpdateDesignationDto designation, Integer id, String email) {
 
-
+        Users user = usersRepository.readByEmail(email);
         Optional<Designation> desgToUpdate = designationRepository.findById(id);
 
         desgToUpdate.ifPresent(desg -> {
-            desg.setName(designation.getName());
-            desg.setDescription(designation.getDescription());
+            if (desgToUpdate.get().getOrganization().getId().equals(user.getActiveOrganization())) {
+                desg.setName(designation.getName());
+                desg.setDescription(designation.getDescription());
+            } else {
+                throw new AuthorizationServiceException("You are not allowed to perform this action");
+            }
         });
 
         if (desgToUpdate.isEmpty()) {
@@ -74,14 +83,17 @@ public class DesignationService {
     }
 
     @RequiredPermission(permission = PermissionConstants.DESIGNATION)
-    public void deleteDesignation(Integer id) {
+    public void deleteDesignation(Integer id, String email) {
 
+        Users user = usersRepository.readByEmail(email);
         String deletedBy = SecurityContextHolder.getContext().getAuthentication().getName();
         Optional<Designation> desg = designationRepository.findById(id);
 
         if (desg.isPresent()) {
+            if (!Objects.equals(desg.get().getOrganization().getId(), user.getActiveOrganization())) {
+                throw new AuthorizationServiceException("You are not allowed to perform this action");
+            }
             Optional<Organization> organization = organizationRepository.findById(desg.get().getOrganization().getId());
-
 
             if (organization.isPresent()) {
                 organization.get().getDesignations().remove(desg.get());

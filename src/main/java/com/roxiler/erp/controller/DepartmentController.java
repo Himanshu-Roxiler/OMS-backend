@@ -1,5 +1,6 @@
 package com.roxiler.erp.controller;
 
+import com.roxiler.erp.dto.auth.UserDto;
 import com.roxiler.erp.dto.department.CreateDepartmentDto;
 import com.roxiler.erp.dto.department.UpdateDepartmentDto;
 import com.roxiler.erp.model.Department;
@@ -9,7 +10,9 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.context.annotation.ApplicationScope;
 
 @RestController()
 @RequestMapping("/department")
@@ -32,9 +35,11 @@ public class DepartmentController {
     }
 
     @PostMapping("/")
-    public ResponseEntity<ResponseObject> addDepartment(@Valid @RequestBody CreateDepartmentDto department) {
-
-        Department dept = departmentService.saveDepartment(department, 1);
+    public ResponseEntity<ResponseObject> addDepartment(
+            @AuthenticationPrincipal UserDto userDto,
+            @Valid @RequestBody CreateDepartmentDto department
+    ) {
+        Department dept = departmentService.saveDepartment(department, userDto.getOrgId());
         ResponseObject responseObject = new ResponseObject();
         responseObject.setIs_success(true);
         responseObject.setMessage("Successfully created department");
@@ -45,9 +50,13 @@ public class DepartmentController {
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<ResponseObject> updateDepartment(@Valid @RequestBody UpdateDepartmentDto department, @PathVariable("id") Integer id) {
+    public ResponseEntity<ResponseObject> updateDepartment(
+            @AuthenticationPrincipal UserDto userDto,
+            @Valid @RequestBody UpdateDepartmentDto department,
+            @PathVariable("id") Integer id
+    ) {
 
-        Department dept = departmentService.updateDepartment(department, id);
+        Department dept = departmentService.updateDepartment(department, id, userDto.getEmail());
         ResponseObject responseObject = new ResponseObject();
         responseObject.setIs_success(true);
         responseObject.setMessage("Successfully updated department");
@@ -58,9 +67,11 @@ public class DepartmentController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<ResponseObject> deleteDepartment(@PathVariable("id") Integer id) {
-
-        departmentService.deleteDepartment(id);
+    public ResponseEntity<ResponseObject> deleteDepartment(
+            @AuthenticationPrincipal UserDto userDto,
+            @PathVariable("id") Integer id
+    ) {
+        departmentService.deleteDepartment(id, userDto.getEmail());
         ResponseObject responseObject = new ResponseObject();
         responseObject.setIs_success(true);
         responseObject.setMessage("Successfully deleted department");

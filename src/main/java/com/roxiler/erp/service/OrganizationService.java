@@ -6,6 +6,7 @@ import com.roxiler.erp.interfaces.RequiredPermission;
 import com.roxiler.erp.model.*;
 import com.roxiler.erp.model.Organization;
 import com.roxiler.erp.repository.*;
+import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.EntityGraph;
@@ -57,6 +58,10 @@ public class OrganizationService {
         //Designation desg = designationService.getDesignationById(organization.getDesignationId().getId());
         Optional<Users> user = usersRepository.findById(userId);
         if (user.isPresent()) {
+
+            if (user.get().getOrganization().getId() != null) {
+                throw new EntityExistsException("The user is already associated with an organization!");
+            }
             organization.getUsers().add(user.get());
             Organization org = organizationRepository.save(organization);
             user.get().setOrganization(org);
@@ -110,6 +115,7 @@ public class OrganizationService {
         this.softDeleteOrganization(id, userEmail);
     }
 
+    @RequiredPermission(permission = PermissionConstants.ADMIN)
     public Organization getOrganization(Integer id) {
         Optional<Organization> organization = organizationRepository.findById(id);
 
@@ -121,6 +127,7 @@ public class OrganizationService {
     }
 
     @Transactional
+    @RequiredPermission(permission = PermissionConstants.ADMIN)
     public void softDeleteOrganization(Integer id, String userEmail) {
         Users user = usersRepository.readByEmail(userEmail);
         if (!Objects.equals(user.getOrganization().getId(), id)) {

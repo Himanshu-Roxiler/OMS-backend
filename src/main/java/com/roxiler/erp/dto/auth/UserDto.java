@@ -10,6 +10,7 @@ public class UserDto {
     private Integer id;
     private String username;
     private String email;
+    private Integer orgId;
     private String login;
     private String token;
 }

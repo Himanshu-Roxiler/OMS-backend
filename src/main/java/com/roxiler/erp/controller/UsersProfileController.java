@@ -1,14 +1,17 @@
 package com.roxiler.erp.controller;
 
+import com.roxiler.erp.dto.auth.UserDto;
 import com.roxiler.erp.dto.profile.CreateUserProfileDto;
 import com.roxiler.erp.dto.profile.UpdateUserProfileDto;
 import com.roxiler.erp.model.ResponseObject;
 import com.roxiler.erp.model.UserProfile;
 import com.roxiler.erp.service.UserProfileService;
 import jakarta.validation.Valid;
+import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController()
@@ -33,9 +36,11 @@ public class UsersProfileController {
     }
 
     @PostMapping("/")
-    public ResponseEntity<ResponseObject> addUserProfile(@Valid @RequestBody CreateUserProfileDto userProfile) {
-
-        UserProfile newUserProfile = userProfileService.saveUser(userProfile);
+    public ResponseEntity<ResponseObject> addUserProfile(
+            @AuthenticationPrincipal UserDto userDto,
+            @Valid @RequestBody CreateUserProfileDto userProfile
+    ) {
+        UserProfile newUserProfile = userProfileService.saveUser(userProfile, userDto.getId());
         ResponseObject responseObject = new ResponseObject();
         responseObject.setIs_success(true);
         responseObject.setMessage("Successfully created user profile");
@@ -46,9 +51,12 @@ public class UsersProfileController {
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<ResponseObject> updateUserProfile(@Valid @RequestBody UpdateUserProfileDto userProfile, @PathVariable("id") Integer id) {
-
-        UserProfile updatedUserProfile = userProfileService.updateUser(userProfile, id);
+    public ResponseEntity<ResponseObject> updateUserProfile(
+            @AuthenticationPrincipal UserDto userDto,
+            @Valid @RequestBody UpdateUserProfileDto userProfile,
+            @PathVariable("id") Integer id
+    ) {
+        UserProfile updatedUserProfile = userProfileService.updateUser(userProfile, id, userDto.getId());
         ResponseObject responseObject = new ResponseObject();
         responseObject.setIs_success(true);
         responseObject.setMessage("Successfully updated user profile");
@@ -59,9 +67,11 @@ public class UsersProfileController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<ResponseObject> deleteUserProfile(@PathVariable("id") Integer id) {
-
-        String result = userProfileService.deleteUser(id);
+    public ResponseEntity<ResponseObject> deleteUserProfile(
+            @AuthenticationPrincipal UserDto userDto,
+            @PathVariable("id") Integer id
+    ) {
+        String result = userProfileService.deleteUser(id, userDto.getId());
         ResponseObject responseObject = new ResponseObject();
         responseObject.setIs_success(true);
         responseObject.setMessage("Successfully deleted user profile");
