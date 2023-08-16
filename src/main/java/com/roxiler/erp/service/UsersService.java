@@ -39,6 +39,9 @@ public class UsersService {
     @Autowired
     private DesignationRepository designationRepository;
 
+    @Autowired
+    private UserOrganizationRoleService userOrganizationRoleService;
+
     public Users userSignUp(UserSignupDto user) {
         Users newUser = new Users();
         newUser.setFirstName(user.getFirstName());
@@ -124,6 +127,9 @@ public class UsersService {
         departmentRepository.save(department.get());
         designationRepository.save(designation.get());
 
+        UserOrganizationRole userOrganizationRole = userOrganizationRoleService.createUserOrgRole(savedUser, organization.get(), user.getRoleId());
+        savedUser.getUserOrganizationRole().add(userOrganizationRole);
+        usersRepository.save(savedUser);
         return savedUser;
     }
 

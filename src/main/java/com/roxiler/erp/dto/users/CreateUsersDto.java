@@ -33,4 +33,7 @@ public class CreateUsersDto {
 
     @Digits(integer = Integer.MAX_VALUE, fraction = 0, message = "Designation should not be blank")
     private Integer desgId;
+
+    @Digits(integer = Integer.MAX_VALUE, fraction = 0, message = "Role should not be blank")
+    private Integer roleId;
 }

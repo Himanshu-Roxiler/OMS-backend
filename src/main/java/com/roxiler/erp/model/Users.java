@@ -86,14 +86,14 @@ public class Users extends BaseEntity {
     )
     private Designation designation;
 
-    @OneToMany(
-            //mappedBy = "users",
-            fetch = FetchType.EAGER,
-            cascade = CascadeType.ALL
-            //targetEntity = UserRole.class
-    )
-    @JoinColumn(name = "roles", referencedColumnName = "id")
-    private Set<UserRole> roles = new HashSet<>();
+//    @OneToMany(
+//            //mappedBy = "users",
+//            fetch = FetchType.EAGER,
+//            cascade = CascadeType.ALL
+//            //targetEntity = UserRole.class
+//    )
+//    @JoinColumn(name = "roles", referencedColumnName = "id")
+//    private Set<UserRole> roles = new HashSet<>();
 
     @OneToMany(
             mappedBy = "user",

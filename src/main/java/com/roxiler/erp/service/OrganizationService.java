@@ -37,6 +37,9 @@ public class OrganizationService {
     @Autowired
     private UserOrganizationRoleRepository userOrganizationRoleRepository;
 
+    @Autowired
+    private UserRoleRepository userRoleRepository;
+
     @Transactional
     @EntityGraph(value = "departments")
     public Iterable<Organization> findPopulatedOrganizations() {
@@ -69,9 +72,11 @@ public class OrganizationService {
 
             UserOrganizationRole userOrganizationRole = new UserOrganizationRole();
             userOrganizationRole.setOrganization(org);
-            userOrganizationRole.setRole(new UserRole());
+            UserRole userRole = userRoleRepository.readByName(RoleNameConstants.ADMIN);
+            userOrganizationRole.setRole(userRole);
             userOrganizationRole.setUser(user.get());
             userOrganizationRoleRepository.save(userOrganizationRole);
+
         }
 
         return organization;
