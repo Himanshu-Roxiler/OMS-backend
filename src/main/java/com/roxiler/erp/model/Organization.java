@@ -24,36 +24,36 @@ import java.util.Set;
 @JsonIdentityInfo(
         generator = ObjectIdGenerators.PropertyGenerator.class,
         property = "id")
-public class Organization extends BaseEntity{
+public class Organization extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="id")
+    @Column(name = "id")
     private Integer id;
 
     @NotBlank(message = "Organization name should not be blank")
-    @Size(min=3, message = "Length should not be less than 3")
-    @Column(name="name")
+    @Size(min = 3, message = "Length should not be less than 3")
+    @Column(name = "name")
     private String name;
 
     @NotBlank(message = "Address should not be blank")
-    @Size(min=3, message = "Length should not be less than 3")
-    @Column(name="address")
+    @Size(min = 3, message = "Length should not be less than 3")
+    @Column(name = "address")
     private String address;
 
     @NotBlank(message = "City should not be blank")
-    @Size(min=3, message = "Length should not be less than 3")
-    @Column(name="city")
+    @Size(min = 3, message = "Length should not be less than 3")
+    @Column(name = "city")
     private String city;
 
     @NotBlank(message = "State should not be blank")
-    @Size(min=3, message = "Length should not be less than 3")
-    @Column(name="state")
+    @Size(min = 3, message = "Length should not be less than 3")
+    @Column(name = "state")
     private String state;
 
     @NotBlank(message = "Country should not be blank")
-    @Size(min=3, message = "Length should not be less than 3")
-    @Column(name="country")
+    @Size(min = 3, message = "Length should not be less than 3")
+    @Column(name = "country")
     private String country;
 
     @OneToMany(
@@ -88,4 +88,12 @@ public class Organization extends BaseEntity{
             targetEntity = UserRole.class
     )
     private Set<UserRole> roles = new HashSet<>();
+
+    @OneToMany(
+            mappedBy = "organization",
+            fetch = FetchType.EAGER,
+            cascade = CascadeType.PERSIST,
+            targetEntity = UserOrganizationRole.class
+    )
+    private Set<UserOrganizationRole> userOrganizationRole = new HashSet<>();
 }

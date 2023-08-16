@@ -1,7 +1,9 @@
 package com.roxiler.erp.service;
 
+import com.roxiler.erp.constants.PermissionConstants;
 import com.roxiler.erp.dto.designation.CreateDesignationDto;
 import com.roxiler.erp.dto.designation.UpdateDesignationDto;
+import com.roxiler.erp.interfaces.RequiredPermission;
 import com.roxiler.erp.model.*;
 import com.roxiler.erp.model.Designation;
 import com.roxiler.erp.model.Designation;
@@ -31,10 +33,11 @@ public class DesignationService {
         return designations;
     }
 
+    @RequiredPermission(permission = PermissionConstants.DESIGNATION)
     public Designation saveDesignation(CreateDesignationDto designation, Integer orgId) {
         Optional<Organization> org = organizationRepository.findById(orgId);
         Designation newDesg = new Designation();
-        if(org.isPresent()) {
+        if (org.isPresent()) {
             Organization organization = org.get();
             newDesg.setOrganization(organization);
             newDesg.setName(designation.getName());
@@ -50,6 +53,7 @@ public class DesignationService {
         return null;
     }
 
+    @RequiredPermission(permission = PermissionConstants.DESIGNATION)
     public Designation updateDesignation(UpdateDesignationDto designation, Integer id) {
 
 
@@ -60,7 +64,7 @@ public class DesignationService {
             desg.setDescription(designation.getDescription());
         });
 
-        if(desgToUpdate.isEmpty()) {
+        if (desgToUpdate.isEmpty()) {
             throw new EntityNotFoundException();
         }
 
@@ -69,16 +73,17 @@ public class DesignationService {
         return updatedDesignation;
     }
 
+    @RequiredPermission(permission = PermissionConstants.DESIGNATION)
     public void deleteDesignation(Integer id) {
 
         String deletedBy = SecurityContextHolder.getContext().getAuthentication().getName();
         Optional<Designation> desg = designationRepository.findById(id);
 
-        if(desg.isPresent()) {
+        if (desg.isPresent()) {
             Optional<Organization> organization = organizationRepository.findById(desg.get().getOrganization().getId());
 
 
-            if(organization.isPresent()) {
+            if (organization.isPresent()) {
                 organization.get().getDesignations().remove(desg.get());
                 organizationRepository.save(organization.get());
             }
@@ -86,10 +91,12 @@ public class DesignationService {
             designationRepository.softDeleteById(id, deletedBy);
         }
     }
+
+    @RequiredPermission(permission = PermissionConstants.DESIGNATION)
     public Designation getDesignationById(Integer id) {
         Optional<Designation> desg = designationRepository.findById(id);
 
-        if(desg.isEmpty()) {
+        if (desg.isEmpty()) {
             throw new EntityNotFoundException();
         }
 

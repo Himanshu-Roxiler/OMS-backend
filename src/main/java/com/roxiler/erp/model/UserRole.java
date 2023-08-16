@@ -53,10 +53,10 @@ public class UserRole extends BaseEntity {
     private Set<Feature> features = new HashSet<>();
 
     @OneToMany(
-            mappedBy = "roles",
+            mappedBy = "role",
             fetch = FetchType.EAGER,
             cascade = CascadeType.PERSIST,
-            targetEntity = Users.class
+            targetEntity = UserOrganizationRole.class
     )
-    private Set<Users> users = new HashSet<>();
+    private Set<UserOrganizationRole> userOrganizationRole = new HashSet<>();
 }

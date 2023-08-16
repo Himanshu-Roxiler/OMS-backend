@@ -1,7 +1,9 @@
 package com.roxiler.erp.service;
 
+import com.roxiler.erp.constants.PermissionConstants;
 import com.roxiler.erp.dto.profile.CreateUserProfileDto;
 import com.roxiler.erp.dto.profile.UpdateUserProfileDto;
+import com.roxiler.erp.interfaces.RequiredPermission;
 import com.roxiler.erp.model.UserProfile;
 import com.roxiler.erp.model.Users;
 import com.roxiler.erp.repository.UserProfileRepository;
@@ -27,16 +29,18 @@ public class UserProfileService {
     @Autowired
     private UsersRepository usersRepository;
 
+    @RequiredPermission(permission = PermissionConstants.PROFILE)
     public Iterable<UserProfile> getAllUsers() {
         Iterable<UserProfile> users = userProfileRepository.findAll();
 
         return users;
     }
 
+    @RequiredPermission(permission = PermissionConstants.PROFILE)
     public UserProfile saveUser(CreateUserProfileDto userProfile) {
 
         Optional<Users> user = usersRepository.findById(1);
-        if(user.isPresent()) {
+        if (user.isPresent()) {
 
             UserProfile newUserProfile = new UserProfile();
             newUserProfile.setFirstName(userProfile.getFirstName());
@@ -56,20 +60,20 @@ public class UserProfileService {
             usersRepository.save(user.get());
 
             return userProfile1;
-        }
-        else {
+        } else {
             throw new EntityNotFoundException("User not found");
         }
     }
 
+    @RequiredPermission(permission = PermissionConstants.PROFILE)
     public UserProfile updateUser(UpdateUserProfileDto userProfile, Integer id) {
 
         Optional<UserProfile> userProf = userProfileRepository.findById(id);
-        if(userProf.isPresent()) {
+        if (userProf.isPresent()) {
             Integer userId = userProf.get().getUser().getId();
             Optional<Users> user = usersRepository.findById(userId);
-            if(user.isPresent()) {
-                if(user.get().getId() != 1) {
+            if (user.isPresent()) {
+                if (user.get().getId() != 1) {
                     throw new AuthorizationServiceException("You are not allowed to perform this action");
                 }
             }
@@ -88,12 +92,12 @@ public class UserProfileService {
             UserProfile updatedUser = userProfileRepository.save(userProfileToUpdate);
 
             return updatedUser;
-        }
-        else {
+        } else {
             throw new EntityNotFoundException("User not found");
         }
     }
 
+    @RequiredPermission(permission = PermissionConstants.PROFILE)
     public String deleteUser(Integer id) {
 
         String deletedBy = SecurityContextHolder.getContext().getAuthentication().getName();

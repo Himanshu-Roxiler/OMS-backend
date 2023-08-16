@@ -1,8 +1,10 @@
 package com.roxiler.erp.service;
 
+import com.roxiler.erp.constants.PermissionConstants;
 import com.roxiler.erp.dto.auth.UserSignupDto;
 import com.roxiler.erp.dto.users.CreateUsersDto;
 import com.roxiler.erp.dto.users.UpdateUserDto;
+import com.roxiler.erp.interfaces.RequiredPermission;
 import com.roxiler.erp.model.*;
 import com.roxiler.erp.model.Users;
 import com.roxiler.erp.repository.DepartmentRepository;
@@ -50,16 +52,17 @@ public class UsersService {
         return savedUser;
     }
 
+    @RequiredPermission(permission = PermissionConstants.USERS)
     public Iterable<Users> getAllUsers() {
         Iterable<Users> users = usersRepository.findAll();
 
-        for(Users user: users) {
+        for (Users user : users) {
             Optional<Department> dept = departmentRepository.findById(user.getDepartment().getId());
             Optional<Designation> desg = designationRepository.findById(user.getDesignation().getId());
-            if(dept.isPresent()) {
+            if (dept.isPresent()) {
                 user.setDepartment(dept.get());
             }
-            if(desg.isPresent()) {
+            if (desg.isPresent()) {
                 user.setDesignation(desg.get());
             }
         }
@@ -67,6 +70,8 @@ public class UsersService {
         return users;
     }
 
+
+    @RequiredPermission(permission = PermissionConstants.USERS)
     public Users saveUser(CreateUsersDto user) {
 
         //Department dept = departmentService.getDepartmentById(user.getDepartmentId().getId());
@@ -83,7 +88,7 @@ public class UsersService {
         newUser.setEmail(user.getEmail());
         String hashedPassword = passwordEncoder.encode(user.getPassword());
         newUser.setPassword(hashedPassword);
-        if(organization.isPresent()) {
+        if (organization.isPresent()) {
             newUser.setOrganization(organization.get());
             newUser.setActiveOrganization(organization.get().getId());
             organization.get().getUsers().add(newUser);
@@ -91,7 +96,7 @@ public class UsersService {
             throw new EntityNotFoundException("Organization doesn't exist");
         }
 
-        if(department.isPresent()) {
+        if (department.isPresent()) {
             System.out.println("\n DEPARTMENT: \n" + department.get().getName());
             newUser.setDepartment(department.get());
             department.get().getUsers().add(newUser);
@@ -99,7 +104,7 @@ public class UsersService {
             throw new EntityNotFoundException("Department doesn't exist");
         }
 
-        if(designation.isPresent()) {
+        if (designation.isPresent()) {
             System.out.println("\n DESIGNATION: \n" + designation.get());
             newUser.setDesignation(designation.get());
             designation.get().getUsers().add(newUser);
@@ -115,6 +120,7 @@ public class UsersService {
         return savedUser;
     }
 
+    @RequiredPermission(permission = PermissionConstants.USERS)
     public Users updateUser(UpdateUserDto user, Integer id) {
 
 
@@ -128,7 +134,7 @@ public class UsersService {
             u.setEmail(user.getEmail());
             u.setUsername(user.getUsername());
 
-            if(department.isPresent()) {
+            if (department.isPresent()) {
                 System.out.println("\n DEPARTMENT: \n" + department.get().getName());
                 u.setDepartment(department.get());
                 department.get().getUsers().add(u);
@@ -136,7 +142,7 @@ public class UsersService {
                 throw new EntityNotFoundException("Department doesn't exist");
             }
 
-            if(designation.isPresent()) {
+            if (designation.isPresent()) {
                 System.out.println("\n DESIGNATION: \n" + designation.get());
                 u.setDesignation(designation.get());
                 designation.get().getUsers().add(u);
@@ -145,7 +151,7 @@ public class UsersService {
             }
         });
 
-        if(userToUpdate.isEmpty()) {
+        if (userToUpdate.isEmpty()) {
             throw new EntityNotFoundException();
         }
 
@@ -154,27 +160,28 @@ public class UsersService {
         return updatedUser;
     }
 
+    @RequiredPermission(permission = PermissionConstants.USERS)
     public void deleteUser(Integer id) {
 
         String deletedBy = SecurityContextHolder.getContext().getAuthentication().getName();
         Optional<Users> user = usersRepository.findById(id);
 
-        if(user.isPresent()) {
+        if (user.isPresent()) {
             Optional<Department> department = departmentRepository.findById(user.get().getDepartment().getId());
             Optional<Designation> designation = designationRepository.findById(user.get().getDesignation().getId());
             Optional<Organization> organization = organizationRepository.findById(user.get().getOrganization().getId());
 
-            if(department.isPresent()) {
+            if (department.isPresent()) {
                 department.get().getUsers().remove(user.get());
                 departmentRepository.save(department.get());
             }
 
-            if(designation.isPresent()) {
+            if (designation.isPresent()) {
                 designation.get().getUsers().remove(user.get());
                 designationRepository.save(designation.get());
             }
 
-            if(organization.isPresent()) {
+            if (organization.isPresent()) {
                 organization.get().getUsers().remove(user.get());
                 organizationRepository.save(organization.get());
             }

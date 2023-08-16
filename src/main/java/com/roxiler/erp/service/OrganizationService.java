@@ -1,12 +1,11 @@
 package com.roxiler.erp.service;
 
+import com.roxiler.erp.constants.PermissionConstants;
+import com.roxiler.erp.constants.RoleNameConstants;
 import com.roxiler.erp.interfaces.RequiredPermission;
 import com.roxiler.erp.model.*;
 import com.roxiler.erp.model.Organization;
-import com.roxiler.erp.repository.DepartmentRepository;
-import com.roxiler.erp.repository.DesignationRepository;
-import com.roxiler.erp.repository.OrganizationRepository;
-import com.roxiler.erp.repository.UsersRepository;
+import com.roxiler.erp.repository.*;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.EntityGraph;
@@ -34,6 +33,9 @@ public class OrganizationService {
     @Autowired
     private UsersRepository usersRepository;
 
+    @Autowired
+    private UserOrganizationRoleRepository userOrganizationRoleRepository;
+
     @Transactional
     @EntityGraph(value = "departments")
     public Iterable<Organization> findPopulatedOrganizations() {
@@ -48,7 +50,7 @@ public class OrganizationService {
         return organizations;
     }
 
-    @RequiredPermission(permission = "admin")
+    @RequiredPermission(permission = PermissionConstants.ADMIN)
     public Organization saveOrganization(Organization organization, Integer userId) {
 
         //Department dept = departmentService.getDepartmentById(organization.getDepartmentId().getId());
@@ -59,11 +61,18 @@ public class OrganizationService {
             Organization org = organizationRepository.save(organization);
             user.get().setOrganization(org);
             usersRepository.save(user.get());
+
+            UserOrganizationRole userOrganizationRole = new UserOrganizationRole();
+            userOrganizationRole.setOrganization(org);
+            userOrganizationRole.setRole(new UserRole());
+            userOrganizationRole.setUser(user.get());
+            userOrganizationRoleRepository.save(userOrganizationRole);
         }
 
         return organization;
     }
 
+    @RequiredPermission(permission = PermissionConstants.ADMIN)
     public Organization updateOrganization(Organization organization, Integer id, String userEmail) {
 
         Users user = usersRepository.readByEmail(userEmail);
@@ -90,6 +99,7 @@ public class OrganizationService {
     }
 
 
+    @RequiredPermission(permission = PermissionConstants.ADMIN)
     public void deleteOrganization(Integer id, String userEmail) {
         Users user = usersRepository.readByEmail(userEmail);
         if (!Objects.equals(user.getOrganization().getId(), id)) {

@@ -1,7 +1,9 @@
 package com.roxiler.erp.service;
 
+import com.roxiler.erp.constants.PermissionConstants;
 import com.roxiler.erp.dto.department.CreateDepartmentDto;
 import com.roxiler.erp.dto.department.UpdateDepartmentDto;
+import com.roxiler.erp.interfaces.RequiredPermission;
 import com.roxiler.erp.model.Department;
 import com.roxiler.erp.model.Department;
 import com.roxiler.erp.model.Organization;
@@ -27,17 +29,19 @@ public class DepartmentService {
     @Autowired
     private OrganizationRepository organizationRepository;
 
+    @RequiredPermission(permission = PermissionConstants.DEPARTMENT)
     public Iterable<Department> getAllDepartments() {
         Iterable<Department> departments = departmentRepository.findAll();
 
         return departments;
     }
 
+    @RequiredPermission(permission = PermissionConstants.DEPARTMENT)
     public Department saveDepartment(CreateDepartmentDto department, Integer orgId) {
 
         Department dept = new Department();
         Optional<Organization> org = organizationRepository.findById(orgId);
-        if(org.isPresent()) {
+        if (org.isPresent()) {
             Organization organization = org.get();
             dept.setOrganization(organization);
             dept.setName(department.getName());
@@ -52,6 +56,7 @@ public class DepartmentService {
         }
     }
 
+    @RequiredPermission(permission = PermissionConstants.DEPARTMENT)
     public Department updateDepartment(UpdateDepartmentDto department, Integer id) {
 
 
@@ -62,7 +67,7 @@ public class DepartmentService {
             dept.setDescription(department.getDescription());
         });
 
-        if(deptToUpdate.isEmpty()) {
+        if (deptToUpdate.isEmpty()) {
             throw new EntityNotFoundException();
         }
 
@@ -71,15 +76,16 @@ public class DepartmentService {
         return updatedDepartment;
     }
 
+    @RequiredPermission(permission = PermissionConstants.DEPARTMENT)
     public void deleteDepartment(Integer id) {
 
         String deletedBy = SecurityContextHolder.getContext().getAuthentication().getName();
         Optional<Department> dept = departmentRepository.findById(id);
 
-        if(dept.isPresent()) {
+        if (dept.isPresent()) {
             Optional<Organization> organization = organizationRepository.findById(dept.get().getOrganization().getId());
 
-            if(organization.isPresent()) {
+            if (organization.isPresent()) {
                 organization.get().getDepartments().remove(dept.get());
                 organizationRepository.save(organization.get());
             }
@@ -88,10 +94,11 @@ public class DepartmentService {
         }
     }
 
+    @RequiredPermission(permission = PermissionConstants.DEPARTMENT)
     public Department getDepartmentById(Integer id) {
 
         Optional<Department> dept = departmentRepository.findById(id);
-        if(dept.isEmpty()) {
+        if (dept.isEmpty()) {
             throw new EntityNotFoundException();
         }
 

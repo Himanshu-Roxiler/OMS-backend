@@ -11,6 +11,9 @@ import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Where;
 import org.springframework.data.jpa.repository.EntityGraph;
 
+import java.util.HashSet;
+import java.util.Set;
+
 @Entity
 @Table(name = "users")
 @Where(clause = "deleted_at IS NULL")
@@ -83,13 +86,22 @@ public class Users extends BaseEntity {
     )
     private Designation designation;
 
-    @ManyToOne(fetch = FetchType.EAGER, optional = true)
-    @JoinColumn(
-            name = "roles",
-            referencedColumnName = "id",
-            nullable = true
+    @OneToMany(
+            //mappedBy = "users",
+            fetch = FetchType.EAGER,
+            cascade = CascadeType.ALL
+            //targetEntity = UserRole.class
     )
-    private UserRole roles;
+    @JoinColumn(name = "roles", referencedColumnName = "id")
+    private Set<UserRole> roles = new HashSet<>();
+
+    @OneToMany(
+            mappedBy = "user",
+            fetch = FetchType.EAGER,
+            cascade = CascadeType.PERSIST,
+            targetEntity = UserOrganizationRole.class
+    )
+    private Set<UserOrganizationRole> userOrganizationRole = new HashSet<>();
 
     @OneToOne(fetch = FetchType.EAGER, optional = true)
     @JoinColumn(
