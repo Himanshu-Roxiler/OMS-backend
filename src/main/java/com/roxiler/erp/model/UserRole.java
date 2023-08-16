@@ -18,16 +18,16 @@ public class UserRole extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="id")
+    @Column(name = "id")
     private Integer id;
 
     @NotBlank(message = "Role name should not be blank")
-    @Size(min=3, message = "Length should not be less than 3")
-    @Column(name="name")
+    @Size(min = 3, message = "Length should not be less than 3")
+    @Column(name = "name")
     private String name;
 
-    @Column(name="is_global")
-    private Boolean isGlobal=false;
+    @Column(name = "is_global")
+    private Boolean isGlobal = false;
 
     @ManyToOne(fetch = FetchType.EAGER, optional = true)
     @JoinColumn(
@@ -43,4 +43,12 @@ public class UserRole extends BaseEntity {
             cascade = CascadeType.PERSIST
     )
     private Set<Feature> features = new HashSet<>();
+
+    @OneToMany(
+            mappedBy = "roles",
+            fetch = FetchType.LAZY,
+            cascade = CascadeType.PERSIST,
+            targetEntity = Users.class
+    )
+    private Set<Users> users = new HashSet<>();
 }

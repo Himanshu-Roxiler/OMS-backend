@@ -21,42 +21,42 @@ import org.springframework.data.jpa.repository.EntityGraph;
 @JsonIdentityInfo(
         generator = ObjectIdGenerators.PropertyGenerator.class,
         property = "id")
-public class Users extends  BaseEntity {
+public class Users extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="id")
+    @Column(name = "id")
     private Integer id;
 
     @NotBlank(message = "First name should not be blank")
-    @Size(min=3, message = "Length should not be less than 3")
-    @Column(name="first_name")
+    @Size(min = 3, message = "Length should not be less than 3")
+    @Column(name = "first_name")
     private String firstName;
 
     @NotBlank(message = "First name should not be blank")
-    @Size(min=3, message = "Length should not be less than 3")
-    @Column(name="last_name")
+    @Size(min = 3, message = "Length should not be less than 3")
+    @Column(name = "last_name")
     private String lastName;
 
     @NotBlank(message = "Username should not be blank")
-    @Size(min=3, message = "Length should not be less than 3")
-    @Column(name="username")
+    @Size(min = 3, message = "Length should not be less than 3")
+    @Column(name = "username")
     private String username;
 
     @NotBlank(message = "Email should not be blank")
     @Email(message = "Invalid Email ID")
-    @Column(name="email")
+    @Column(name = "email")
     private String email;
 
     @NotBlank(message = "Password should not be blank")
-    @Size(min=3, message = "Length should not be less than 3")
-    @Column(name="password")
+    @Size(min = 3, message = "Length should not be less than 3")
+    @Column(name = "password")
     private String password;
 
-    @Column(name="password_reset_token", nullable = true)
+    @Column(name = "password_reset_token", nullable = true)
     private String passwordResetToken;
 
-    @Column(name="active_organization", nullable = true)
+    @Column(name = "active_organization", nullable = true)
     private Integer activeOrganization;
 
     @ManyToOne(fetch = FetchType.EAGER, optional = true)
@@ -83,9 +83,17 @@ public class Users extends  BaseEntity {
     )
     private Designation designation;
 
+    @ManyToOne(fetch = FetchType.EAGER, optional = true)
+    @JoinColumn(
+            name = "roles",
+            referencedColumnName = "id",
+            nullable = true
+    )
+    private Designation roles;
+
     @OneToOne(fetch = FetchType.EAGER, optional = true)
     @JoinColumn(
-            name="user_profile",
+            name = "user_profile",
             referencedColumnName = "id",
             nullable = true
     )
