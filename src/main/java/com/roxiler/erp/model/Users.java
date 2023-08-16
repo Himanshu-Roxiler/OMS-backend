@@ -89,7 +89,7 @@ public class Users extends BaseEntity {
             referencedColumnName = "id",
             nullable = true
     )
-    private Designation roles;
+    private UserRole roles;
 
     @OneToOne(fetch = FetchType.EAGER, optional = true)
     @JoinColumn(

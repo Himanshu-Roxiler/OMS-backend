@@ -5,6 +5,8 @@ import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.reflect.MethodSignature;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Method;
@@ -19,5 +21,7 @@ public class PermissionAspect {
         Method method = methodSignature.getMethod();
         RequiredPermission requiredPermission = method.getAnnotation(RequiredPermission.class);
         System.out.println("\n\nThe value of the argument passed is: \n\n" + requiredPermission.permission());
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        System.out.printf("LOGGED IN USER: " + auth.getDetails());
     }
 }
