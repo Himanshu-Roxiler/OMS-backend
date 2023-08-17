@@ -44,11 +44,22 @@ public class UserRoleService {
             Organization organization = organizationRepository.readById(orgId);
             userRole.setOrganization(organization);
             userRole.setName(userRoleDto.getName());
+            Set<Feature> features = new HashSet<>();
 
             for (Integer featureId : userRoleDto.getFeatureIds()) {
-                Feature feature = featureRepository.readById(featureId);
-                userRole.getFeatures().add(feature);
+                Optional<Feature> feature = featureRepository.findById(featureId);
+                if (feature.isPresent()) {
+                    features.add(feature.get());
+                    System.out.println("\nFEATURE ID: " + feature.get().getName());
+                }
+
+                //userRoleRepository.save(userRole);
             }
+
+            for (Feature feature : features) {
+                System.out.printf("FEATURE: " + feature.getName());
+            }
+            System.out.println("\nFEATURES: " + features.size());
 
 //            Set<Feature> features = new HashSet<Feature>();
 //            if (userRole.getFeatures() != null) {
@@ -63,6 +74,7 @@ public class UserRoleService {
 //                userRole.setFeatures(features);
 //            }
             //userRole.getUsers().add(user.get());
+            userRole.getFeatures().addAll(features);
             UserRole savedUserRole = userRoleRepository.save(userRole);
 //            if (features != null) {
 //                for (Feature feature : features) {
