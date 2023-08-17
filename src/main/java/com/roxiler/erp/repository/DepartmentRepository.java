@@ -22,6 +22,6 @@ public interface DepartmentRepository extends JpaRepository<Department, Integer>
     @Query("UPDATE Department dept SET dept.deletedAt = CURRENT_TIMESTAMP, dept.deletedBy = :deletedBy WHERE dept.id = :id")
     void softDeleteById(Integer id, String deletedBy);
 
-    @Query("SELECT dept FROM Department dept WHERE dept.id = :id AND department.organization = :org")
+    @Query("SELECT dept FROM Department dept WHERE dept.id = :id AND dept.organization = :org")
     Optional<Department> getDeptWithOrg(Integer id, Organization org);
 }

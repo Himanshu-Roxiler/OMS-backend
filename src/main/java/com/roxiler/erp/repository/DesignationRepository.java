@@ -23,6 +23,6 @@ public interface DesignationRepository extends JpaRepository<Designation, Intege
     @Query("UPDATE Designation desg SET desg.deletedAt = CURRENT_TIMESTAMP, desg.deletedBy = :deletedBy WHERE desg.id = :id")
     void softDeleteById(Integer id, String deletedBy);
 
-    @Query("SELECT desg FROM Designation desg WHERE desg.id = :id AND designation.organization = :org")
+    @Query("SELECT desg FROM Designation desg WHERE desg.id = :id AND desg.organization = :org")
     Optional<Designation> getDesgWithOrg(Integer id, Organization org);
 }

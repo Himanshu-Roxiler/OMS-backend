@@ -1,0 +1,15 @@
+package com.roxiler.erp.dto.roles;
+
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
+
+public class UpdateUserRoleDto {
+
+    @NotBlank(message = "Role name should not be blank")
+    @Size(min = 3, message = "Length should not be less than 3")
+    private String name;
+
+    @Valid
+    private Integer[] featureIds;
+}

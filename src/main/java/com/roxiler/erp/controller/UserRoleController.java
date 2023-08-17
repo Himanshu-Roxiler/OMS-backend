@@ -1,8 +1,11 @@
 package com.roxiler.erp.controller;
 
+import com.roxiler.erp.dto.auth.UserDto;
+import com.roxiler.erp.dto.roles.CreateUserRoleDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -25,7 +28,7 @@ public class UserRoleController {
 
     @Autowired
     private UserRoleService userRoleService;
-    
+
     @GetMapping("/")
     public ResponseEntity<ResponseObject> getAllUserRoles() {
 
@@ -41,14 +44,16 @@ public class UserRoleController {
     }
 
     @PostMapping("/")
-    public ResponseEntity<ResponseObject> addUserRole(@Valid @RequestBody UserRole UserRole, @RequestParam("user_id") Integer userId) {
-
-        UserRole UserRole2 = userRoleService.saveUserRole(UserRole, userId);
+    public ResponseEntity<ResponseObject> addUserRole(
+            @AuthenticationPrincipal UserDto userDto,
+            @Valid @RequestBody CreateUserRoleDto userRoleDto
+    ) {
+        UserRole UserRole2 = userRoleService.saveUserRole(userRoleDto, userDto.getId(), userDto.getOrgId());
         ResponseObject responseObject = new ResponseObject();
         responseObject.setIs_success(true);
         responseObject.setMessage("Successfully created UserRole.");
         responseObject.setData(UserRole2);
-     
+
         ResponseEntity<ResponseObject> response = new ResponseEntity<>(responseObject, HttpStatus.OK);
         return response;
     }

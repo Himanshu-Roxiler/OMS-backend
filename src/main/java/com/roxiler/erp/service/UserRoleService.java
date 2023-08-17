@@ -4,6 +4,7 @@ import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 
+import com.roxiler.erp.dto.roles.CreateUserRoleDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -36,37 +37,40 @@ public class UserRoleService {
     private FeatureRepository featureRepository;
 
 
-
-    public UserRole saveUserRole(UserRole userRole, Integer userId) {
+    public UserRole saveUserRole(CreateUserRoleDto userRoleDto, Integer userId, Integer orgId) {
         Optional<Users> user = usersRepository.findById(userId);
+        UserRole userRole = new UserRole();
         if (user.isPresent()) {
-            Optional<Organization> optionalOrganization = organizationRepository.findById(userRole.getOrganization().getId());
-            if (optionalOrganization.isPresent()) {
-                userRole.setOrganization(optionalOrganization.get());
+            Organization organization = organizationRepository.readById(orgId);
+            userRole.setOrganization(organization);
+
+            for (Integer featureId : userRoleDto.getFeatureIds()) {
+                Feature feature = featureRepository.readById(featureId);
+                userRole.getFeatures().add(feature);
             }
 
-            Set<Feature> features = new HashSet<Feature>();
-            if (userRole.getFeatures() != null) {
-                for (Feature feature : userRole.getFeatures()) {
-                    if (feature.getId() == null) {
-                        Feature newFeature = featureRepository.save(feature);
-                        features.add(newFeature);
-                    } else {
-                        features.add(featureRepository.findById(feature.getId()).get());
-                    }
-                }
-                userRole.setFeatures(features);
-            }
-            userRole.getUsers().add(user.get());
-            UserRole saveUserRole = userRoleRepository.save(userRole);
-            if (features != null) {
-                for (Feature feature : features) {
-                    feature.getRoles().add(saveUserRole);
-                    featureRepository.save(feature);
-                }
-                userRole.setFeatures(features);
-            }
-            return saveUserRole;
+//            Set<Feature> features = new HashSet<Feature>();
+//            if (userRole.getFeatures() != null) {
+//                for (Feature feature : userRole.getFeatures()) {
+//                    if (feature.getId() == null) {
+//                        Feature newFeature = featureRepository.save(feature);
+//                        features.add(newFeature);
+//                    } else {
+//                        features.add(featureRepository.findById(feature.getId()).get());
+//                    }
+//                }
+//                userRole.setFeatures(features);
+//            }
+            //userRole.getUsers().add(user.get());
+            UserRole savedUserRole = userRoleRepository.save(userRole);
+//            if (features != null) {
+//                for (Feature feature : features) {
+//                    feature.getRoles().add(saveUserRole);
+//                    featureRepository.save(feature);
+//                }
+//                userRole.setFeatures(features);
+//            }
+            return savedUserRole;
         } else {
             throw new EntityNotFoundException("User is not found");
         }
@@ -81,7 +85,7 @@ public class UserRoleService {
         if (UserRole.isEmpty()) {
             throw new EntityNotFoundException("UserRole " + id + " does not exist");
         }
-        if(UserRole.isPresent()) {
+        if (UserRole.isPresent()) {
             for (Feature feature : UserRole.get().getFeatures()) {
                 feature.getRoles().remove(UserRole.get());
                 featureRepository.save(feature);
@@ -103,7 +107,7 @@ public class UserRoleService {
         if (optionalUserRole.isPresent()) {
             UserRole existingUserRole = optionalUserRole.get();
             existingUserRole.setName(updateUserRole.getName());
-            existingUserRole.setIsGlobal(updateUserRole.getIsGlobal());
+            //existingUserRole.setIsGlobal(updateUserRole.getIsGlobal());
             return userRoleRepository.save(existingUserRole);
         }
         return updateUserRole;

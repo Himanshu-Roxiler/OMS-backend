@@ -43,6 +43,8 @@ public class UsersService {
     private UserOrganizationRoleService userOrganizationRoleService;
 
     public Users userSignUp(UserSignupDto user) {
+        System.out.println("\n\nNEW USER\n\n" + user + "\n");
+
         Users newUser = new Users();
         newUser.setFirstName(user.getFirstName());
         newUser.setLastName(user.getLastName());
@@ -51,7 +53,9 @@ public class UsersService {
         String hashedPassword = passwordEncoder.encode(user.getPassword());
         newUser.setPassword(hashedPassword);
 
+
         Users savedUser = usersRepository.save(newUser);
+        System.out.println("\n\nNEW USER\n\n" + savedUser + "\n");
         return savedUser;
     }
 

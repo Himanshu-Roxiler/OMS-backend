@@ -34,12 +34,9 @@ public class UserRole extends BaseEntity {
     @Column(name = "name")
     private String name;
 
-    @Column(name = "is_global")
-    private Boolean isGlobal = false;
-
     @ManyToOne(fetch = FetchType.EAGER, optional = true)
     @JoinColumn(
-            name = "organization_id",
+            name = "organization",
             referencedColumnName = "id",
             nullable = true
     )
