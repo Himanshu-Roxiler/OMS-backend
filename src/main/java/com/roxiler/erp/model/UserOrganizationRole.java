@@ -11,7 +11,7 @@ import lombok.Setter;
 import org.hibernate.annotations.Where;
 
 @Entity
-@Table(name = "users")
+@Table(name = "user_organization_role")
 @Getter
 @Setter
 @AllArgsConstructor
@@ -28,7 +28,7 @@ public class UserOrganizationRole extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.EAGER, optional = true)
     @JoinColumn(
-            name = "user",
+            name = "user_id",
             referencedColumnName = "id",
             nullable = true
     )
@@ -36,7 +36,7 @@ public class UserOrganizationRole extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.EAGER, optional = true)
     @JoinColumn(
-            name = "organization",
+            name = "organization_id",
             referencedColumnName = "id",
             nullable = true
     )
@@ -44,7 +44,7 @@ public class UserOrganizationRole extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.EAGER, optional = true)
     @JoinColumn(
-            name = "role",
+            name = "role_id",
             referencedColumnName = "id",
             nullable = true
     )

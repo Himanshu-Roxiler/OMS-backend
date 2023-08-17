@@ -43,6 +43,7 @@ public class UserRoleService {
         if (user.isPresent()) {
             Organization organization = organizationRepository.readById(orgId);
             userRole.setOrganization(organization);
+            userRole.setName(userRoleDto.getName());
 
             for (Integer featureId : userRoleDto.getFeatureIds()) {
                 Feature feature = featureRepository.readById(featureId);

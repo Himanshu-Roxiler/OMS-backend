@@ -54,7 +54,7 @@ public class OrganizationService {
         return organizations;
     }
 
-    @RequiredPermission(permission = PermissionConstants.ADMIN)
+    //@RequiredPermission(permission = PermissionConstants.ADMIN)
     public Organization saveOrganization(Organization organization, Integer userId) {
 
         //Department dept = departmentService.getDepartmentById(organization.getDepartmentId().getId());
@@ -62,7 +62,7 @@ public class OrganizationService {
         Optional<Users> user = usersRepository.findById(userId);
         if (user.isPresent()) {
 
-            if (user.get().getOrganization().getId() != null) {
+            if (user.get().getOrganization() != null) {
                 throw new EntityExistsException("The user is already associated with an organization!");
             }
             organization.getUsers().add(user.get());
@@ -75,7 +75,9 @@ public class OrganizationService {
             UserRole userRole = userRoleRepository.readByName(RoleNameConstants.ADMIN);
             userOrganizationRole.setRole(userRole);
             userOrganizationRole.setUser(user.get());
-            userOrganizationRoleRepository.save(userOrganizationRole);
+            UserOrganizationRole userOrgRole = userOrganizationRoleRepository.save(userOrganizationRole);
+            organization.getUserOrganizationRole().add(userOrgRole);
+            organizationRepository.save(organization);
 
         }
 

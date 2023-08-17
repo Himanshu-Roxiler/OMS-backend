@@ -23,7 +23,7 @@ import com.roxiler.erp.service.UserRoleService;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping(value = "role")
+@RequestMapping(value = "/role")
 public class UserRoleController {
 
     @Autowired
@@ -48,6 +48,7 @@ public class UserRoleController {
             @AuthenticationPrincipal UserDto userDto,
             @Valid @RequestBody CreateUserRoleDto userRoleDto
     ) {
+        System.out.println("\n\nUSER ROLE : \n" + userRoleDto);
         UserRole UserRole2 = userRoleService.saveUserRole(userRoleDto, userDto.getId(), userDto.getOrgId());
         ResponseObject responseObject = new ResponseObject();
         responseObject.setIs_success(true);

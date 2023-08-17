@@ -1,5 +1,7 @@
 package com.roxiler.erp.service;
 
+import com.roxiler.erp.constants.PermissionConstants;
+import com.roxiler.erp.interfaces.RequiredPermission;
 import com.roxiler.erp.model.Organization;
 import com.roxiler.erp.model.UserOrganizationRole;
 import com.roxiler.erp.model.UserRole;
@@ -24,6 +26,7 @@ public class UserOrganizationRoleService {
         return userOrganizationRole.getRole();
     }
 
+    @RequiredPermission(permission = PermissionConstants.ADMIN)
     public UserOrganizationRole createUserOrgRole(Users user, Organization org, Integer roleId) {
         UserOrganizationRole userOrganizationRole = new UserOrganizationRole();
         userOrganizationRole.setUser(user);
@@ -32,5 +35,12 @@ public class UserOrganizationRoleService {
         userOrganizationRole.setRole(userRole);
         UserOrganizationRole userOrgRole = userOrganizationRoleRepository.save(userOrganizationRole);
         return userOrgRole;
+    }
+
+    public Iterable<UserOrganizationRole> getAll() {
+        Iterable<UserOrganizationRole> userOrganizationRoles = userOrganizationRoleRepository.findAll();
+        //Iterable<Organization> organizations = organizationRepository.getPopulatedOrganizations();
+
+        return userOrganizationRoles;
     }
 }
