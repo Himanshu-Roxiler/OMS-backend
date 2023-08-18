@@ -2,6 +2,7 @@ package com.roxiler.erp.repository;
 
 import com.roxiler.erp.model.Organization;
 import com.roxiler.erp.model.UserOrganizationRole;
+import com.roxiler.erp.model.UserRole;
 import com.roxiler.erp.model.Users;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -19,4 +20,7 @@ public interface UserOrganizationRoleRepository extends JpaRepository<UserOrgani
 
     @Query("SELECT uor FROM UserOrganizationRole uor WHERE uor.user = :user AND uor.organization = :org")
     UserOrganizationRole findUserRole(Users user, Organization org);
+
+    @Query("SELECT uor FROM UserOrganizationRole uor WHERE uor.role = :userRole")
+    Iterable<UserOrganizationRole> findAllByRole(UserRole userRole);
 }

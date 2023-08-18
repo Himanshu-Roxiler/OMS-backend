@@ -21,7 +21,7 @@ public class UsersController {
     @Autowired
     private UsersService usersService;
 
-    @GetMapping("/")
+    @GetMapping("")
     public ResponseEntity<ResponseObject> getAllUsers() {
 
         Iterable<Users> users = usersService.getAllUsers();
@@ -34,7 +34,7 @@ public class UsersController {
         return response;
     }
 
-    @PostMapping("/")
+    @PostMapping("")
     public ResponseEntity<ResponseObject> addUser(
             @AuthenticationPrincipal UserDto userDto,
             @Valid @RequestBody CreateUsersDto user

@@ -30,7 +30,7 @@ public class UserRoleController {
     @Autowired
     private UserRoleService userRoleService;
 
-    @GetMapping("/")
+    @GetMapping("")
     public ResponseEntity<ResponseObject> getAllUserRoles() {
 
         Iterable<UserRole> userRoles = userRoleService.getAllUserRolesIterable();
@@ -44,7 +44,7 @@ public class UserRoleController {
         return response;
     }
 
-    @PostMapping("/")
+    @PostMapping("")
     public ResponseEntity<ResponseObject> addUserRole(
             @AuthenticationPrincipal UserDto userDto,
             @Valid @RequestBody CreateUserRoleDto userRoleDto
@@ -61,9 +61,12 @@ public class UserRoleController {
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<ResponseObject> updateUserRole(@Valid @RequestBody UserRole UserRole, @PathVariable("id") Integer id) {
-
-        UserRole UserRole2 = userRoleService.updatUserRole(UserRole, id);
+    public ResponseEntity<ResponseObject> updateUserRole(
+            @AuthenticationPrincipal UserDto userDto,
+            @Valid @RequestBody UserRole UserRole,
+            @PathVariable("id") Integer id
+    ) {
+        UserRole UserRole2 = userRoleService.updatUserRole(UserRole, id, userDto);
         ResponseObject responseObject = new ResponseObject();
         responseObject.setIs_success(true);
         responseObject.setMessage("Successfully updated UserRole");
@@ -74,9 +77,11 @@ public class UserRoleController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<ResponseObject> deleteUserRole(@PathVariable("id") Integer id) {
-
-        userRoleService.deleteUserRole(id);
+    public ResponseEntity<ResponseObject> deleteUserRole(
+            @AuthenticationPrincipal UserDto userDto,
+            @PathVariable("id") Integer id
+    ) {
+        userRoleService.deleteUserRole(id, userDto);
         ResponseObject responseObject = new ResponseObject();
         responseObject.setIs_success(true);
         responseObject.setMessage("Successfully deleted UserRole.");

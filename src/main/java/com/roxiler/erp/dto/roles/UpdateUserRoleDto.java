@@ -10,6 +10,5 @@ public class UpdateUserRoleDto {
     @Size(min = 3, message = "Length should not be less than 3")
     private String name;
 
-    @Valid
-    private Integer[] featureIds;
+    //private Integer[] featureIds;
 }

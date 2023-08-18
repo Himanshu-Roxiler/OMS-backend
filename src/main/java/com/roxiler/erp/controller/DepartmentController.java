@@ -21,7 +21,7 @@ public class DepartmentController {
     @Autowired
     private DepartmentService departmentService;
 
-    @GetMapping("/")
+    @GetMapping("")
     public ResponseEntity<ResponseObject> getAllDepartments() {
 
         Iterable<Department> departments = departmentService.getAllDepartments();
@@ -34,7 +34,7 @@ public class DepartmentController {
         return response;
     }
 
-    @PostMapping("/")
+    @PostMapping("")
     public ResponseEntity<ResponseObject> addDepartment(
             @AuthenticationPrincipal UserDto userDto,
             @Valid @RequestBody CreateDepartmentDto department

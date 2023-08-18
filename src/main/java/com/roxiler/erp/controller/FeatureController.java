@@ -19,13 +19,13 @@ import com.roxiler.erp.service.FeatureService;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping(value = "feature")
+@RequestMapping(value = "/feature")
 public class FeatureController {
-    
+
     @Autowired
     private FeatureService featureService;
 
-    @GetMapping("/")
+    @GetMapping("")
     public ResponseEntity<ResponseObject> getAllFeatures() {
 
         Iterable<Feature> features = featureService.getAllFeaturesIterable();
@@ -39,7 +39,7 @@ public class FeatureController {
         return response;
     }
 
-    @PostMapping("/")
+    @PostMapping("")
     public ResponseEntity<ResponseObject> addFeature(@Valid @RequestBody Feature feature) {
 
         Feature feature2 = featureService.saveFeature(feature);
@@ -47,7 +47,7 @@ public class FeatureController {
         responseObject.setIs_success(true);
         responseObject.setMessage("Successfully created feature.");
         responseObject.setData(feature2);
-     
+
         ResponseEntity<ResponseObject> response = new ResponseEntity<>(responseObject, HttpStatus.OK);
         return response;
     }

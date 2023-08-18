@@ -8,6 +8,8 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import org.hibernate.annotations.Where;
 
 import java.util.HashSet;
@@ -63,9 +65,10 @@ public class UserRole extends BaseEntity {
     @OneToMany(
             mappedBy = "role",
             fetch = FetchType.LAZY,
-            cascade = CascadeType.PERSIST,
+            cascade = CascadeType.ALL,
             targetEntity = UserOrganizationRole.class
     )
+    @OnDelete(action = OnDeleteAction.CASCADE)
     @JsonIgnore
     private Set<UserOrganizationRole> userOrganizationRole = new HashSet<>();
 }

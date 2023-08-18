@@ -21,7 +21,7 @@ public class UsersProfileController {
     @Autowired
     private UserProfileService userProfileService;
 
-    @GetMapping("/")
+    @GetMapping("")
     public ResponseEntity<ResponseObject> getAllUserProfiles() {
 
         Iterable<UserProfile> userProfiles = userProfileService.getAllUsers();
@@ -35,7 +35,7 @@ public class UsersProfileController {
         return response;
     }
 
-    @PostMapping("/")
+    @PostMapping("")
     public ResponseEntity<ResponseObject> addUserProfile(
             @AuthenticationPrincipal UserDto userDto,
             @Valid @RequestBody CreateUserProfileDto userProfile

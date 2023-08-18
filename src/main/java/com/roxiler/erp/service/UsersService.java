@@ -63,16 +63,21 @@ public class UsersService {
     public Iterable<Users> getAllUsers() {
         Iterable<Users> users = usersRepository.findAll();
 
-        for (Users user : users) {
-            Optional<Department> dept = departmentRepository.findById(user.getDepartment().getId());
-            Optional<Designation> desg = designationRepository.findById(user.getDesignation().getId());
-            if (dept.isPresent()) {
-                user.setDepartment(dept.get());
-            }
-            if (desg.isPresent()) {
-                user.setDesignation(desg.get());
-            }
-        }
+//        for (Users user : users) {
+//            if (user.getDepartment() != null) {
+//                Optional<Department> dept = departmentRepository.findById(user.getDepartment().getId());
+//                if (dept.isPresent()) {
+//                    user.setDepartment(dept.get());
+//                }
+//            }
+//
+//            if (user.getDesignation() != null) {
+//                Optional<Designation> desg = designationRepository.findById(user.getDesignation().getId());
+//                if (desg.isPresent()) {
+//                    user.setDesignation(desg.get());
+//                }
+//            }
+//        }
 
         return users;
     }

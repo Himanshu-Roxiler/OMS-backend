@@ -21,7 +21,7 @@ public class DesignationController {
     @Autowired
     private DesignationService designationService;
 
-    @GetMapping("/")
+    @GetMapping("")
     public ResponseEntity<ResponseObject> getAllDesignations() {
 
         Iterable<Designation> designations = designationService.getAllDesignations();
@@ -35,7 +35,7 @@ public class DesignationController {
         return response;
     }
 
-    @PostMapping("/")
+    @PostMapping("")
     public ResponseEntity<ResponseObject> addDesignation(
             @AuthenticationPrincipal UserDto userDto,
             @Valid @RequestBody CreateDesignationDto designation
