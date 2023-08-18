@@ -10,6 +10,7 @@ import jakarta.validation.constraints.Size;
 import lombok.Data;
 
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 @Data
@@ -18,5 +19,5 @@ public class CreateUserRoleDto {
     @Size(min = 3, message = "Length should not be less than 3")
     private String name;
 
-    private Integer[] featureIds;
+    private Feature[] featureIds;
 }

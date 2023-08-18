@@ -21,9 +21,9 @@ import java.util.Set;
 @Where(clause = "deleted_at IS NULL")
 @Getter
 @Setter
-@JsonIdentityInfo(
-        generator = ObjectIdGenerators.PropertyGenerator.class,
-        property = "id")
+//@JsonIdentityInfo(
+//        generator = ObjectIdGenerators.PropertyGenerator.class,
+//        property = "id")
 public class Organization extends BaseEntity {
 
     @Id
@@ -56,6 +56,9 @@ public class Organization extends BaseEntity {
     @Column(name = "country")
     private String country;
 
+    @JsonIdentityInfo(
+            generator = ObjectIdGenerators.PropertyGenerator.class,
+            property = "id")
     @OneToMany(
             mappedBy = "organization",
             fetch = FetchType.LAZY,
@@ -64,6 +67,9 @@ public class Organization extends BaseEntity {
     )
     private Set<Users> users = new HashSet<>();
 
+    @JsonIdentityInfo(
+            generator = ObjectIdGenerators.PropertyGenerator.class,
+            property = "id")
     @OneToMany(
             mappedBy = "organization",
             fetch = FetchType.LAZY,
@@ -73,6 +79,9 @@ public class Organization extends BaseEntity {
     //@JsonManagedReference
     private Set<Department> departments = new HashSet<>();
 
+    @JsonIdentityInfo(
+            generator = ObjectIdGenerators.PropertyGenerator.class,
+            property = "id")
     @OneToMany(
             mappedBy = "organization",
             fetch = FetchType.LAZY,
@@ -81,6 +90,9 @@ public class Organization extends BaseEntity {
     )
     private Set<Designation> designations = new HashSet<>();
 
+    @JsonIdentityInfo(
+            generator = ObjectIdGenerators.PropertyGenerator.class,
+            property = "id")
     @OneToMany(
             mappedBy = "organization",
             fetch = FetchType.LAZY,
@@ -89,6 +101,9 @@ public class Organization extends BaseEntity {
     )
     private Set<UserRole> roles = new HashSet<>();
 
+    @JsonIdentityInfo(
+            generator = ObjectIdGenerators.PropertyGenerator.class,
+            property = "id")
     @OneToMany(
             mappedBy = "organization",
             fetch = FetchType.EAGER,

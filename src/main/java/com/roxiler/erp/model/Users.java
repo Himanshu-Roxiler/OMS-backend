@@ -21,9 +21,9 @@ import java.util.Set;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@JsonIdentityInfo(
-        generator = ObjectIdGenerators.PropertyGenerator.class,
-        property = "id")
+//@JsonIdentityInfo(
+//        generator = ObjectIdGenerators.PropertyGenerator.class,
+//        property = "id")
 public class Users extends BaseEntity {
 
     @Id
@@ -62,6 +62,9 @@ public class Users extends BaseEntity {
     @Column(name = "active_organization", nullable = true)
     private Integer activeOrganization;
 
+    @JsonIdentityInfo(
+            generator = ObjectIdGenerators.PropertyGenerator.class,
+            property = "id")
     @ManyToOne(fetch = FetchType.EAGER, optional = true)
     @JoinColumn(
             name = "organization",
@@ -70,6 +73,9 @@ public class Users extends BaseEntity {
     )
     private Organization organization;
 
+    @JsonIdentityInfo(
+            generator = ObjectIdGenerators.PropertyGenerator.class,
+            property = "id")
     @ManyToOne(fetch = FetchType.EAGER, optional = true)
     @JoinColumn(
             name = "department",
@@ -78,6 +84,9 @@ public class Users extends BaseEntity {
     )
     private Department department;
 
+    @JsonIdentityInfo(
+            generator = ObjectIdGenerators.PropertyGenerator.class,
+            property = "id")
     @ManyToOne(fetch = FetchType.EAGER, optional = true)
     @JoinColumn(
             name = "designation",
@@ -95,6 +104,9 @@ public class Users extends BaseEntity {
 //    @JoinColumn(name = "roles", referencedColumnName = "id")
 //    private Set<UserRole> roles = new HashSet<>();
 
+    @JsonIdentityInfo(
+            generator = ObjectIdGenerators.PropertyGenerator.class,
+            property = "id")
     @OneToMany(
             mappedBy = "user",
             fetch = FetchType.EAGER,
@@ -103,6 +115,9 @@ public class Users extends BaseEntity {
     )
     private Set<UserOrganizationRole> userOrganizationRole = new HashSet<>();
 
+    @JsonIdentityInfo(
+            generator = ObjectIdGenerators.PropertyGenerator.class,
+            property = "id")
     @OneToOne(fetch = FetchType.EAGER, optional = true)
     @JoinColumn(
             name = "user_profile",

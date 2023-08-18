@@ -17,11 +17,12 @@ import java.util.Set;
 @Entity
 @Table(name = "feature")
 @Where(clause = "deleted_at IS NULL")
-@Getter
-@Setter
-@JsonIdentityInfo(
-        generator = ObjectIdGenerators.PropertyGenerator.class,
-        property = "id")
+//@Getter
+//@Setter
+//@JsonIdentityInfo(
+//        generator = ObjectIdGenerators.PropertyGenerator.class,
+//        property = "id")
+@Data
 public class Feature extends BaseEntity {
 
     @Id
@@ -37,7 +38,10 @@ public class Feature extends BaseEntity {
     @Column(name = "display_name", nullable = true)
     private String displayName;
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
+    @JsonIdentityInfo(
+            generator = ObjectIdGenerators.PropertyGenerator.class,
+            property = "id")
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinTable(
             name = "feature_role",
             joinColumns = {

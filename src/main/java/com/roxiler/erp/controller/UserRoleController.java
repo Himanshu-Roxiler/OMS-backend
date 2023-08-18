@@ -2,6 +2,7 @@ package com.roxiler.erp.controller;
 
 import com.roxiler.erp.dto.auth.UserDto;
 import com.roxiler.erp.dto.roles.CreateUserRoleDto;
+import com.roxiler.erp.model.Department;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -32,12 +33,12 @@ public class UserRoleController {
     @GetMapping("/")
     public ResponseEntity<ResponseObject> getAllUserRoles() {
 
-        Iterable<UserRole> UserRoles = userRoleService.getAllUserRolesIterable();
+        Iterable<UserRole> userRoles = userRoleService.getAllUserRolesIterable();
 
         ResponseObject responseObject = new ResponseObject();
         responseObject.setIs_success(true);
         responseObject.setMessage("Successfully fetched user roles");
-        responseObject.setData(UserRoles);
+        responseObject.setData(userRoles);
         ResponseEntity<ResponseObject> response = new ResponseEntity<>(responseObject, HttpStatus.OK);
 
         return response;
@@ -84,5 +85,16 @@ public class UserRoleController {
         return response;
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<ResponseObject> getAllDepartments(@PathVariable("id") Integer id) {
 
+        UserRole userRole = userRoleService.getUserRoleById(id);
+        ResponseObject responseObject = new ResponseObject();
+        responseObject.setIs_success(true);
+        responseObject.setMessage("Successfully fetched department");
+        responseObject.setData(userRole);
+        ResponseEntity<ResponseObject> response = new ResponseEntity<>(responseObject, HttpStatus.OK);
+
+        return response;
+    }
 }

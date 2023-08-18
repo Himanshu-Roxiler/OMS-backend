@@ -21,26 +21,29 @@ import java.util.Set;
 @Where(clause = "deleted_at IS NULL")
 @Getter
 @Setter
-@JsonIdentityInfo(
-        generator = ObjectIdGenerators.PropertyGenerator.class,
-        property = "id")
-public class Department extends BaseEntity{
+//@JsonIdentityInfo(
+//        generator = ObjectIdGenerators.PropertyGenerator.class,
+//        property = "id")
+public class Department extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="id")
+    @Column(name = "id")
     private Integer id;
 
     @NotBlank(message = "Role name should not be blank")
-    @Size(min=3, message = "Length should not be less than 3")
-    @Column(name="name")
+    @Size(min = 3, message = "Length should not be less than 3")
+    @Column(name = "name")
     private String name;
 
     @NotBlank(message = "Role name should not be blank")
-    @Size(min=3, message = "Length should not be less than 3")
-    @Column(name="description")
+    @Size(min = 3, message = "Length should not be less than 3")
+    @Column(name = "description")
     private String description;
 
+    @JsonIdentityInfo(
+            generator = ObjectIdGenerators.PropertyGenerator.class,
+            property = "id")
     @ManyToOne(fetch = FetchType.EAGER, optional = true)
     @JoinColumn(
             name = "organization_id",
@@ -51,6 +54,9 @@ public class Department extends BaseEntity{
     //@JsonBackReference
     private Organization organization;
 
+    @JsonIdentityInfo(
+            generator = ObjectIdGenerators.PropertyGenerator.class,
+            property = "id")
     @OneToMany(
             mappedBy = "department",
             fetch = FetchType.LAZY,

@@ -68,6 +68,7 @@ public class OrganizationService {
             organization.getUsers().add(user.get());
             Organization org = organizationRepository.save(organization);
             user.get().setOrganization(org);
+            user.get().setActiveOrganization(org.getId());
             usersRepository.save(user.get());
 
             UserOrganizationRole userOrganizationRole = new UserOrganizationRole();

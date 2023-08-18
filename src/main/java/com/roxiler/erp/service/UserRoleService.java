@@ -44,53 +44,37 @@ public class UserRoleService {
             Organization organization = organizationRepository.readById(orgId);
             userRole.setOrganization(organization);
             userRole.setName(userRoleDto.getName());
-            Set<Feature> features = new HashSet<>();
+            userRoleRepository.save(userRole);
+            Set<Feature> features = new HashSet<Feature>();
 
-            for (Integer featureId : userRoleDto.getFeatureIds()) {
-                Optional<Feature> feature = featureRepository.findById(featureId);
+            for (Feature featureId : userRoleDto.getFeatureIds()) {
+                Optional<Feature> feature = featureRepository.findById(featureId.getId());
                 if (feature.isPresent()) {
+                    feature.get().getRoles().add(userRole);
+                    featureRepository.save(feature.get());
+                    //userRole.getFeatures().add(feature.get());
+                    //userRoleRepository.save(userRole);
                     features.add(feature.get());
-                    System.out.println("\nFEATURE ID: " + feature.get().getName());
+                    System.out.println("\nFEATURE ID: " + feature.get());
                 }
-
-                //userRoleRepository.save(userRole);
             }
 
             for (Feature feature : features) {
                 System.out.printf("FEATURE: " + feature.getName());
             }
             System.out.println("\nFEATURES: " + features.size());
-
-//            Set<Feature> features = new HashSet<Feature>();
-//            if (userRole.getFeatures() != null) {
-//                for (Feature feature : userRole.getFeatures()) {
-//                    if (feature.getId() == null) {
-//                        Feature newFeature = featureRepository.save(feature);
-//                        features.add(newFeature);
-//                    } else {
-//                        features.add(featureRepository.findById(feature.getId()).get());
-//                    }
-//                }
-//                userRole.setFeatures(features);
-//            }
-            //userRole.getUsers().add(user.get());
             userRole.getFeatures().addAll(features);
-            UserRole savedUserRole = userRoleRepository.save(userRole);
-//            if (features != null) {
-//                for (Feature feature : features) {
-//                    feature.getRoles().add(saveUserRole);
-//                    featureRepository.save(feature);
-//                }
-//                userRole.setFeatures(features);
-//            }
-            return savedUserRole;
+            userRoleRepository.save(userRole);
+
+            return userRole;
         } else {
             throw new EntityNotFoundException("User is not found");
         }
     }
 
     public Iterable<UserRole> getAllUserRolesIterable() {
-        return userRoleRepository.findAll();
+        Iterable<UserRole> userRoles = userRoleRepository.findAll();
+        return userRoles;
     }
 
     public void deleteUserRole(Integer id) {

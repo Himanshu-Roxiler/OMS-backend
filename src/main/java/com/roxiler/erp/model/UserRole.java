@@ -1,13 +1,12 @@
 package com.roxiler.erp.model;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
-import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Where;
 
@@ -19,9 +18,11 @@ import java.util.Set;
 @Where(clause = "deleted_at IS NULL")
 @Getter
 @Setter
-@JsonIdentityInfo(
-        generator = ObjectIdGenerators.PropertyGenerator.class,
-        property = "id")
+@AllArgsConstructor
+@NoArgsConstructor
+//@JsonIdentityInfo(
+//        generator = ObjectIdGenerators.PropertyGenerator.class,
+//        property = "id")
 public class UserRole extends BaseEntity {
 
     @Id
@@ -34,14 +35,21 @@ public class UserRole extends BaseEntity {
     @Column(name = "name")
     private String name;
 
+    @JsonIdentityInfo(
+            generator = ObjectIdGenerators.PropertyGenerator.class,
+            property = "id")
     @ManyToOne(fetch = FetchType.EAGER, optional = true)
     @JoinColumn(
             name = "organization",
             referencedColumnName = "id",
             nullable = true
     )
+    @JsonIgnore
     private Organization organization;
 
+    @JsonIdentityInfo(
+            generator = ObjectIdGenerators.PropertyGenerator.class,
+            property = "id")
     @ManyToMany(
             mappedBy = "roles",
             fetch = FetchType.EAGER,
@@ -49,11 +57,15 @@ public class UserRole extends BaseEntity {
     )
     private Set<Feature> features = new HashSet<>();
 
+    @JsonIdentityInfo(
+            generator = ObjectIdGenerators.PropertyGenerator.class,
+            property = "id")
     @OneToMany(
             mappedBy = "role",
-            fetch = FetchType.EAGER,
+            fetch = FetchType.LAZY,
             cascade = CascadeType.PERSIST,
             targetEntity = UserOrganizationRole.class
     )
+    @JsonIgnore
     private Set<UserOrganizationRole> userOrganizationRole = new HashSet<>();
 }
