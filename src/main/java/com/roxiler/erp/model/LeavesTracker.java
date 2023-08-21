@@ -49,10 +49,10 @@ public class LeavesTracker extends BaseEntity {
     @Column(name = "type_of_leave")
     private String typeOfLeave;
 
-    @Column(name = "comment")
+    @Column(name = "comment", nullable = true)
     private String comment;
 
-    @Column(name = "note")
+    @Column(name = "note", nullable = true)
     private String note;
 
     @Column(name = "is_approved", nullable = true)
