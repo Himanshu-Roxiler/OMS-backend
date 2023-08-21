@@ -125,4 +125,37 @@ public class Users extends BaseEntity {
             nullable = true
     )
     private UserProfile userProfile;
+
+    @JsonIdentityInfo(
+            generator = ObjectIdGenerators.PropertyGenerator.class,
+            property = "id")
+    @OneToOne(fetch = FetchType.EAGER, optional = true)
+    @JoinColumn(
+            name = "user_leaves",
+            referencedColumnName = "id",
+            nullable = true
+    )
+    private Leaves userLeaves;
+
+    @JsonIdentityInfo(
+            generator = ObjectIdGenerators.PropertyGenerator.class,
+            property = "id")
+    @OneToOne(fetch = FetchType.EAGER, optional = true)
+    @JoinColumn(
+            name = "reporting_manager",
+            referencedColumnName = "id",
+            nullable = true
+    )
+    private Users reportingManager;
+
+    @JsonIdentityInfo(
+            generator = ObjectIdGenerators.PropertyGenerator.class,
+            property = "id")
+    @OneToMany(
+            mappedBy = "user",
+            fetch = FetchType.EAGER,
+            cascade = CascadeType.PERSIST,
+            targetEntity = LeavesTracker.class
+    )
+    private Set<LeavesTracker> userLeaveTracker = new HashSet<>();
 }

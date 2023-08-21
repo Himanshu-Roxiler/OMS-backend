@@ -111,4 +111,15 @@ public class Organization extends BaseEntity {
             targetEntity = UserOrganizationRole.class
     )
     private Set<UserOrganizationRole> userOrganizationRole = new HashSet<>();
+
+    @JsonIdentityInfo(
+            generator = ObjectIdGenerators.PropertyGenerator.class,
+            property = "id")
+    @OneToMany(
+            mappedBy = "organization",
+            fetch = FetchType.LAZY,
+            cascade = CascadeType.PERSIST,
+            targetEntity = LeavesSystem.class
+    )
+    private Set<LeavesSystem> leavesSystems = new HashSet<>();
 }
