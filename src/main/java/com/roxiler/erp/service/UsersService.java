@@ -83,7 +83,7 @@ public class UsersService {
     }
 
 
-    @RequiredPermission(permission = PermissionConstants.ADMIN)
+    @RequiredPermission(permission = PermissionConstants.USERS)
     public Users saveUser(CreateUsersDto user, String email) {
 
         //Department dept = departmentService.getDepartmentById(user.getDepartmentId().getId());
@@ -142,7 +142,7 @@ public class UsersService {
         return savedUser;
     }
 
-    @RequiredPermission(permission = PermissionConstants.ADMIN)
+    @RequiredPermission(permission = PermissionConstants.USERS)
     public Users updateUser(UpdateUserDto user, Integer id) {
 
 
@@ -182,7 +182,7 @@ public class UsersService {
         return updatedUser;
     }
 
-    @RequiredPermission(permission = PermissionConstants.ADMIN)
+    @RequiredPermission(permission = PermissionConstants.USERS)
     public void deleteUser(Integer id) {
 
         String deletedBy = SecurityContextHolder.getContext().getAuthentication().getName();

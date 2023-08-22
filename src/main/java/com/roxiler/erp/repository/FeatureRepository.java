@@ -9,4 +9,6 @@ import java.util.Set;
 public interface FeatureRepository extends JpaRepository<Feature, Integer> {
 
     Feature readById(Integer id);
+
+    Feature findByName(String name);
 }

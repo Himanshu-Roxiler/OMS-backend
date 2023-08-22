@@ -5,6 +5,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
+import com.roxiler.erp.constants.PermissionConstants;
 import com.roxiler.erp.dto.auth.UserDto;
 import com.roxiler.erp.dto.roles.CreateUserRoleDto;
 import com.roxiler.erp.model.*;
@@ -59,10 +60,11 @@ public class UserRoleService {
                 }
             }
 
-            for (Feature feature : features) {
-                System.out.printf("FEATURE: " + feature.getName());
-            }
-            System.out.println("\nFEATURES: " + features.size());
+            Feature feature = featureRepository.findByName(PermissionConstants.PROFILE);
+            feature.getRoles().add(userRole);
+            featureRepository.save(feature);
+            features.add(feature);
+
             userRole.getFeatures().addAll(features);
             userRoleRepository.save(userRole);
 

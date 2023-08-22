@@ -4,6 +4,8 @@ import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 
+import com.roxiler.erp.constants.PermissionConstants;
+import com.roxiler.erp.interfaces.RequiredPermission;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -42,12 +44,13 @@ public class FeatureService {
         return featureRepository.findAll();
     }
 
+    @RequiredPermission(permission = PermissionConstants.ROLES)
     public void deleteFeature(Integer id) {
         Optional<Feature> feature = featureRepository.findById(id);
         if (feature.isEmpty()) {
             throw new EntityNotFoundException("Feature " + id + " does not exist");
         }
-        if(feature.isPresent()) {
+        if (feature.isPresent()) {
             for (UserRole userRole : feature.get().getRoles()) {
                 feature.get().getRoles().remove(userRole);
                 userRoleRepository.save(userRole);
@@ -56,6 +59,7 @@ public class FeatureService {
         }
     }
 
+    @RequiredPermission(permission = PermissionConstants.ROLES)
     public Feature updatFeature(Feature updateFeature, Integer id) {
         Optional<Feature> optionalFeature = featureRepository.findById(id);
 
@@ -73,6 +77,7 @@ public class FeatureService {
 
     }
 
+    @RequiredPermission(permission = PermissionConstants.ROLES)
     public Feature getFeatureById(Integer id) {
         Optional<Feature> optionalFeature = featureRepository.findById(id);
         if (optionalFeature.isEmpty()) {

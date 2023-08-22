@@ -1,9 +1,11 @@
 package com.roxiler.erp.service;
 
+import com.roxiler.erp.constants.PermissionConstants;
 import com.roxiler.erp.dto.auth.UserDto;
 import com.roxiler.erp.dto.leaves.ApproveLeaveRequestDto;
 import com.roxiler.erp.dto.leaves.CreateLeaveTrackerDto;
 import com.roxiler.erp.dto.leaves.RejectLeaveRequestDto;
+import com.roxiler.erp.interfaces.RequiredPermission;
 import com.roxiler.erp.model.LeavesTracker;
 import com.roxiler.erp.model.Users;
 import com.roxiler.erp.repository.LeavesTrackerRepository;
@@ -65,6 +67,7 @@ public class LeavesTrackerService {
         }
     }
 
+    @RequiredPermission(permission = PermissionConstants.USERS)
     public LeavesTracker approveLeaveRequest(UserDto userDto, ApproveLeaveRequestDto leaveRequestDto, Integer id) {
 
         Optional<LeavesTracker> leaveRequest = leavesTrackerRepository.findById(id);
@@ -89,6 +92,7 @@ public class LeavesTrackerService {
         }
     }
 
+    @RequiredPermission(permission = PermissionConstants.USERS)
     public LeavesTracker rejectLeaveRequest(UserDto userDto, RejectLeaveRequestDto leaveRequestDto, Integer id) {
 
         Optional<LeavesTracker> leaveRequest = leavesTrackerRepository.findById(id);
