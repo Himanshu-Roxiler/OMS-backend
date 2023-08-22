@@ -1,7 +1,9 @@
 package com.roxiler.erp.service;
 
 import com.roxiler.erp.dto.auth.UserDto;
+import com.roxiler.erp.dto.leaves.ApproveLeaveRequestDto;
 import com.roxiler.erp.dto.leaves.CreateLeaveTrackerDto;
+import com.roxiler.erp.dto.leaves.RejectLeaveRequestDto;
 import com.roxiler.erp.model.LeavesTracker;
 import com.roxiler.erp.model.Users;
 import com.roxiler.erp.repository.LeavesTrackerRepository;
@@ -60,6 +62,52 @@ public class LeavesTrackerService {
             leavesTrackerRepository.softDeleteById(leaveRequestId, deletedBy);
         } else {
             throw new EntityNotFoundException("No leave request found for given id");
+        }
+    }
+
+    public LeavesTracker approveLeaveRequest(UserDto userDto, ApproveLeaveRequestDto leaveRequestDto, Integer id) {
+
+        Optional<LeavesTracker> leaveRequest = leavesTrackerRepository.findById(id);
+
+        if (leaveRequest.isPresent()) {
+            if (!Objects.equals(leaveRequest.get().getReporting_manager().getId(), userDto.getId())) {
+                throw new AuthorizationServiceException("You are not allowed to perform this action");
+            }
+            leaveRequest.get().setIsApproved(true);
+            leaveRequest.get().setApprovedStartDate(leaveRequestDto.getApprovedStartDate());
+            leaveRequest.get().setApprovedEndDate(leaveRequestDto.getApprovedEndDate());
+            leaveRequest.get().setComment(leaveRequestDto.getComment());
+            leaveRequest.get().setNote(leaveRequestDto.getNote());
+
+            // TO DO update leaves table as well
+
+            LeavesTracker updatedLeaveRequest = leavesTrackerRepository.save(leaveRequest.get());
+
+            return updatedLeaveRequest;
+        } else {
+            throw new EntityNotFoundException("No leave request found by the given id");
+        }
+    }
+
+    public LeavesTracker rejectLeaveRequest(UserDto userDto, RejectLeaveRequestDto leaveRequestDto, Integer id) {
+
+        Optional<LeavesTracker> leaveRequest = leavesTrackerRepository.findById(id);
+
+        if (leaveRequest.isPresent()) {
+            if (!Objects.equals(leaveRequest.get().getReporting_manager().getId(), userDto.getId())) {
+                throw new AuthorizationServiceException("You are not allowed to perform this action");
+            }
+            leaveRequest.get().setIsApproved(false);
+            leaveRequest.get().setComment(leaveRequestDto.getComment());
+            leaveRequest.get().setNote(leaveRequestDto.getNote());
+
+            // TO DO update leaves table as well
+
+            LeavesTracker updatedLeaveRequest = leavesTrackerRepository.save(leaveRequest.get());
+
+            return updatedLeaveRequest;
+        } else {
+            throw new EntityNotFoundException("No leave request found by the given id");
         }
     }
 }

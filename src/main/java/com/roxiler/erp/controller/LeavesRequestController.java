@@ -1,7 +1,9 @@
 package com.roxiler.erp.controller;
 
 import com.roxiler.erp.dto.auth.UserDto;
+import com.roxiler.erp.dto.leaves.ApproveLeaveRequestDto;
 import com.roxiler.erp.dto.leaves.CreateLeaveTrackerDto;
+import com.roxiler.erp.dto.leaves.RejectLeaveRequestDto;
 import com.roxiler.erp.model.LeavesTracker;
 import com.roxiler.erp.model.ResponseObject;
 import com.roxiler.erp.service.LeavesTrackerService;
@@ -57,6 +59,38 @@ public class LeavesRequestController {
         ResponseObject responseObject = new ResponseObject();
         responseObject.setIs_success(true);
         responseObject.setMessage("Successfully deleted leave request");
+        ResponseEntity<ResponseObject> response = new ResponseEntity<>(responseObject, HttpStatus.OK);
+
+        return response;
+    }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<ResponseObject> approveLeaveRequest(
+            @AuthenticationPrincipal UserDto userDto,
+            @PathVariable("id") Integer id,
+            @Valid @RequestBody ApproveLeaveRequestDto leaveRequestDto
+    ) {
+        LeavesTracker leavesTracker = leavesTrackerService.approveLeaveRequest(userDto, leaveRequestDto, id);
+        ResponseObject responseObject = new ResponseObject();
+        responseObject.setIs_success(true);
+        responseObject.setMessage("Successfully approved leave request");
+        responseObject.setData(leavesTracker);
+        ResponseEntity<ResponseObject> response = new ResponseEntity<>(responseObject, HttpStatus.OK);
+
+        return response;
+    }
+
+    @PatchMapping("/reject/{id}")
+    public ResponseEntity<ResponseObject> rejectLeaveRequest(
+            @AuthenticationPrincipal UserDto userDto,
+            @PathVariable("id") Integer id,
+            @Valid @RequestBody RejectLeaveRequestDto leaveRequestDto
+    ) {
+        LeavesTracker leavesTracker = leavesTrackerService.rejectLeaveRequest(userDto, leaveRequestDto, id);
+        ResponseObject responseObject = new ResponseObject();
+        responseObject.setIs_success(true);
+        responseObject.setMessage("Successfully rejected leave request");
+        responseObject.setData(leavesTracker);
         ResponseEntity<ResponseObject> response = new ResponseEntity<>(responseObject, HttpStatus.OK);
 
         return response;
