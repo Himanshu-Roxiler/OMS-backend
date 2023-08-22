@@ -3,6 +3,7 @@ package com.roxiler.erp.service;
 import com.roxiler.erp.constants.PermissionConstants;
 import com.roxiler.erp.dto.auth.UserDto;
 import com.roxiler.erp.dto.leaves.ApproveLeaveRequestDto;
+import com.roxiler.erp.dto.leaves.CancelLeaveRequestDto;
 import com.roxiler.erp.dto.leaves.CreateLeaveTrackerDto;
 import com.roxiler.erp.dto.leaves.RejectLeaveRequestDto;
 import com.roxiler.erp.interfaces.RequiredPermission;
@@ -34,6 +35,7 @@ public class LeavesTrackerService {
         return leaveRequests;
     }
 
+    @RequiredPermission(permission = PermissionConstants.LEAVE)
     public LeavesTracker makeLeaveRequest(UserDto userDto, CreateLeaveTrackerDto leaveRequest) {
 
         LeavesTracker leavesTracker = new LeavesTracker();
@@ -41,6 +43,7 @@ public class LeavesTrackerService {
         leavesTracker.setEndDate(leaveRequest.getEndDate());
         leavesTracker.setReason(leaveRequest.getReason());
         leavesTracker.setTypeOfLeave(leaveRequest.getTypeOfLeave());
+        leavesTracker.setNoOfDays(leaveRequest.getNoOfDays());
         Users user = usersRepository.readByEmail(userDto.getEmail());
         leavesTracker.setUser(user);
         leavesTracker.setReporting_manager(user.getReportingManager());
@@ -52,7 +55,8 @@ public class LeavesTrackerService {
         return leave;
     }
 
-    public void deleteLeaveRequest(UserDto userDto, Integer leaveRequestId) {
+    @RequiredPermission(permission = PermissionConstants.LEAVE)
+    public void deleteLeaveRequest(UserDto userDto, Integer leaveRequestId, CancelLeaveRequestDto leaveRequestDto) {
 
         Optional<LeavesTracker> leave = leavesTrackerRepository.findById(leaveRequestId);
 
@@ -61,7 +65,10 @@ public class LeavesTrackerService {
                 throw new AuthorizationServiceException("You are not allowed to perform this action");
             }
             String deletedBy = SecurityContextHolder.getContext().getAuthentication().getName();
+            leave.get().setLeaveCancelReason(leaveRequestDto.getLeaveCancelReason());
             leavesTrackerRepository.softDeleteById(leaveRequestId, deletedBy);
+
+            // TO DO: Restore leaves for user in user table
         } else {
             throw new EntityNotFoundException("No leave request found for given id");
         }

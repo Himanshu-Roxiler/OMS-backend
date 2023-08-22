@@ -55,6 +55,9 @@ public class LeavesTracker extends BaseEntity {
     @Column(name = "note", nullable = true)
     private String note;
 
+    @Column(name = "leave_cancel_reason", nullable = true)
+    private String leaveCancelReason;
+
     @Column(name = "is_approved", nullable = true)
     private Boolean isApproved;
 
@@ -65,6 +68,9 @@ public class LeavesTracker extends BaseEntity {
     @Temporal(TemporalType.DATE)
     @Column(name = "approved_end_date", nullable = true)
     private Date approvedEndDate;
+
+    @Column(name = "no_of_days")
+    private Float noOfDays;
 
     @JsonIdentityInfo(
             generator = ObjectIdGenerators.PropertyGenerator.class,

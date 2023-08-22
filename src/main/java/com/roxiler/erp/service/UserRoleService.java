@@ -60,10 +60,15 @@ public class UserRoleService {
                 }
             }
 
-            Feature feature = featureRepository.findByName(PermissionConstants.PROFILE);
-            feature.getRoles().add(userRole);
-            featureRepository.save(feature);
-            features.add(feature);
+            Feature profileFeature = featureRepository.findByName(PermissionConstants.PROFILE);
+            profileFeature.getRoles().add(userRole);
+            featureRepository.save(profileFeature);
+            features.add(profileFeature);
+
+            Feature leaveFeature = featureRepository.findByName(PermissionConstants.LEAVE);
+            leaveFeature.getRoles().add(userRole);
+            featureRepository.save(leaveFeature);
+            features.add(leaveFeature);
 
             userRole.getFeatures().addAll(features);
             userRoleRepository.save(userRole);

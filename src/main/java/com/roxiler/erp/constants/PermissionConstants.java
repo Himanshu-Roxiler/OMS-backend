@@ -9,4 +9,6 @@ public interface PermissionConstants {
     public static final String DEPARTMENT = "department";
     public static final String ROLES = "roles";
     public static final String PROFILE = "profile";
+    public static final String LEAVE = "leave";
+    public static final String LEAVE_POLICY = "leave_policy";
 }

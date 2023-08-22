@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.Where;
 
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -39,6 +40,19 @@ public class LeavesSystem extends BaseEntity {
     @Max(value = 50, message = "Leaves should not be more than 50")
     @Column(name = "carry_over_limits")
     private Integer carryOverLimits;
+
+    @Min(value = 0, message = "Leaves should not be less than 0")
+    @Max(value = 20, message = "Leaves should not be more than 20")
+    @Column(name = "consecutive_leaves")
+    private Integer consecutiveLeaves;
+
+    @NotBlank(message = "Leave type should not be empty")
+    @Column(name = "allowed_leave_types")
+    private String[] allowedLeaveTypes;
+
+    @NotBlank(message = "Leave type should not be empty")
+    @Column(name = "allowed_leave_durations")
+    private String[] allowedLeaveDurations;
 
     @JsonIdentityInfo(
             generator = ObjectIdGenerators.PropertyGenerator.class,

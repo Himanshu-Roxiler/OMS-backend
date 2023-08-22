@@ -23,6 +23,8 @@ public class CreateLeaveTrackerDto {
     @Size(min = 10, message = "Length should not be less than 3")
     private String reason;
 
+    private Float noOfDays;
+
     @NotBlank(message = "Type of leave should not be blank")
     @Size(min = 10, message = "Length should not be less than 3")
     private String typeOfLeave;

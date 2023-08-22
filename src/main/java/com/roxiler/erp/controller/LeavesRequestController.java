@@ -2,6 +2,7 @@ package com.roxiler.erp.controller;
 
 import com.roxiler.erp.dto.auth.UserDto;
 import com.roxiler.erp.dto.leaves.ApproveLeaveRequestDto;
+import com.roxiler.erp.dto.leaves.CancelLeaveRequestDto;
 import com.roxiler.erp.dto.leaves.CreateLeaveTrackerDto;
 import com.roxiler.erp.dto.leaves.RejectLeaveRequestDto;
 import com.roxiler.erp.model.LeavesTracker;
@@ -53,9 +54,10 @@ public class LeavesRequestController {
     @DeleteMapping("/{id")
     public ResponseEntity<ResponseObject> deleteLeaveRequest(
             @AuthenticationPrincipal UserDto userDto,
-            @PathVariable("id") Integer id
+            @PathVariable("id") Integer id,
+            @Valid @RequestBody CancelLeaveRequestDto leaveRequestDto
     ) {
-        leavesTrackerService.deleteLeaveRequest(userDto, id);
+        leavesTrackerService.deleteLeaveRequest(userDto, id, leaveRequestDto);
         ResponseObject responseObject = new ResponseObject();
         responseObject.setIs_success(true);
         responseObject.setMessage("Successfully deleted leave request");
