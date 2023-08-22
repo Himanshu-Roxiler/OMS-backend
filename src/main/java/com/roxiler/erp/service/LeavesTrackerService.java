@@ -16,7 +16,10 @@ import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AuthorizationServiceException;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.firewall.RequestRejectedException;
 
+import java.time.temporal.ChronoUnit;
+import java.time.temporal.Temporal;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -44,6 +47,10 @@ public class LeavesTrackerService {
         leavesTracker.setReason(leaveRequest.getReason());
         leavesTracker.setTypeOfLeave(leaveRequest.getTypeOfLeave());
         leavesTracker.setNoOfDays(leaveRequest.getNoOfDays());
+        long numDays = ChronoUnit.DAYS.between((Temporal) leaveRequest.getStartDate(), (Temporal) leaveRequest.getEndDate());
+        if (leaveRequest.getNoOfDays() > numDays) {
+            throw new RequestRejectedException("Number of days should be less than or equal to the days between the dates");
+        }
         Users user = usersRepository.readByEmail(userDto.getEmail());
         leavesTracker.setUser(user);
         leavesTracker.setReporting_manager(user.getReportingManager());
