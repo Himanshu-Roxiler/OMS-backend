@@ -24,11 +24,11 @@ public class UserAuthenticationEntryPoint implements AuthenticationEntryPoint {
             AuthenticationException authException) throws IOException, ServletException {
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         response.setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
-        response.setHeader("Access-Control-Allow-Origin", request.getHeader("*"));
-        response.setHeader("Access-Control-Allow-Credentials", "true");
-        response.setHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS, DELETE");
-        response.setHeader("Access-Control-Max-Age", "3600");
-        response.setHeader("Access-Control-Allow-Headers", "Content-Type, Accept, X-Requested-With, remember-me");
+//        response.setHeader("Access-Control-Allow-Origin", request.getHeader("*"));
+//        response.setHeader("Access-Control-Allow-Credentials", "true");
+//        response.setHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS, DELETE");
+//        response.setHeader("Access-Control-Max-Age", "3600");
+//        response.setHeader("Access-Control-Allow-Headers", "Content-Type, Accept, X-Requested-With, remember-me");
         OBJECT_MAPPER.writeValue(response.getOutputStream(), new UnknownError("Unauthorized path"));
     }
 }
