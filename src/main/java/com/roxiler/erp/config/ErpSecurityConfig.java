@@ -3,6 +3,7 @@ package com.roxiler.erp.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -16,7 +17,7 @@ public class ErpSecurityConfig {
     private final UserAuthenticationProvider userAuthenticationProvider;
 
     public ErpSecurityConfig(UserAuthenticationEntryPoint userAuthenticationEntryPoint,
-                          UserAuthenticationProvider userAuthenticationProvider) {
+                             UserAuthenticationProvider userAuthenticationProvider) {
         this.userAuthenticationEntryPoint = userAuthenticationEntryPoint;
         this.userAuthenticationProvider = userAuthenticationProvider;
     }
@@ -33,6 +34,7 @@ public class ErpSecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/v1/signIn", "/v1/signUp").permitAll()
                         .anyRequest().authenticated())
         ;
+        http.cors(AbstractHttpConfigurer::disable);
         return http.build();
     }
 }
