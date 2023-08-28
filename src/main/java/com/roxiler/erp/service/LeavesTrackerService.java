@@ -17,12 +17,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AuthorizationServiceException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.firewall.RequestRejectedException;
+import org.springframework.stereotype.Service;
 
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
 import java.util.Objects;
 import java.util.Optional;
 
+@Service
 public class LeavesTrackerService {
 
     @Autowired
@@ -33,7 +35,8 @@ public class LeavesTrackerService {
 
     public Iterable<LeavesTracker> getAllLeaveRequestsForUser(UserDto userDto) {
 
-        Iterable<LeavesTracker> leaveRequests = leavesTrackerRepository.findAllByUser(userDto.getId());
+        Users user = usersRepository.readByEmail(userDto.getEmail());
+        Iterable<LeavesTracker> leaveRequests = leavesTrackerRepository.findAllByUser(user);
 
         return leaveRequests;
     }
@@ -53,7 +56,7 @@ public class LeavesTrackerService {
         }
         Users user = usersRepository.readByEmail(userDto.getEmail());
         leavesTracker.setUser(user);
-        leavesTracker.setReporting_manager(user.getReportingManager());
+        leavesTracker.setReportingManager(user.getReportingManager().getId());
         LeavesTracker leave = leavesTrackerRepository.save(leavesTracker);
 
         // TO DO
@@ -87,7 +90,7 @@ public class LeavesTrackerService {
         Optional<LeavesTracker> leaveRequest = leavesTrackerRepository.findById(id);
 
         if (leaveRequest.isPresent()) {
-            if (!Objects.equals(leaveRequest.get().getReporting_manager().getId(), userDto.getId())) {
+            if (!Objects.equals(leaveRequest.get().getReportingManager(), userDto.getId())) {
                 throw new AuthorizationServiceException("You are not allowed to perform this action");
             }
             leaveRequest.get().setIsApproved(true);
@@ -112,7 +115,7 @@ public class LeavesTrackerService {
         Optional<LeavesTracker> leaveRequest = leavesTrackerRepository.findById(id);
 
         if (leaveRequest.isPresent()) {
-            if (!Objects.equals(leaveRequest.get().getReporting_manager().getId(), userDto.getId())) {
+            if (!Objects.equals(leaveRequest.get().getReportingManager(), userDto.getId())) {
                 throw new AuthorizationServiceException("You are not allowed to perform this action");
             }
             leaveRequest.get().setIsApproved(false);

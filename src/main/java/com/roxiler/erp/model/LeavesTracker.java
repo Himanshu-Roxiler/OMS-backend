@@ -83,14 +83,16 @@ public class LeavesTracker extends BaseEntity {
     )
     private Users user;
 
-    @JsonIdentityInfo(
-            generator = ObjectIdGenerators.PropertyGenerator.class,
-            property = "id")
-    @ManyToOne(fetch = FetchType.EAGER, optional = true)
-    @JoinColumn(
-            name = "reporting_manager",
-            referencedColumnName = "id",
-            nullable = true
-    )
-    private Users reporting_manager;
+    //    @JsonIdentityInfo(
+//            generator = ObjectIdGenerators.PropertyGenerator.class,
+//            property = "id")
+//    @ManyToOne(fetch = FetchType.EAGER, optional = true)
+//    @JoinColumn(
+//            name = "reporting_manager",
+//            referencedColumnName = "id",
+//            nullable = true
+//    )
+//    private Users reporting_manager;
+    @Column(name = "reporting_manager", nullable = true)
+    private Integer reportingManager;
 }

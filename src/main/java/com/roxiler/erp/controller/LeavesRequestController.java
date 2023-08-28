@@ -51,7 +51,7 @@ public class LeavesRequestController {
         return response;
     }
 
-    @DeleteMapping("/{id")
+    @DeleteMapping("/{id}")
     public ResponseEntity<ResponseObject> deleteLeaveRequest(
             @AuthenticationPrincipal UserDto userDto,
             @PathVariable("id") Integer id,
