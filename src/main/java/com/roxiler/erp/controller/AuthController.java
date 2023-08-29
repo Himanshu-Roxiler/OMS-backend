@@ -27,14 +27,14 @@ public class AuthController {
     private final UserAuthenticationProvider userAuthenticationProvider;
 
     public AuthController(UsersService usersService,
-                                    UserAuthenticationProvider userAuthenticationProvider) {
+                          UserAuthenticationProvider userAuthenticationProvider) {
         this.usersService = usersService;
         this.userAuthenticationProvider = userAuthenticationProvider;
     }
 
     @PostMapping("/signIn")
     public ResponseEntity<UserDto> signIn(@AuthenticationPrincipal UserDto user) {
-        user.setToken(userAuthenticationProvider.createToken(user.getLogin()));
+        user.setToken(userAuthenticationProvider.createToken(user.getLogin(), user));
         return ResponseEntity.ok(user);
     }
 
