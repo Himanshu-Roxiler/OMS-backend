@@ -1,6 +1,7 @@
 package com.roxiler.erp.model;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
@@ -20,6 +21,7 @@ import java.util.Set;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@JsonIgnoreProperties({"hibernateLazyInitializer"})
 //@JsonIdentityInfo(
 //        generator = ObjectIdGenerators.PropertyGenerator.class,
 //        property = "id")
@@ -50,15 +52,15 @@ public class Leaves extends BaseEntity {
     @Column(name = "approved_leaves")
     private Integer approvedLeaves;
 
-    @JsonIdentityInfo(
-            generator = ObjectIdGenerators.PropertyGenerator.class,
-            property = "id")
+//     @JsonIdentityInfo(
+//             generator = ObjectIdGenerators.PropertyGenerator.class,
+//             property = "id")
     @OneToOne(
             mappedBy = "userLeaves",
             fetch = FetchType.LAZY,
             cascade = CascadeType.PERSIST,
             targetEntity = Users.class
     )
-    @JoinColumn(name = "user", referencedColumnName = "userLeaves")
+    @JoinColumn(name = "user_id", referencedColumnName = "userLeaves")
     private Users user;
 }

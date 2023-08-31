@@ -1,6 +1,7 @@
 package com.roxiler.erp.model;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
@@ -24,6 +25,7 @@ import java.util.Set;
 //@JsonIdentityInfo(
 //        generator = ObjectIdGenerators.PropertyGenerator.class,
 //        property = "id")
+@JsonIgnoreProperties({"hibernateLazyInitializer"})
 public class LeavesSystem extends BaseEntity {
 
     @Id
@@ -48,16 +50,16 @@ public class LeavesSystem extends BaseEntity {
 
     @NotBlank(message = "Leave type should not be empty")
     @Column(name = "allowed_leave_types")
-    private String[] allowedLeaveTypes;
+    private String allowedLeaveTypes;
 
     @NotBlank(message = "Leave type should not be empty")
     @Column(name = "allowed_leave_durations")
-    private String[] allowedLeaveDurations;
+    private String allowedLeaveDurations;
 
-    @JsonIdentityInfo(
-            generator = ObjectIdGenerators.PropertyGenerator.class,
-            property = "id")
-    @ManyToOne(fetch = FetchType.EAGER, optional = true)
+//     @JsonIdentityInfo(
+//             generator = ObjectIdGenerators.PropertyGenerator.class,
+//             property = "id")
+    @ManyToOne(fetch = FetchType.LAZY, optional = true)
     @JoinColumn(
             name = "organization",
             referencedColumnName = "id",
@@ -65,9 +67,9 @@ public class LeavesSystem extends BaseEntity {
     )
     private Organization organization;
 
-    @JsonIdentityInfo(
-            generator = ObjectIdGenerators.PropertyGenerator.class,
-            property = "id")
+//     @JsonIdentityInfo(
+//             generator = ObjectIdGenerators.PropertyGenerator.class,
+//             property = "id")
     @OneToOne(
             fetch = FetchType.LAZY,
             cascade = CascadeType.PERSIST,
