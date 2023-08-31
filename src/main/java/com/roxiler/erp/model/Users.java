@@ -48,7 +48,7 @@ public class Users extends BaseEntity {
 
     @NotBlank(message = "Email should not be blank")
     @Email(message = "Invalid Email ID")
-    @Column(name = "email")
+    @Column(name = "email", unique = true)
     private String email;
 
     @NotBlank(message = "Password should not be blank")

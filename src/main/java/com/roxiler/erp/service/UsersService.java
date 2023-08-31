@@ -7,10 +7,8 @@ import com.roxiler.erp.dto.users.UpdateUserDto;
 import com.roxiler.erp.interfaces.RequiredPermission;
 import com.roxiler.erp.model.*;
 import com.roxiler.erp.model.Users;
-import com.roxiler.erp.repository.DepartmentRepository;
-import com.roxiler.erp.repository.DesignationRepository;
-import com.roxiler.erp.repository.OrganizationRepository;
-import com.roxiler.erp.repository.UsersRepository;
+import com.roxiler.erp.repository.*;
+import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
 import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,6 +38,12 @@ public class UsersService {
     private DesignationRepository designationRepository;
 
     @Autowired
+    private UserProfileRepository userProfileRepository;
+
+    @Autowired
+    private UserRoleRepository userRoleRepository;
+
+    @Autowired
     private UserOrganizationRoleService userOrganizationRoleService;
 
     public Users userSignUp(UserSignupDto user) {
@@ -53,8 +57,14 @@ public class UsersService {
         String hashedPassword = passwordEncoder.encode(user.getPassword());
         newUser.setPassword(hashedPassword);
 
-
         Users savedUser = usersRepository.save(newUser);
+        UserProfile userProfile = new UserProfile();
+        userProfile.setFirstName(user.getFirstName());
+        userProfile.setLastName(user.getLastName());
+        userProfile.setUser(savedUser);
+        UserProfile savedProfile = userProfileRepository.save(userProfile);
+        savedUser.setUserProfile(savedProfile);
+        usersRepository.save(savedUser);
         System.out.println("\n\nNEW USER\n\n" + savedUser + "\n");
         return savedUser;
     }
@@ -92,6 +102,10 @@ public class UsersService {
         Optional<Organization> organization = organizationRepository.findById(adminUser.getOrganization().getId());
         if (organization.isEmpty()) {
             throw new EntityNotFoundException("Organization doesn't exist");
+        }
+        Optional<Users> existingUser = usersRepository.findByUsernameAndActiveOrganization(user.getUsername(), organization.get().getId());
+        if (existingUser.isPresent()) {
+            throw new EntityExistsException("A user with the given username is already present within the organization");
         }
         //Organization organization = organizationRepository.readById(adminUser.getOrganization().getId());
         //Optional<Department> department = departmentRepository.findById(user.getDeptId());
@@ -131,6 +145,11 @@ public class UsersService {
             throw new EntityNotFoundException("Designation doesn't exist");
         }
 
+        Optional<UserRole> userRole = userRoleRepository.findById(user.getRoleId());
+        if (userRole.isEmpty()) {
+            throw new EntityNotFoundException("Role doesn't exist");
+        }
+
         Users savedUser = usersRepository.save(newUser);
         organizationRepository.save(organization.get());
         departmentRepository.save(department.get());
@@ -138,6 +157,12 @@ public class UsersService {
 
         UserOrganizationRole userOrganizationRole = userOrganizationRoleService.createUserOrgRole(savedUser, organization.get(), user.getRoleId());
         savedUser.getUserOrganizationRole().add(userOrganizationRole);
+        UserProfile userProfile = new UserProfile();
+        userProfile.setFirstName(user.getFirstName());
+        userProfile.setLastName(user.getLastName());
+        userProfile.setUser(savedUser);
+        UserProfile savedProfile = userProfileRepository.save(userProfile);
+        savedUser.setUserProfile(savedProfile);
         usersRepository.save(savedUser);
         return savedUser;
     }

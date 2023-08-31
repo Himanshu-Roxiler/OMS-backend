@@ -105,7 +105,7 @@ public class UserRoleService {
             if (optionalOrganization.isPresent()) {
                 optionalOrganization.get().getRoles().remove(userRole.get());
                 organizationRepository.save(optionalOrganization.get());
-                Users user = usersRepository.readByUsername(userDto.getUsername());
+                Users user = usersRepository.readByUsernameAndActiveOrganization(userDto.getUsername(), optionalOrganization.get().getId());
 //                Iterable<UserOrganizationRole> userOrganizationRoles = userOrganizationRoleRepository.findAllByRole(userRole.get());
 //                System.out.printf("\n\nUSER-ORG-ROLES: \n" + userOrganizationRoles);
 //                for (UserOrganizationRole userOrganizationRole : userOrganizationRoles) {
