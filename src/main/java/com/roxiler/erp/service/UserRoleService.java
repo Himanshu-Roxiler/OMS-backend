@@ -5,6 +5,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
+import com.roxiler.erp.constants.PermissionConstants;
 import com.roxiler.erp.dto.auth.UserDto;
 import com.roxiler.erp.dto.roles.CreateUserRoleDto;
 import com.roxiler.erp.model.*;
@@ -59,10 +60,16 @@ public class UserRoleService {
                 }
             }
 
-            for (Feature feature : features) {
-                System.out.printf("FEATURE: " + feature.getName());
-            }
-            System.out.println("\nFEATURES: " + features.size());
+            Feature profileFeature = featureRepository.findByName(PermissionConstants.PROFILE);
+            profileFeature.getRoles().add(userRole);
+            featureRepository.save(profileFeature);
+            features.add(profileFeature);
+
+            Feature leaveFeature = featureRepository.findByName(PermissionConstants.LEAVE);
+            leaveFeature.getRoles().add(userRole);
+            featureRepository.save(leaveFeature);
+            features.add(leaveFeature);
+
             userRole.getFeatures().addAll(features);
             userRoleRepository.save(userRole);
 
@@ -98,7 +105,7 @@ public class UserRoleService {
             if (optionalOrganization.isPresent()) {
                 optionalOrganization.get().getRoles().remove(userRole.get());
                 organizationRepository.save(optionalOrganization.get());
-                Users user = usersRepository.readByUsername(userDto.getUsername());
+                Users user = usersRepository.readByUsernameAndActiveOrganization(userDto.getUsername(), optionalOrganization.get().getId());
 //                Iterable<UserOrganizationRole> userOrganizationRoles = userOrganizationRoleRepository.findAllByRole(userRole.get());
 //                System.out.printf("\n\nUSER-ORG-ROLES: \n" + userOrganizationRoles);
 //                for (UserOrganizationRole userOrganizationRole : userOrganizationRoles) {

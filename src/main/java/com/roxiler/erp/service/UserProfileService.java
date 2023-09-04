@@ -1,6 +1,7 @@
 package com.roxiler.erp.service;
 
 import com.roxiler.erp.constants.PermissionConstants;
+import com.roxiler.erp.dto.auth.UserDto;
 import com.roxiler.erp.dto.profile.CreateUserProfileDto;
 import com.roxiler.erp.dto.profile.UpdateUserProfileDto;
 import com.roxiler.erp.interfaces.RequiredPermission;
@@ -31,10 +32,11 @@ public class UserProfileService {
     private UsersRepository usersRepository;
 
     @RequiredPermission(permission = PermissionConstants.PROFILE)
-    public Iterable<UserProfile> getAllUsers() {
-        Iterable<UserProfile> users = userProfileRepository.findAll();
+    public UserProfile getUserProfile(UserDto userDto) {
+        Users user = usersRepository.readByEmail(userDto.getEmail());
+        UserProfile userProfile = userProfileRepository.readById(user.getUserProfile().getId());
 
-        return users;
+        return userProfile;
     }
 
     @RequiredPermission(permission = PermissionConstants.PROFILE)

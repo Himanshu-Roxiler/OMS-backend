@@ -18,7 +18,7 @@ import java.util.Set;
 
 @Entity
 @Table(name = "department")
-@Where(clause = "deleted_at IS NULL")
+// @Where(clause = "deleted_at IS NULL")
 @Getter
 @Setter
 //@JsonIdentityInfo(

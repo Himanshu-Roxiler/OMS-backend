@@ -22,35 +22,35 @@ public class UsersProfileController {
     private UserProfileService userProfileService;
 
     @GetMapping("")
-    public ResponseEntity<ResponseObject> getAllUserProfiles() {
+    public ResponseEntity<ResponseObject> getUserProfile(@AuthenticationPrincipal UserDto userDto) {
 
-        Iterable<UserProfile> userProfiles = userProfileService.getAllUsers();
+        UserProfile userProfile = userProfileService.getUserProfile(userDto);
 
         ResponseObject responseObject = new ResponseObject();
         responseObject.setIs_success(true);
         responseObject.setMessage("Successfully fetched user profiles");
-        responseObject.setData(userProfiles);
+        responseObject.setData(userProfile);
         ResponseEntity<ResponseObject> response = new ResponseEntity<>(responseObject, HttpStatus.OK);
 
         return response;
     }
 
-    @PostMapping("")
-    public ResponseEntity<ResponseObject> addUserProfile(
-            @AuthenticationPrincipal UserDto userDto,
-            @Valid @RequestBody CreateUserProfileDto userProfile
-    ) {
-        UserProfile newUserProfile = userProfileService.saveUser(userProfile, userDto.getId());
-        ResponseObject responseObject = new ResponseObject();
-        responseObject.setIs_success(true);
-        responseObject.setMessage("Successfully created user profile");
-        responseObject.setData(newUserProfile);
-        ResponseEntity<ResponseObject> response = new ResponseEntity<>(responseObject, HttpStatus.OK);
+//    @PostMapping("")
+//    public ResponseEntity<ResponseObject> addUserProfile(
+//            @AuthenticationPrincipal UserDto userDto,
+//            @Valid @RequestBody CreateUserProfileDto userProfile
+//    ) {
+//        UserProfile newUserProfile = userProfileService.saveUser(userProfile, userDto.getId());
+//        ResponseObject responseObject = new ResponseObject();
+//        responseObject.setIs_success(true);
+//        responseObject.setMessage("Successfully created user profile");
+//        responseObject.setData(newUserProfile);
+//        ResponseEntity<ResponseObject> response = new ResponseEntity<>(responseObject, HttpStatus.OK);
+//
+//        return response;
+//    }
 
-        return response;
-    }
-
-    @PatchMapping("/{id}")
+    @PatchMapping("")
     public ResponseEntity<ResponseObject> updateUserProfile(
             @AuthenticationPrincipal UserDto userDto,
             @Valid @RequestBody UpdateUserProfileDto userProfile,
@@ -66,18 +66,18 @@ public class UsersProfileController {
         return response;
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<ResponseObject> deleteUserProfile(
-            @AuthenticationPrincipal UserDto userDto,
-            @PathVariable("id") Integer id
-    ) {
-        String result = userProfileService.deleteUser(id, userDto.getId());
-        ResponseObject responseObject = new ResponseObject();
-        responseObject.setIs_success(true);
-        responseObject.setMessage("Successfully deleted user profile");
-        ResponseEntity<ResponseObject> response = new ResponseEntity<>(responseObject, HttpStatus.OK);
-
-        return response;
-    }
+//    @DeleteMapping("/{id}")
+//    public ResponseEntity<ResponseObject> deleteUserProfile(
+//            @AuthenticationPrincipal UserDto userDto,
+//            @PathVariable("id") Integer id
+//    ) {
+//        String result = userProfileService.deleteUser(id, userDto.getId());
+//        ResponseObject responseObject = new ResponseObject();
+//        responseObject.setIs_success(true);
+//        responseObject.setMessage("Successfully deleted user profile");
+//        ResponseEntity<ResponseObject> response = new ResponseEntity<>(responseObject, HttpStatus.OK);
+//
+//        return response;
+//    }
 
 }

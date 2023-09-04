@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface UsersRepository extends JpaRepository<Users, Integer> {
@@ -20,5 +21,8 @@ public interface UsersRepository extends JpaRepository<Users, Integer> {
     void softDeleteById(Integer id, String deletedBy);
 
     Users readByEmail(String email);
-    Users readByUsername(String username);
+
+    Users readByUsernameAndActiveOrganization(String username, Integer orgId);
+
+    Optional<Users> findByUsernameAndActiveOrganization(String username, Integer orgId);
 }

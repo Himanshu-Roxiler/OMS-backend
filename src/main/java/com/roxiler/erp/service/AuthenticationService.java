@@ -32,12 +32,10 @@ public class AuthenticationService {
         throw new RuntimeException("Invalid password");
     }
 
-    public UserDto findByLogin(String login) {
-        System.out.printf("LOGIN : " + login);
-        Integer userId = 1;
-        Optional<Users> user = usersRepository.findById(userId);
-        if ("login".equals(login) && user.isPresent()) {
-            return new UserDto(user.get().getId(), user.get().getUsername(), user.get().getEmail(), user.get().getActiveOrganization(), "login", "token");
+    public UserDto findByLogin(String login, String email) {
+        Users user = usersRepository.readByEmail(email);
+        if ("login".equals(login)) {
+            return new UserDto(user.getId(), user.getUsername(), user.getEmail(), user.getActiveOrganization(), "login", "token");
         }
         throw new RuntimeException("Invalid login");
     }

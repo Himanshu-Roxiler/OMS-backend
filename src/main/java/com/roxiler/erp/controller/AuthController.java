@@ -14,12 +14,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
+@CrossOrigin(origins = "*")
 @RequestMapping("/v1")
 public class AuthController {
 
@@ -27,14 +25,14 @@ public class AuthController {
     private final UserAuthenticationProvider userAuthenticationProvider;
 
     public AuthController(UsersService usersService,
-                                    UserAuthenticationProvider userAuthenticationProvider) {
+                          UserAuthenticationProvider userAuthenticationProvider) {
         this.usersService = usersService;
         this.userAuthenticationProvider = userAuthenticationProvider;
     }
 
     @PostMapping("/signIn")
     public ResponseEntity<UserDto> signIn(@AuthenticationPrincipal UserDto user) {
-        user.setToken(userAuthenticationProvider.createToken(user.getLogin()));
+        user.setToken(userAuthenticationProvider.createToken(user.getLogin(), user));
         return ResponseEntity.ok(user);
     }
 

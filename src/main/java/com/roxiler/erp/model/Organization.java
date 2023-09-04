@@ -2,6 +2,7 @@ package com.roxiler.erp.model;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
@@ -21,6 +22,7 @@ import java.util.Set;
 @Where(clause = "deleted_at IS NULL")
 @Getter
 @Setter
+@JsonIgnoreProperties({"hibernateLazyInitializer"})
 //@JsonIdentityInfo(
 //        generator = ObjectIdGenerators.PropertyGenerator.class,
 //        property = "id")
@@ -111,4 +113,15 @@ public class Organization extends BaseEntity {
             targetEntity = UserOrganizationRole.class
     )
     private Set<UserOrganizationRole> userOrganizationRole = new HashSet<>();
+
+    @JsonIdentityInfo(
+            generator = ObjectIdGenerators.PropertyGenerator.class,
+            property = "id")
+    @OneToMany(
+            mappedBy = "organization",
+            fetch = FetchType.LAZY,
+            cascade = CascadeType.PERSIST,
+            targetEntity = LeavesSystem.class
+    )
+    private Set<LeavesSystem> leavesSystems = new HashSet<>();
 }

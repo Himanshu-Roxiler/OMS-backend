@@ -4,6 +4,7 @@ import com.roxiler.erp.dto.auth.UserDto;
 import com.roxiler.erp.model.Organization;
 import com.roxiler.erp.model.Organization;
 import com.roxiler.erp.model.ResponseObject;
+import com.roxiler.erp.model.Users;
 import com.roxiler.erp.service.OrganizationService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;

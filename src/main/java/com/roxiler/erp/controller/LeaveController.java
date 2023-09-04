@@ -1,6 +1,5 @@
 package com.roxiler.erp.controller;
 
-import com.roxiler.erp.dto.auth.UserDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,83 +13,71 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.roxiler.erp.model.Feature;
+import com.roxiler.erp.dto.auth.UserDto;
+import com.roxiler.erp.model.Leaves;
 import com.roxiler.erp.model.ResponseObject;
-import com.roxiler.erp.service.FeatureService;
+import com.roxiler.erp.service.LeaveService;
 
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping(value = "/feature")
-public class FeatureController {
-
+@RequestMapping(value = "/leave")
+public class LeaveController {
+    
     @Autowired
-    private FeatureService featureService;
+    private LeaveService leaveService;
 
     @GetMapping("")
-    public ResponseEntity<ResponseObject> getAllFeatures() {
+    public ResponseEntity<ResponseObject> getAllLeavess(@AuthenticationPrincipal UserDto userDto) {
 
-        Iterable<Feature> features = featureService.getAllFeaturesIterable();
+        Iterable<Leaves> Leavess = leaveService.getAllLeavessIterable(userDto);
 
         ResponseObject responseObject = new ResponseObject();
         responseObject.setIs_success(true);
         responseObject.setMessage("Successfully fetched departments");
-        responseObject.setData(features);
+        responseObject.setData(Leavess);
         ResponseEntity<ResponseObject> response = new ResponseEntity<>(responseObject, HttpStatus.OK);
 
         return response;
     }
 
     @PostMapping("")
-    public ResponseEntity<ResponseObject> addFeature(@Valid @RequestBody Feature feature) {
+    public ResponseEntity<ResponseObject> addLeaves(@AuthenticationPrincipal UserDto userDto ,@Valid @RequestBody Leaves Leaves) {
 
-        Feature feature2 = featureService.saveFeature(feature);
+        Leaves Leaves2 = leaveService.saveLeaves(userDto,Leaves);
         ResponseObject responseObject = new ResponseObject();
         responseObject.setIs_success(true);
-        responseObject.setMessage("Successfully created feature.");
-        responseObject.setData(feature2);
+        responseObject.setMessage("Successfully created Leaves.");
+        responseObject.setData(Leaves2);
 
         ResponseEntity<ResponseObject> response = new ResponseEntity<>(responseObject, HttpStatus.OK);
         return response;
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<ResponseObject> updateFeature(@Valid @RequestBody Feature feature, @PathVariable("id") Integer id) {
+    public ResponseEntity<ResponseObject> updateLeaves(@Valid @RequestBody Leaves Leaves, @AuthenticationPrincipal UserDto userDto) {
 
-        Feature feature2 = featureService.updatFeature(feature, id);
+        Leaves Leaves2 = leaveService.updatLeaves(Leaves, userDto.getId());
         ResponseObject responseObject = new ResponseObject();
         responseObject.setIs_success(true);
-        responseObject.setMessage("Successfully updated feature");
-        responseObject.setData(feature2);
+        responseObject.setMessage("Successfully updated Leaves");
+        responseObject.setData(Leaves2);
         ResponseEntity<ResponseObject> response = new ResponseEntity<>(responseObject, HttpStatus.OK);
 
         return response;
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<ResponseObject> deleteFeature(@PathVariable("id") Integer id) {
+    public ResponseEntity<ResponseObject> deleteLeaves(@PathVariable("id") Integer id) {
 
-        featureService.deleteFeature(id);
+        leaveService.deleteLeaves(id);
         ResponseObject responseObject = new ResponseObject();
         responseObject.setIs_success(true);
-        responseObject.setMessage("Successfully deleted feature.");
+        responseObject.setMessage("Successfully deleted Leaves.");
         ResponseEntity<ResponseObject> response = new ResponseEntity<>(responseObject, HttpStatus.OK);
 
         return response;
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<ResponseObject> getUserFeatures(
-            @AuthenticationPrincipal UserDto userDto,
-            @PathVariable("id") Integer id
-    ) {
-        Iterable<Feature> features = featureService.getUserFeatures(userDto, id);
-        ResponseObject responseObject = new ResponseObject();
-        responseObject.setIs_success(true);
-        responseObject.setMessage("Successfully fetched user features");
-        responseObject.setData(features);
-        ResponseEntity<ResponseObject> response = new ResponseEntity<>(responseObject, HttpStatus.OK);
 
-        return response;
-    }
 }

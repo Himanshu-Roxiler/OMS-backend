@@ -1,6 +1,7 @@
 package com.roxiler.erp.model;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
@@ -24,6 +25,7 @@ import java.util.Set;
 //@JsonIdentityInfo(
 //        generator = ObjectIdGenerators.PropertyGenerator.class,
 //        property = "id")
+@JsonIgnoreProperties({"hibernateLazyInitializer"})
 public class Users extends BaseEntity {
 
     @Id
@@ -48,7 +50,7 @@ public class Users extends BaseEntity {
 
     @NotBlank(message = "Email should not be blank")
     @Email(message = "Invalid Email ID")
-    @Column(name = "email")
+    @Column(name = "email", unique = true)
     private String email;
 
     @NotBlank(message = "Password should not be blank")
@@ -125,4 +127,37 @@ public class Users extends BaseEntity {
             nullable = true
     )
     private UserProfile userProfile;
+
+    @JsonIdentityInfo(
+            generator = ObjectIdGenerators.PropertyGenerator.class,
+            property = "id")
+    @OneToOne(fetch = FetchType.EAGER, optional = true)
+    @JoinColumn(
+            name = "user_leaves",
+            referencedColumnName = "id",
+            nullable = true
+    )
+    private Leaves userLeaves;
+
+    @JsonIdentityInfo(
+            generator = ObjectIdGenerators.PropertyGenerator.class,
+            property = "id")
+    @OneToOne(fetch = FetchType.EAGER, optional = true)
+    @JoinColumn(
+            name = "reporting_manager",
+            referencedColumnName = "id",
+            nullable = true
+    )
+    private Users reportingManager;
+
+    @JsonIdentityInfo(
+            generator = ObjectIdGenerators.PropertyGenerator.class,
+            property = "id")
+    @OneToMany(
+            mappedBy = "user",
+            fetch = FetchType.EAGER,
+            cascade = CascadeType.PERSIST,
+            targetEntity = LeavesTracker.class
+    )
+    private Set<LeavesTracker> userLeaveTracker = new HashSet<>();
 }

@@ -21,7 +21,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class UserAuthenticationProvider {
 
-    @Value("${security.jwt.token.secret-key:secret-key}")
+    @Value("${security.jwt.token.secret-key}")
     private String secretKey;
 
     private final AuthenticationService authenticationService;
@@ -36,12 +36,16 @@ public class UserAuthenticationProvider {
         secretKey = Base64.getEncoder().encodeToString(secretKey.getBytes());
     }
 
-    public String createToken(String login) {
+    public String createToken(String login, UserDto userDto) {
         Date now = new Date();
         Date validity = new Date(now.getTime() + 3600000); // 1 hour
 
         Algorithm algorithm = Algorithm.HMAC256(secretKey);
+
         return JWT.create()
+                .withClaim("username", userDto.getUsername())
+                .withClaim("email", userDto.getEmail())
+                .withClaim("id", userDto.getId())
                 .withIssuer(login)
                 .withIssuedAt(now)
                 .withExpiresAt(validity)
@@ -56,7 +60,7 @@ public class UserAuthenticationProvider {
 
         DecodedJWT decoded = verifier.verify(token);
 
-        UserDto user = authenticationService.findByLogin(decoded.getIssuer());
+        UserDto user = authenticationService.findByLogin(decoded.getIssuer(), decoded.getClaim("email").asString());
 
         return new UsernamePasswordAuthenticationToken(user, null, Collections.emptyList());
     }
