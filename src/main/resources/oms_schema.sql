@@ -45,6 +45,63 @@ CREATE TABLE feature_role (
     PRIMARY KEY (feature_id, role_id)
 );
 
+CREATE TABLE leaves (
+    id SERIAL NOT NULL,
+    approved_leaves INTEGER CHECK ((approved_leaves>=0) AND (approved_leaves<=50)),
+    available_leaves INTEGER CHECK ((available_leaves>=0) AND (available_leaves<=50)),
+    booked_leaves INTEGER CHECK ((booked_leaves>=0) AND (booked_leaves<=50)),
+    total_leaves INTEGER CHECK ((total_leaves>=0) AND (total_leaves<=50)),
+    created_at TIMESTAMP(6),
+    created_by VARCHAR(255),
+    updated_at TIMESTAMP(6),
+    updated_by VARCHAR(255),
+    deleted_at TIMESTAMP(6),
+    deleted_by VARCHAR(255),
+    PRIMARY KEY (id)
+);
+
+CREATE TABLE leaves_system (
+    id SERIAL NOT NULL,
+    accrual INTEGER CHECK ((accrual>=0) AND (accrual<=5)),
+    carry_over_limits INTEGER CHECK ((carry_over_limits>=0) AND (carry_over_limits<=50)),
+    consecutive_leaves INTEGER CHECK ((consecutive_leaves>=0) AND (consecutive_leaves<=50)),
+    designation INTEGER UNIQUE,
+    organization INTEGER,
+    allowed_leave_durations VARCHAR(255),
+    allowed_leave_types VARCHAR(255),
+    created_at TIMESTAMP(6),
+    created_by VARCHAR(255),
+    updated_at TIMESTAMP(6),
+    updated_by VARCHAR(255),
+    deleted_at TIMESTAMP(6),
+    deleted_by VARCHAR(255),
+    PRIMARY KEY (id)
+);
+
+CREATE TABLE leaves_tracker (
+    id SERIAL NOT NULL,
+    approved_end_date DATE,
+    approved_start_date DATE,
+    end_date DATE,
+    start_date DATE,
+    is_approved BOOLEAN,
+    no_of_days FLOAT,
+    reporting_manager INTEGER,
+    user_id INTEGER,
+    comment VARCHAR(255),
+    note VARCHAR(255),
+    reason VARCHAR(255),
+    leave_cancel_reason VARCHAR(255),
+    type_of_leave VARCHAR(255),
+    created_at TIMESTAMP(6),
+    created_by VARCHAR(255),
+    updated_at TIMESTAMP(6),
+    updated_by VARCHAR(255),
+    deleted_at TIMESTAMP(6),
+    deleted_by VARCHAR(255),
+    PRIMARY KEY (id)
+);
+
 CREATE TABLE organization (
     id SERIAL NOT NULL,
     name VARCHAR(255),
@@ -122,6 +179,8 @@ CREATE TABLE users (
     designation INTEGER,
     organization INTEGER,
     user_profile INTEGER UNIQUE,
+    reporting_manager INTEGER UNIQUE,
+    user_leaves INTEGER UNIQUE,
     created_at TIMESTAMP(6),
     created_by VARCHAR(255),
     updated_at TIMESTAMP(6),
@@ -139,6 +198,12 @@ ALTER TABLE feature_role ADD CONSTRAINT FK_feature_role_user_role FOREIGN KEY (r
 
 ALTER TABLE feature_role ADD CONSTRAINT FK_feature_role_feature FOREIGN KEY (feature_id) REFERENCES feature;
 
+ALTER TABLE leaves_system ADD CONSTRAINT FK_leavesSys_designation FOREIGN KEY (designation) REFERENCES designation;
+
+ALTER TABLE leaves_system ADD CONSTRAINT FK_leavesSys_organization FOREIGN KEY (organization) REFERENCES organization;
+
+ALTER TABLE leaves_tracker ADD CONSTRAINT FK_leavesTracker_user FOREIGN KEY (user_id) REFERENCES users;
+
 ALTER TABLE user_organization_role ADD CONSTRAINT FK_user_org_role_org FOREIGN KEY (organization_id) REFERENCES organization;
 
 ALTER TABLE user_organization_role ADD CONSTRAINT FK_user_org_role_role FOREIGN KEY (role_id) REFERENCES user_role ON DELETE CASCADE;
@@ -152,5 +217,9 @@ ALTER TABLE users ADD CONSTRAINT FK_user_dept FOREIGN KEY (department) REFERENCE
 ALTER TABLE users ADD CONSTRAINT FK_user_desg FOREIGN KEY (designation) REFERENCES designation;
 
 ALTER TABLE users ADD CONSTRAINT FK_user_org FOREIGN KEY (organization) REFERENCES organization;
+
+ALTER TABLE users ADD CONSTRAINT FK_user_rm FOREIGN KEY (reporting_manager) REFERENCES users;
+
+ALTER TABLE users ADD CONSTRAINT FK_user_leaves FOREIGN KEY (user_leaves) REFERENCES leaves;
 
 ALTER TABLE users ADD CONSTRAINT FK_user_profile FOREIGN KEY (user_profile) REFERENCES user_profile;
