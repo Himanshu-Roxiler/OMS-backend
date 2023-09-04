@@ -81,13 +81,13 @@ public class DepartmentController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ResponseObject> getAllDepartments(@PathVariable("id") Integer id) {
+    public ResponseEntity<ResponseObject> getDepartment(@PathVariable("id") Integer id) {
 
-        Department departments = departmentService.getDepartmentById(id);
+        Department department = departmentService.getDepartmentById(id);
         ResponseObject responseObject = new ResponseObject();
         responseObject.setIs_success(true);
         responseObject.setMessage("Successfully fetched department");
-        responseObject.setData(departments);
+        responseObject.setData(department);
         ResponseEntity<ResponseObject> response = new ResponseEntity<>(responseObject, HttpStatus.OK);
 
         return response;

@@ -3,6 +3,7 @@ package com.roxiler.erp.controller;
 import com.roxiler.erp.dto.auth.UserDto;
 import com.roxiler.erp.dto.designation.CreateDesignationDto;
 import com.roxiler.erp.dto.designation.UpdateDesignationDto;
+import com.roxiler.erp.model.Department;
 import com.roxiler.erp.model.Designation;
 import com.roxiler.erp.model.Organization;
 import com.roxiler.erp.model.ResponseObject;
@@ -75,6 +76,19 @@ public class DesignationController {
         ResponseObject responseObject = new ResponseObject();
         responseObject.setIs_success(true);
         responseObject.setMessage("Successfully deleted designation");
+        ResponseEntity<ResponseObject> response = new ResponseEntity<>(responseObject, HttpStatus.OK);
+
+        return response;
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<ResponseObject> getDesignation(@PathVariable("id") Integer id) {
+
+        Designation designation = designationService.getDesignationById(id);
+        ResponseObject responseObject = new ResponseObject();
+        responseObject.setIs_success(true);
+        responseObject.setMessage("Successfully fetched designation");
+        responseObject.setData(designation);
         ResponseEntity<ResponseObject> response = new ResponseEntity<>(responseObject, HttpStatus.OK);
 
         return response;
