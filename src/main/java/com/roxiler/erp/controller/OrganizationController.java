@@ -20,7 +20,7 @@ public class OrganizationController {
     @Autowired
     private OrganizationService organizationService;
 
-    @GetMapping("")
+    @GetMapping("/all-organizations")
     public ResponseEntity<ResponseObject> getAllOrganizations(@AuthenticationPrincipal UserDto user) {
 
         Iterable<Organization> organizations = organizationService.getAllOrganizations();
@@ -59,6 +59,20 @@ public class OrganizationController {
         ResponseObject responseObject = new ResponseObject();
         responseObject.setIs_success(true);
         responseObject.setMessage("Successfully updated organization");
+        responseObject.setData(org);
+        ResponseEntity<ResponseObject> response = new ResponseEntity<>(responseObject, HttpStatus.OK);
+
+        return response;
+    }
+
+    @GetMapping("")
+    public ResponseEntity<ResponseObject> getByIdOrganization(
+            @AuthenticationPrincipal UserDto userDto
+    ) {
+        Organization org = organizationService.getOrganizationByUserId(userDto);
+        ResponseObject responseObject = new ResponseObject();
+        responseObject.setIs_success(true);
+        responseObject.setMessage("Successfully fetched organization");
         responseObject.setData(org);
         ResponseEntity<ResponseObject> response = new ResponseEntity<>(responseObject, HttpStatus.OK);
 
