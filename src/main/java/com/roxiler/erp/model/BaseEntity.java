@@ -1,5 +1,6 @@
 package com.roxiler.erp.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import org.hibernate.annotations.OnDelete;
@@ -22,6 +23,7 @@ public class BaseEntity {
 
     @CreatedDate
     @Column(updatable = false, name = "created_at")
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", timezone = "UTC")
     private LocalDateTime createdAt;
 
     @CreatedBy
@@ -30,6 +32,7 @@ public class BaseEntity {
 
     @LastModifiedDate
     @Column(insertable = false, name = "updated_at")
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", timezone = "UTC")
     private LocalDateTime updatedAt;
 
     @LastModifiedBy
@@ -38,6 +41,7 @@ public class BaseEntity {
 
     @JsonIgnore
     @Column(name = "deleted_at")
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", timezone = "UTC")
     private LocalDateTime deletedAt;
 
     @JsonIgnore
