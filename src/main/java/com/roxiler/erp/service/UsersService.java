@@ -1,6 +1,11 @@
 package com.roxiler.erp.service;
 
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.JWTVerifier;
+import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.interfaces.DecodedJWT;
 import com.roxiler.erp.constants.PermissionConstants;
+import com.roxiler.erp.dto.auth.OauthCredentialsDto;
 import com.roxiler.erp.dto.auth.UserSignupDto;
 import com.roxiler.erp.dto.users.CreateUsersDto;
 import com.roxiler.erp.dto.users.UpdateUserDto;
@@ -15,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.swing.text.html.Option;
 import java.util.Optional;
@@ -46,6 +52,7 @@ public class UsersService {
     @Autowired
     private UserOrganizationRoleService userOrganizationRoleService;
 
+    @Transactional
     public Users userSignUp(UserSignupDto user) {
         System.out.println("\n\nNEW USER\n\n" + user + "\n");
 
@@ -61,6 +68,59 @@ public class UsersService {
         UserProfile userProfile = new UserProfile();
         userProfile.setFirstName(user.getFirstName());
         userProfile.setLastName(user.getLastName());
+        userProfile.setUser(savedUser);
+        UserProfile savedProfile = userProfileRepository.save(userProfile);
+        savedUser.setUserProfile(savedProfile);
+        usersRepository.save(savedUser);
+        System.out.println("\n\nNEW USER\n\n" + savedUser + "\n");
+        return savedUser;
+    }
+
+    @Transactional
+    public Users userSignUpViaOauth(OauthCredentialsDto oauthCredentialsDto) {
+        DecodedJWT decoded = JWT.decode(oauthCredentialsDto.getAccessToken());
+        String name = decoded.getClaim("name").asString();
+        String firstName = name.split(" ")[0];
+        String lastName = name.split(" ")[1];
+        String username = "";
+        String email = "";
+        if ("google".equals(oauthCredentialsDto.getOauthClient())) {
+            username = decoded.getClaim("email").asString();
+            email = decoded.getClaim("email").asString();
+        } else if ("outlook".equals(oauthCredentialsDto.getOauthClient())) {
+            username = decoded.getClaim("preferred_username").asString();
+            email = decoded.getClaim("preferred_username").asString();
+        }
+        String password = "A2f9R7sGvNtE1DpYw";
+
+        Optional<Users> existingUser = usersRepository.findByEmail(email);
+        if (existingUser.isPresent()) {
+            if ("google".equals(oauthCredentialsDto.getOauthClient())) {
+                existingUser.get().setGoogleId(decoded.getSubject());
+            } else if ("outlook".equals(oauthCredentialsDto.getOauthClient())) {
+                existingUser.get().setOutlookId(decoded.getSubject());
+            }
+            usersRepository.save(existingUser.get());
+            return existingUser.get();
+        }
+
+        Users newUser = new Users();
+        newUser.setFirstName(firstName);
+        newUser.setLastName(lastName);
+        newUser.setUsername(username);
+        newUser.setEmail(email);
+        String hashedPassword = passwordEncoder.encode(password);
+        newUser.setPassword(hashedPassword);
+        if ("google".equals(oauthCredentialsDto.getOauthClient())) {
+            newUser.setGoogleId(decoded.getSubject());
+        } else if ("outlook".equals(oauthCredentialsDto.getOauthClient())) {
+            newUser.setOutlookId(decoded.getSubject());
+        }
+
+        Users savedUser = usersRepository.save(newUser);
+        UserProfile userProfile = new UserProfile();
+        userProfile.setFirstName(firstName);
+        userProfile.setLastName(lastName);
         userProfile.setUser(savedUser);
         UserProfile savedProfile = userProfileRepository.save(userProfile);
         savedUser.setUserProfile(savedProfile);

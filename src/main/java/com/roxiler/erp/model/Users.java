@@ -64,6 +64,12 @@ public class Users extends BaseEntity {
     @Column(name = "active_organization", nullable = true)
     private Integer activeOrganization;
 
+    @Column(name = "google_id")
+    private String googleId;
+
+    @Column(name = "outlook_id")
+    private String outlookId;
+
     @JsonIdentityInfo(
             generator = ObjectIdGenerators.PropertyGenerator.class,
             property = "id")

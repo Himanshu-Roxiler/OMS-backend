@@ -22,7 +22,13 @@ public interface UsersRepository extends JpaRepository<Users, Integer> {
 
     Users readByEmail(String email);
 
+    Optional<Users> findByEmail(String email);
+
     Users readByUsernameAndActiveOrganization(String username, Integer orgId);
 
     Optional<Users> findByUsernameAndActiveOrganization(String username, Integer orgId);
+
+    Users readByGoogleId(String googleId);
+
+    Users readByOutlookId(String outlookId);
 }
