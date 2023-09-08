@@ -24,4 +24,7 @@ public interface DepartmentRepository extends JpaRepository<Department, Integer>
 
     @Query("SELECT dept FROM Department dept WHERE dept.id = :id AND dept.organization = :org")
     Optional<Department> getDeptWithOrg(Integer id, Organization org);
+
+    @Query("SELECT dept FROM Department dept WHERE dept.organization = :org")
+    Iterable<Department> getDeptListWithOrg(Organization org);
 }

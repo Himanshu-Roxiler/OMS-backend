@@ -2,6 +2,7 @@ package com.roxiler.erp.service;
 
 import com.roxiler.erp.constants.PermissionConstants;
 import com.roxiler.erp.constants.RoleNameConstants;
+import com.roxiler.erp.dto.auth.UserDto;
 import com.roxiler.erp.interfaces.RequiredPermission;
 import com.roxiler.erp.model.*;
 import com.roxiler.erp.model.Organization;
@@ -126,6 +127,16 @@ public class OrganizationService {
     @RequiredPermission(permission = PermissionConstants.ADMIN)
     public Organization getOrganization(Integer id) {
         Optional<Organization> organization = organizationRepository.findById(id);
+
+        if (organization.isEmpty()) {
+            throw new EntityNotFoundException();
+        }
+
+        return organization.get();
+    }
+
+    public Organization getOrganizationByUserId(UserDto userDto) {
+        Optional<Organization> organization = organizationRepository.findById(userDto.getOrgId());
 
         if (organization.isEmpty()) {
             throw new EntityNotFoundException();

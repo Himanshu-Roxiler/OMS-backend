@@ -1,6 +1,7 @@
 package com.roxiler.erp.service;
 
 import com.roxiler.erp.constants.PermissionConstants;
+import com.roxiler.erp.dto.auth.UserDto;
 import com.roxiler.erp.dto.designation.CreateDesignationDto;
 import com.roxiler.erp.dto.designation.UpdateDesignationDto;
 import com.roxiler.erp.interfaces.RequiredPermission;
@@ -35,6 +36,15 @@ public class DesignationService {
     public Iterable<Designation> getAllDesignations() {
         Iterable<Designation> designations = designationRepository.findAll();
 
+        return designations;
+    }
+
+    public Iterable<Designation> getListDesignationsFromOrg(UserDto userDto) {
+        Optional<Organization> org = organizationRepository.findById(userDto.getOrgId());
+        if (org.isEmpty()) {
+            throw new EntityNotFoundException("No organization is found for user " + userDto.getOrgId());
+        }
+        Iterable<Designation> designations = designationRepository.getListDesgWithOrg(org.get());
         return designations;
     }
 

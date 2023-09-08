@@ -25,4 +25,9 @@ public interface DesignationRepository extends JpaRepository<Designation, Intege
 
     @Query("SELECT desg FROM Designation desg WHERE desg.id = :id AND desg.organization = :org")
     Optional<Designation> getDesgWithOrg(Integer id, Organization org);
+
+    @Query("SELECT desg FROM Designation desg WHERE desg.organization = :org")
+    Iterable<Designation> getListDesgWithOrg(Organization org);
+
+    
 }

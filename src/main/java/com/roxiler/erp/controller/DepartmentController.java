@@ -21,10 +21,24 @@ public class DepartmentController {
     @Autowired
     private DepartmentService departmentService;
 
-    @GetMapping("")
+    @GetMapping("/all-departments")
     public ResponseEntity<ResponseObject> getAllDepartments() {
 
         Iterable<Department> departments = departmentService.getAllDepartments();
+        ResponseObject responseObject = new ResponseObject();
+        responseObject.setIs_success(true);
+        responseObject.setMessage("Successfully fetched departments");
+        responseObject.setData(departments);
+        ResponseEntity<ResponseObject> response = new ResponseEntity<>(responseObject, HttpStatus.OK);
+
+        return response;
+    }
+
+    @GetMapping("")
+    public ResponseEntity<ResponseObject> getListDepartmentsWithOrg(
+        @AuthenticationPrincipal UserDto userDto
+    ) {
+        Iterable<Department> departments = departmentService.getListDepartmentsFromOrg(userDto);
         ResponseObject responseObject = new ResponseObject();
         responseObject.setIs_success(true);
         responseObject.setMessage("Successfully fetched departments");
