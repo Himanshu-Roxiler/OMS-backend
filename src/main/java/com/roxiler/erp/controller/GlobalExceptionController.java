@@ -1,14 +1,19 @@
 package com.roxiler.erp.controller;
 
+import com.fasterxml.jackson.core.exc.StreamWriteException;
+import com.fasterxml.jackson.databind.DatabindException;
 import com.roxiler.erp.model.ResponseObject;
 import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AuthorizationServiceException;
 import org.springframework.validation.FieldError;
+import org.springframework.web.ErrorResponse;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -120,7 +125,7 @@ public class GlobalExceptionController {
     })
     public ResponseEntity<ResponseObject> handleRuntimeExceptions(
             RuntimeException ex) {
-
+        System.out.println("\nInside runtime\n");
         ResponseObject responseObject = new ResponseObject();
         responseObject.setIs_success(false);
         responseObject.setMessage(ex.getMessage());
@@ -156,4 +161,47 @@ public class GlobalExceptionController {
 
         return response;
     }
+
+    @ExceptionHandler({
+            StreamWriteException.class,
+    })
+    public ResponseEntity<ResponseObject> handleStreamWriteExceptions(
+            StreamWriteException ex) {
+
+        ResponseObject responseObject = new ResponseObject();
+        responseObject.setIs_success(false);
+        responseObject.setMessage(ex.getMessage());
+        ResponseEntity<ResponseObject> response = new ResponseEntity<>(responseObject, HttpStatus.BAD_REQUEST);
+
+        return response;
+    }
+
+    @ExceptionHandler({
+            DatabindException.class,
+    })
+    public ResponseEntity<ResponseObject> handleDatabindExceptions(
+            DatabindException ex) {
+
+        ResponseObject responseObject = new ResponseObject();
+        responseObject.setIs_success(false);
+        responseObject.setMessage(ex.getMessage());
+        ResponseEntity<ResponseObject> response = new ResponseEntity<>(responseObject, HttpStatus.BAD_REQUEST);
+
+        return response;
+    }
+
+    @ExceptionHandler({
+            Exception.class,
+    })
+    public ResponseEntity<ResponseObject> handleAllExceptions(
+            Exception ex) {
+
+        ResponseObject responseObject = new ResponseObject();
+        responseObject.setIs_success(false);
+        responseObject.setMessage(ex.getMessage());
+        ResponseEntity<ResponseObject> response = new ResponseEntity<>(responseObject, HttpStatus.BAD_REQUEST);
+
+        return response;
+    }
+
 }
