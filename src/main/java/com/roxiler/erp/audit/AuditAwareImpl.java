@@ -20,8 +20,8 @@ public class AuditAwareImpl implements AuditorAware<String> {
     @Override
     public Optional<String> getCurrentAuditor() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        if (auth.getPrincipal().getClass() == String.class) {
-            return Optional.ofNullable(SecurityContextHolder.getContext().getAuthentication().getName());
+        if (auth == null || auth.getPrincipal().getClass() == String.class) {
+            return "Anonymous".describeConstable();
         }
         UserDto userDto = (UserDto) auth.getPrincipal();
         Optional<Users> user = usersRepository.findById(userDto.getId());

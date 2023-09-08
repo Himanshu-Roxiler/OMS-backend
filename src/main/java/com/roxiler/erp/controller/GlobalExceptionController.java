@@ -1,13 +1,19 @@
 package com.roxiler.erp.controller;
 
+import com.fasterxml.jackson.core.exc.StreamWriteException;
+import com.fasterxml.jackson.databind.DatabindException;
 import com.roxiler.erp.model.ResponseObject;
 import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AuthorizationServiceException;
 import org.springframework.validation.FieldError;
+import org.springframework.web.ErrorResponse;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -15,6 +21,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
@@ -112,4 +119,89 @@ public class GlobalExceptionController {
 
         return response;
     }
+
+    @ExceptionHandler({
+            RuntimeException.class,
+    })
+    public ResponseEntity<ResponseObject> handleRuntimeExceptions(
+            RuntimeException ex) {
+        System.out.println("\nInside runtime\n");
+        ResponseObject responseObject = new ResponseObject();
+        responseObject.setIs_success(false);
+        responseObject.setMessage(ex.getMessage());
+        ResponseEntity<ResponseObject> response = new ResponseEntity<>(responseObject, HttpStatus.BAD_REQUEST);
+
+        return response;
+    }
+
+    @ExceptionHandler({
+            IOException.class,
+    })
+    public ResponseEntity<ResponseObject> handleIOExceptions(
+            IOException ex) {
+
+        ResponseObject responseObject = new ResponseObject();
+        responseObject.setIs_success(false);
+        responseObject.setMessage(ex.getMessage());
+        ResponseEntity<ResponseObject> response = new ResponseEntity<>(responseObject, HttpStatus.BAD_REQUEST);
+
+        return response;
+    }
+
+    @ExceptionHandler({
+            ServletException.class,
+    })
+    public ResponseEntity<ResponseObject> handleServletExceptions(
+            ServletException ex) {
+
+        ResponseObject responseObject = new ResponseObject();
+        responseObject.setIs_success(false);
+        responseObject.setMessage(ex.getMessage());
+        ResponseEntity<ResponseObject> response = new ResponseEntity<>(responseObject, HttpStatus.BAD_REQUEST);
+
+        return response;
+    }
+
+    @ExceptionHandler({
+            StreamWriteException.class,
+    })
+    public ResponseEntity<ResponseObject> handleStreamWriteExceptions(
+            StreamWriteException ex) {
+
+        ResponseObject responseObject = new ResponseObject();
+        responseObject.setIs_success(false);
+        responseObject.setMessage(ex.getMessage());
+        ResponseEntity<ResponseObject> response = new ResponseEntity<>(responseObject, HttpStatus.BAD_REQUEST);
+
+        return response;
+    }
+
+    @ExceptionHandler({
+            DatabindException.class,
+    })
+    public ResponseEntity<ResponseObject> handleDatabindExceptions(
+            DatabindException ex) {
+
+        ResponseObject responseObject = new ResponseObject();
+        responseObject.setIs_success(false);
+        responseObject.setMessage(ex.getMessage());
+        ResponseEntity<ResponseObject> response = new ResponseEntity<>(responseObject, HttpStatus.BAD_REQUEST);
+
+        return response;
+    }
+
+    @ExceptionHandler({
+            Exception.class,
+    })
+    public ResponseEntity<ResponseObject> handleAllExceptions(
+            Exception ex) {
+
+        ResponseObject responseObject = new ResponseObject();
+        responseObject.setIs_success(false);
+        responseObject.setMessage(ex.getMessage());
+        ResponseEntity<ResponseObject> response = new ResponseEntity<>(responseObject, HttpStatus.BAD_REQUEST);
+
+        return response;
+    }
+
 }

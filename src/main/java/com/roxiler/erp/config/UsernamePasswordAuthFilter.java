@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.roxiler.erp.dto.auth.CredentialsDto;
+import com.roxiler.erp.dto.auth.OauthCredentialsDto;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -35,6 +36,18 @@ public class UsernamePasswordAuthFilter extends OncePerRequestFilter {
             try {
                 SecurityContextHolder.getContext().setAuthentication(
                         userAuthenticationProvider.validateCredentials(credentialsDto));
+            } catch (RuntimeException e) {
+                SecurityContextHolder.clearContext();
+                throw e;
+            }
+        } else if ("/v1/oauth/signIn".equals(httpServletRequest.getServletPath())
+                && HttpMethod.POST.matches(httpServletRequest.getMethod())) {
+            System.out.println("\nINSIDE v1 oauth sign in\n");
+            OauthCredentialsDto credentialsDto = MAPPER.readValue(httpServletRequest.getInputStream(), OauthCredentialsDto.class);
+
+            try {
+                SecurityContextHolder.getContext().setAuthentication(
+                        userAuthenticationProvider.validateOauthCredentials(credentialsDto));
             } catch (RuntimeException e) {
                 SecurityContextHolder.clearContext();
                 throw e;
