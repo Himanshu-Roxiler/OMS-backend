@@ -22,10 +22,24 @@ public class DesignationController {
     @Autowired
     private DesignationService designationService;
 
-    @GetMapping("")
+    @GetMapping("all-designations")
     public ResponseEntity<ResponseObject> getAllDesignations() {
 
         Iterable<Designation> designations = designationService.getAllDesignations();
+
+        ResponseObject responseObject = new ResponseObject();
+        responseObject.setIs_success(true);
+        responseObject.setMessage("Successfully fetched departments");
+        responseObject.setData(designations);
+        ResponseEntity<ResponseObject> response = new ResponseEntity<>(responseObject, HttpStatus.OK);
+
+        return response;
+    }
+
+    @GetMapping("")
+    public ResponseEntity<ResponseObject> getListDesignationsFromOrg(@AuthenticationPrincipal UserDto userDto) {
+
+        Iterable<Designation> designations = designationService.getListDesignationsFromOrg(userDto);
 
         ResponseObject responseObject = new ResponseObject();
         responseObject.setIs_success(true);

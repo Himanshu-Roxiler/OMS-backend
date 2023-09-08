@@ -1,11 +1,11 @@
 package com.roxiler.erp.service;
 
 import com.roxiler.erp.constants.PermissionConstants;
+import com.roxiler.erp.dto.auth.UserDto;
 import com.roxiler.erp.dto.department.CreateDepartmentDto;
 import com.roxiler.erp.dto.department.UpdateDepartmentDto;
 import com.roxiler.erp.interfaces.RequiredPermission;
 import com.roxiler.erp.model.*;
-import com.roxiler.erp.model.Department;
 import com.roxiler.erp.repository.DepartmentRepository;
 import com.roxiler.erp.repository.OrganizationRepository;
 import com.roxiler.erp.repository.UsersRepository;
@@ -36,6 +36,17 @@ public class DepartmentService {
     @RequiredPermission(permission = PermissionConstants.DEPARTMENT)
     public Iterable<Department> getAllDepartments() {
         Iterable<Department> departments = departmentRepository.findAll();
+
+        return departments;
+    }
+
+    @RequiredPermission(permission = PermissionConstants.DEPARTMENT)
+    public Iterable<Department> getListDepartmentsFromOrg(UserDto userDto) {
+        Optional<Organization> org = organizationRepository.findById(userDto.getOrgId());
+        if (org.isEmpty()) {
+            throw new EntityNotFoundException("No organization is found for user " + userDto.getOrgId());
+        }
+        Iterable<Department> departments = departmentRepository.getDeptListWithOrg(org.get());
 
         return departments;
     }
