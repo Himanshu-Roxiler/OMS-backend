@@ -43,6 +43,7 @@ public class DesignationService {
         return designations;
     }
 
+    @RequiredPermission(permission = PermissionConstants.DESIGNATION)
     public Page<Designation> getListDesignationsWithPagination(UserDto userDto, ListDesignationDto listDesignationDto) {
         Optional<Organization> org = organizationRepository.findById(userDto.getOrgId());
         if (org.isEmpty()) {

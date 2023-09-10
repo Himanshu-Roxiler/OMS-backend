@@ -57,6 +57,7 @@ public class Users extends BaseEntity {
     @NotBlank(message = "Password should not be blank")
     @Size(min = 3, message = "Length should not be less than 3")
     @Column(name = "password")
+    @JsonIgnore
     private String password;
 
     @Column(name = "password_reset_token", nullable = true)

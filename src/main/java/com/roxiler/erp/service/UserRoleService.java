@@ -9,6 +9,7 @@ import com.roxiler.erp.constants.PermissionConstants;
 import com.roxiler.erp.dto.auth.UserDto;
 import com.roxiler.erp.dto.roles.CreateUserRoleDto;
 import com.roxiler.erp.dto.roles.ListRolesDto;
+import com.roxiler.erp.interfaces.RequiredPermission;
 import com.roxiler.erp.model.*;
 import com.roxiler.erp.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -83,6 +84,7 @@ public class UserRoleService {
         }
     }
 
+    @RequiredPermission(permission = PermissionConstants.ROLES)
     public Page<UserRole> getAllUserRolesIterable(UserDto userDto, ListRolesDto listRolesDto) {
         Optional<Organization> org = organizationRepository.findById(userDto.getOrgId());
         if (org.isEmpty()) {

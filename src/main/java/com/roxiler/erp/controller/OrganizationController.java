@@ -79,18 +79,18 @@ public class OrganizationController {
         return response;
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<ResponseObject> deleteOrganization(
-            @AuthenticationPrincipal UserDto user,
-            @PathVariable("id") Integer id
-    ) {
-        organizationService.softDeleteOrganization(id, user.getEmail());
-        ResponseObject responseObject = new ResponseObject();
-        responseObject.setIs_success(true);
-        responseObject.setMessage("Successfully deleted organization");
-        ResponseEntity<ResponseObject> response = new ResponseEntity<>(responseObject, HttpStatus.OK);
-
-        return response;
-    }
+//    @DeleteMapping("/{id}")
+//    public ResponseEntity<ResponseObject> deleteOrganization(
+//            @AuthenticationPrincipal UserDto user,
+//            @PathVariable("id") Integer id
+//    ) {
+//        organizationService.softDeleteOrganization(id, user.getEmail());
+//        ResponseObject responseObject = new ResponseObject();
+//        responseObject.setIs_success(true);
+//        responseObject.setMessage("Successfully deleted organization");
+//        ResponseEntity<ResponseObject> response = new ResponseEntity<>(responseObject, HttpStatus.OK);
+//
+//        return response;
+//    }
 
 }
