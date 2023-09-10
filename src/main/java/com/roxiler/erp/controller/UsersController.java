@@ -2,6 +2,7 @@ package com.roxiler.erp.controller;
 
 import com.roxiler.erp.dto.auth.UserDto;
 import com.roxiler.erp.dto.users.CreateUsersDto;
+import com.roxiler.erp.dto.users.ListUsersDto;
 import com.roxiler.erp.dto.users.UpdateUserDto;
 import com.roxiler.erp.model.ResponseObject;
 import com.roxiler.erp.model.Users;
@@ -22,9 +23,12 @@ public class UsersController {
     private UsersService usersService;
 
     @GetMapping("")
-    public ResponseEntity<ResponseObject> getAllUsers() {
+    public ResponseEntity<ResponseObject> getAllUsers(
+            @AuthenticationPrincipal UserDto userDto,
+            @RequestBody ListUsersDto listUsersDto
+    ) {
 
-        Iterable<Users> users = usersService.getAllUsers();
+        Iterable<Users> users = usersService.getAllUsersWithPagination(userDto, listUsersDto);
         ResponseObject responseObject = new ResponseObject();
         responseObject.setIs_success(true);
         responseObject.setMessage("Successfully fetched users");

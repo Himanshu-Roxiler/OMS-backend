@@ -2,6 +2,7 @@ package com.roxiler.erp.model;
 
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -16,9 +17,9 @@ import org.hibernate.annotations.Where;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-//@JsonIdentityInfo(
-//        generator = ObjectIdGenerators.PropertyGenerator.class,
-//        property = "id")
+@JsonIdentityInfo(
+        generator = ObjectIdGenerators.PropertyGenerator.class,
+        property = "id")
 public class UserOrganizationRole extends BaseEntity {
 
     @Id
@@ -26,10 +27,11 @@ public class UserOrganizationRole extends BaseEntity {
     @Column(name = "id")
     private Integer id;
 
-    @JsonIdentityInfo(
-            generator = ObjectIdGenerators.PropertyGenerator.class,
-            property = "id")
-    @ManyToOne(fetch = FetchType.EAGER, optional = true)
+    //    @JsonIdentityInfo(
+//            generator = ObjectIdGenerators.PropertyGenerator.class,
+//            property = "id")
+    @JsonIgnore
+    @ManyToOne(fetch = FetchType.LAZY, optional = true)
     @JoinColumn(
             name = "user_id",
             referencedColumnName = "id",
@@ -37,10 +39,11 @@ public class UserOrganizationRole extends BaseEntity {
     )
     private Users user;
 
-    @JsonIdentityInfo(
-            generator = ObjectIdGenerators.PropertyGenerator.class,
-            property = "id")
-    @ManyToOne(fetch = FetchType.EAGER, optional = true)
+    //    @JsonIdentityInfo(
+//            generator = ObjectIdGenerators.PropertyGenerator.class,
+//            property = "id")
+    @JsonIgnore
+    @ManyToOne(fetch = FetchType.LAZY, optional = true)
     @JoinColumn(
             name = "organization_id",
             referencedColumnName = "id",
@@ -48,10 +51,11 @@ public class UserOrganizationRole extends BaseEntity {
     )
     private Organization organization;
 
-    @JsonIdentityInfo(
-            generator = ObjectIdGenerators.PropertyGenerator.class,
-            property = "id")
-    @ManyToOne(fetch = FetchType.EAGER, optional = true)
+    //    @JsonIdentityInfo(
+//            generator = ObjectIdGenerators.PropertyGenerator.class,
+//            property = "id")
+    @JsonIgnore
+    @ManyToOne(fetch = FetchType.LAZY, optional = true)
     @JoinColumn(
             name = "role_id",
             referencedColumnName = "id",

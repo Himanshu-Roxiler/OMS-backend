@@ -1,6 +1,7 @@
 package com.roxiler.erp.model;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
@@ -22,10 +23,10 @@ import java.util.Set;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-//@JsonIdentityInfo(
-//        generator = ObjectIdGenerators.PropertyGenerator.class,
-//        property = "id")
-@JsonIgnoreProperties({"hibernateLazyInitializer"})
+@JsonIdentityInfo(
+        generator = ObjectIdGenerators.PropertyGenerator.class,
+        property = "id")
+//@JsonIgnoreProperties({"hibernateLazyInitializer"})
 public class Users extends BaseEntity {
 
     @Id
@@ -70,9 +71,10 @@ public class Users extends BaseEntity {
     @Column(name = "outlook_id")
     private String outlookId;
 
-    @JsonIdentityInfo(
-            generator = ObjectIdGenerators.PropertyGenerator.class,
-            property = "id")
+    @JsonIgnore
+//    @JsonIdentityInfo(
+//            generator = ObjectIdGenerators.PropertyGenerator.class,
+//            property = "id")
     @ManyToOne(fetch = FetchType.EAGER, optional = true)
     @JoinColumn(
             name = "organization",
@@ -81,9 +83,10 @@ public class Users extends BaseEntity {
     )
     private Organization organization;
 
-    @JsonIdentityInfo(
-            generator = ObjectIdGenerators.PropertyGenerator.class,
-            property = "id")
+    @JsonIgnore
+//    @JsonIdentityInfo(
+//            generator = ObjectIdGenerators.PropertyGenerator.class,
+//            property = "id")
     @ManyToOne(fetch = FetchType.EAGER, optional = true)
     @JoinColumn(
             name = "department",
@@ -92,9 +95,10 @@ public class Users extends BaseEntity {
     )
     private Department department;
 
-    @JsonIdentityInfo(
-            generator = ObjectIdGenerators.PropertyGenerator.class,
-            property = "id")
+    @JsonIgnore
+//    @JsonIdentityInfo(
+//            generator = ObjectIdGenerators.PropertyGenerator.class,
+//            property = "id")
     @ManyToOne(fetch = FetchType.EAGER, optional = true)
     @JoinColumn(
             name = "designation",
@@ -112,20 +116,22 @@ public class Users extends BaseEntity {
 //    @JoinColumn(name = "roles", referencedColumnName = "id")
 //    private Set<UserRole> roles = new HashSet<>();
 
-    @JsonIdentityInfo(
-            generator = ObjectIdGenerators.PropertyGenerator.class,
-            property = "id")
+    @JsonIgnore
+//    @JsonIdentityInfo(
+//            generator = ObjectIdGenerators.PropertyGenerator.class,
+//            property = "id")
     @OneToMany(
             mappedBy = "user",
-            fetch = FetchType.EAGER,
+            fetch = FetchType.LAZY,
             cascade = CascadeType.PERSIST,
             targetEntity = UserOrganizationRole.class
     )
     private Set<UserOrganizationRole> userOrganizationRole = new HashSet<>();
 
-    @JsonIdentityInfo(
-            generator = ObjectIdGenerators.PropertyGenerator.class,
-            property = "id")
+    @JsonIgnore
+//    @JsonIdentityInfo(
+//            generator = ObjectIdGenerators.PropertyGenerator.class,
+//            property = "id")
     @OneToOne(fetch = FetchType.EAGER, optional = true)
     @JoinColumn(
             name = "user_profile",
@@ -134,9 +140,10 @@ public class Users extends BaseEntity {
     )
     private UserProfile userProfile;
 
-    @JsonIdentityInfo(
-            generator = ObjectIdGenerators.PropertyGenerator.class,
-            property = "id")
+    @JsonIgnore
+//    @JsonIdentityInfo(
+//            generator = ObjectIdGenerators.PropertyGenerator.class,
+//            property = "id")
     @OneToOne(fetch = FetchType.EAGER, optional = true)
     @JoinColumn(
             name = "user_leaves",
@@ -145,9 +152,10 @@ public class Users extends BaseEntity {
     )
     private Leaves userLeaves;
 
-    @JsonIdentityInfo(
-            generator = ObjectIdGenerators.PropertyGenerator.class,
-            property = "id")
+    @JsonIgnore
+//    @JsonIdentityInfo(
+//            generator = ObjectIdGenerators.PropertyGenerator.class,
+//            property = "id")
     @OneToOne(fetch = FetchType.EAGER, optional = true)
     @JoinColumn(
             name = "reporting_manager",
@@ -156,9 +164,10 @@ public class Users extends BaseEntity {
     )
     private Users reportingManager;
 
-    @JsonIdentityInfo(
-            generator = ObjectIdGenerators.PropertyGenerator.class,
-            property = "id")
+    @JsonIgnore
+//    @JsonIdentityInfo(
+//            generator = ObjectIdGenerators.PropertyGenerator.class,
+//            property = "id")
     @OneToMany(
             mappedBy = "user",
             fetch = FetchType.EAGER,

@@ -5,6 +5,8 @@ import com.roxiler.erp.model.Designation;
 import com.roxiler.erp.model.Organization;
 import com.roxiler.erp.model.Users;
 import lombok.Data;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -27,7 +29,7 @@ public interface DesignationRepository extends JpaRepository<Designation, Intege
     Optional<Designation> getDesgWithOrg(Integer id, Organization org);
 
     @Query("SELECT desg FROM Designation desg WHERE desg.organization = :org")
-    Iterable<Designation> getListDesgWithOrg(Organization org);
+    Page<Designation> getListDesgWithOrg(Organization org, Pageable pageable);
 
-    
+
 }

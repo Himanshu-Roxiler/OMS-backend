@@ -6,8 +6,10 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.roxiler.erp.constants.PermissionConstants;
 import com.roxiler.erp.dto.auth.OauthCredentialsDto;
+import com.roxiler.erp.dto.auth.UserDto;
 import com.roxiler.erp.dto.auth.UserSignupDto;
 import com.roxiler.erp.dto.users.CreateUsersDto;
+import com.roxiler.erp.dto.users.ListUsersDto;
 import com.roxiler.erp.dto.users.UpdateUserDto;
 import com.roxiler.erp.interfaces.RequiredPermission;
 import com.roxiler.erp.model.*;
@@ -17,12 +19,17 @@ import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
 import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.swing.text.html.Option;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -133,21 +140,28 @@ public class UsersService {
     public Iterable<Users> getAllUsers() {
         Iterable<Users> users = usersRepository.findAll();
 
-//        for (Users user : users) {
-//            if (user.getDepartment() != null) {
-//                Optional<Department> dept = departmentRepository.findById(user.getDepartment().getId());
-//                if (dept.isPresent()) {
-//                    user.setDepartment(dept.get());
-//                }
-//            }
-//
-//            if (user.getDesignation() != null) {
-//                Optional<Designation> desg = designationRepository.findById(user.getDesignation().getId());
-//                if (desg.isPresent()) {
-//                    user.setDesignation(desg.get());
-//                }
-//            }
-//        }
+        return users;
+    }
+
+    @RequiredPermission(permission = PermissionConstants.USERS)
+    public Page<Users> getAllUsersWithPagination(UserDto userDto, ListUsersDto listUsersDto) {
+        Optional<Organization> org = organizationRepository.findById(userDto.getOrgId());
+        if (org.isEmpty()) {
+            throw new EntityNotFoundException("No organization is found for user " + userDto.getOrgId());
+        }
+        int pageSize = 10;
+        int pageNum = 1;
+        if (listUsersDto.getPageNum().describeConstable().isPresent()) {
+            pageNum = listUsersDto.getPageNum();
+        }
+        if (listUsersDto.getPageSize().describeConstable().isPresent()) {
+            pageSize = listUsersDto.getPageSize();
+        }
+        Pageable pageable = PageRequest.of(
+                pageNum - 1,
+                pageSize);
+//                listUsersDto.getSortOrder().equals("asc") ? Sort.by(Sort.Direction.ASC) : Sort.by(Sort.Direction.DESC));
+        Page<Users> users = usersRepository.getUsersListWithOrg(org.get(), pageable);
 
         return users;
     }

@@ -3,6 +3,7 @@ package com.roxiler.erp.service;
 import com.roxiler.erp.constants.PermissionConstants;
 import com.roxiler.erp.dto.auth.UserDto;
 import com.roxiler.erp.dto.department.CreateDepartmentDto;
+import com.roxiler.erp.dto.department.ListDepartmentDto;
 import com.roxiler.erp.dto.department.UpdateDepartmentDto;
 import com.roxiler.erp.interfaces.RequiredPermission;
 import com.roxiler.erp.model.*;
@@ -11,6 +12,9 @@ import com.roxiler.erp.repository.OrganizationRepository;
 import com.roxiler.erp.repository.UsersRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.AuthorizationServiceException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -40,13 +44,35 @@ public class DepartmentService {
         return departments;
     }
 
+//    @RequiredPermission(permission = PermissionConstants.DEPARTMENT)
+//    public Iterable<Department> getListDepartmentsFromOrg(UserDto userDto) {
+//        Optional<Organization> org = organizationRepository.findById(userDto.getOrgId());
+//        if (org.isEmpty()) {
+//            throw new EntityNotFoundException("No organization is found for user " + userDto.getOrgId());
+//        }
+//        Iterable<Department> departments = departmentRepository.getDeptListWithOrg(org.get());
+//
+//        return departments;
+//    }
+
     @RequiredPermission(permission = PermissionConstants.DEPARTMENT)
-    public Iterable<Department> getListDepartmentsFromOrg(UserDto userDto) {
+    public Page<Department> getListDepartmentsWithPagination(UserDto userDto, ListDepartmentDto listDepartmentDto) {
         Optional<Organization> org = organizationRepository.findById(userDto.getOrgId());
         if (org.isEmpty()) {
             throw new EntityNotFoundException("No organization is found for user " + userDto.getOrgId());
         }
-        Iterable<Department> departments = departmentRepository.getDeptListWithOrg(org.get());
+        int pageSize = 10;
+        int pageNum = 1;
+        if (listDepartmentDto.getPageNum().describeConstable().isPresent()) {
+            pageNum = listDepartmentDto.getPageNum();
+        }
+        if (listDepartmentDto.getPageSize().describeConstable().isPresent()) {
+            pageSize = listDepartmentDto.getPageSize();
+        }
+        Pageable pageable = PageRequest.of(
+                pageNum - 1,
+                pageSize);
+        Page<Department> departments = departmentRepository.getDeptListWithOrg(org.get(), pageable);
 
         return departments;
     }

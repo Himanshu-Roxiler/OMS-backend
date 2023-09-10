@@ -4,6 +4,8 @@ import com.roxiler.erp.model.Department;
 import com.roxiler.erp.model.Organization;
 import com.roxiler.erp.model.Users;
 import lombok.Data;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -26,5 +28,5 @@ public interface DepartmentRepository extends JpaRepository<Department, Integer>
     Optional<Department> getDeptWithOrg(Integer id, Organization org);
 
     @Query("SELECT dept FROM Department dept WHERE dept.organization = :org")
-    Iterable<Department> getDeptListWithOrg(Organization org);
+    Page<Department> getDeptListWithOrg(Organization org, Pageable pageable);
 }

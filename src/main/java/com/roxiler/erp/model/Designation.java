@@ -1,9 +1,6 @@
 package com.roxiler.erp.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import com.fasterxml.jackson.annotation.*;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -21,10 +18,10 @@ import java.util.Set;
 @Where(clause = "deleted_at IS NULL")
 @Getter
 @Setter
-@JsonIgnoreProperties({"hibernateLazyInitializer"})
-//@JsonIdentityInfo(
-//        generator = ObjectIdGenerators.PropertyGenerator.class,
-//        property = "id")
+//@JsonIgnoreProperties({"hibernateLazyInitializer"})
+@JsonIdentityInfo(
+        generator = ObjectIdGenerators.PropertyGenerator.class,
+        property = "id")
 public class Designation extends BaseEntity {
 
     @Id
@@ -42,9 +39,10 @@ public class Designation extends BaseEntity {
     @Column(name = "description")
     private String description;
 
-    @JsonIdentityInfo(
-            generator = ObjectIdGenerators.PropertyGenerator.class,
-            property = "id")
+    //    @JsonIdentityInfo(
+//            generator = ObjectIdGenerators.PropertyGenerator.class,
+//            property = "id")
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.EAGER, optional = true)
     @JoinColumn(
             name = "organization_id",
@@ -54,9 +52,10 @@ public class Designation extends BaseEntity {
     //@JsonBackReference
     private Organization organization;
 
-    @JsonIdentityInfo(
-            generator = ObjectIdGenerators.PropertyGenerator.class,
-            property = "id")
+    //    @JsonIdentityInfo(
+//            generator = ObjectIdGenerators.PropertyGenerator.class,
+//            property = "id")
+    @JsonIgnore
     @OneToMany(
             mappedBy = "designation",
             fetch = FetchType.LAZY,

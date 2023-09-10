@@ -1,6 +1,7 @@
 package com.roxiler.erp.model;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
@@ -21,10 +22,10 @@ import java.util.Set;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@JsonIgnoreProperties({"hibernateLazyInitializer"})
-//@JsonIdentityInfo(
-//        generator = ObjectIdGenerators.PropertyGenerator.class,
-//        property = "id")
+//@JsonIgnoreProperties({"hibernateLazyInitializer"})
+@JsonIdentityInfo(
+        generator = ObjectIdGenerators.PropertyGenerator.class,
+        property = "id")
 public class Leaves extends BaseEntity {
 
     @Id
@@ -52,9 +53,10 @@ public class Leaves extends BaseEntity {
     @Column(name = "approved_leaves")
     private Integer approvedLeaves;
 
-//     @JsonIdentityInfo(
+    //     @JsonIdentityInfo(
 //             generator = ObjectIdGenerators.PropertyGenerator.class,
 //             property = "id")
+    @JsonIgnore
     @OneToOne(
             mappedBy = "userLeaves",
             fetch = FetchType.LAZY,

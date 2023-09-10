@@ -2,6 +2,7 @@ package com.roxiler.erp.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
@@ -21,9 +22,9 @@ import java.util.Set;
 // @Where(clause = "deleted_at IS NULL")
 @Getter
 @Setter
-//@JsonIdentityInfo(
-//        generator = ObjectIdGenerators.PropertyGenerator.class,
-//        property = "id")
+@JsonIdentityInfo(
+        generator = ObjectIdGenerators.PropertyGenerator.class,
+        property = "id")
 public class Department extends BaseEntity {
 
     @Id
@@ -41,9 +42,7 @@ public class Department extends BaseEntity {
     @Column(name = "description")
     private String description;
 
-    @JsonIdentityInfo(
-            generator = ObjectIdGenerators.PropertyGenerator.class,
-            property = "id")
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.EAGER, optional = true)
     @JoinColumn(
             name = "organization_id",
@@ -54,9 +53,7 @@ public class Department extends BaseEntity {
     //@JsonBackReference
     private Organization organization;
 
-    @JsonIdentityInfo(
-            generator = ObjectIdGenerators.PropertyGenerator.class,
-            property = "id")
+    @JsonIgnore
     @OneToMany(
             mappedBy = "department",
             fetch = FetchType.LAZY,

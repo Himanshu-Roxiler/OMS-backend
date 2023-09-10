@@ -2,6 +2,7 @@ package com.roxiler.erp.controller;
 
 import com.roxiler.erp.dto.auth.UserDto;
 import com.roxiler.erp.dto.department.CreateDepartmentDto;
+import com.roxiler.erp.dto.department.ListDepartmentDto;
 import com.roxiler.erp.dto.department.UpdateDepartmentDto;
 import com.roxiler.erp.model.Department;
 import com.roxiler.erp.model.ResponseObject;
@@ -36,9 +37,10 @@ public class DepartmentController {
 
     @GetMapping("")
     public ResponseEntity<ResponseObject> getListDepartmentsWithOrg(
-        @AuthenticationPrincipal UserDto userDto
+            @AuthenticationPrincipal UserDto userDto,
+            @RequestBody ListDepartmentDto listDepartmentDto
     ) {
-        Iterable<Department> departments = departmentService.getListDepartmentsFromOrg(userDto);
+        Iterable<Department> departments = departmentService.getListDepartmentsWithPagination(userDto, listDepartmentDto);
         ResponseObject responseObject = new ResponseObject();
         responseObject.setIs_success(true);
         responseObject.setMessage("Successfully fetched departments");

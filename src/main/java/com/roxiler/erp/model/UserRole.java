@@ -22,9 +22,9 @@ import java.util.Set;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-//@JsonIdentityInfo(
-//        generator = ObjectIdGenerators.PropertyGenerator.class,
-//        property = "id")
+@JsonIdentityInfo(
+        generator = ObjectIdGenerators.PropertyGenerator.class,
+        property = "id")
 public class UserRole extends BaseEntity {
 
     @Id
@@ -37,31 +37,33 @@ public class UserRole extends BaseEntity {
     @Column(name = "name")
     private String name;
 
-    @JsonIdentityInfo(
-            generator = ObjectIdGenerators.PropertyGenerator.class,
-            property = "id")
+    //    @JsonIdentityInfo(
+//            generator = ObjectIdGenerators.PropertyGenerator.class,
+//            property = "id")
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.EAGER, optional = true)
     @JoinColumn(
             name = "organization",
             referencedColumnName = "id",
             nullable = true
     )
-    @JsonIgnore
     private Organization organization;
 
-    @JsonIdentityInfo(
-            generator = ObjectIdGenerators.PropertyGenerator.class,
-            property = "id")
+    //    @JsonIdentityInfo(
+//            generator = ObjectIdGenerators.PropertyGenerator.class,
+//            property = "id")
+    @JsonIgnore
     @ManyToMany(
             mappedBy = "roles",
-            fetch = FetchType.EAGER,
+            fetch = FetchType.LAZY,
             cascade = CascadeType.PERSIST
     )
     private Set<Feature> features = new HashSet<>();
 
-    @JsonIdentityInfo(
-            generator = ObjectIdGenerators.PropertyGenerator.class,
-            property = "id")
+    //    @JsonIdentityInfo(
+//            generator = ObjectIdGenerators.PropertyGenerator.class,
+//            property = "id")
+    @JsonIgnore
     @OneToMany(
             mappedBy = "role",
             fetch = FetchType.LAZY,
@@ -69,6 +71,5 @@ public class UserRole extends BaseEntity {
             targetEntity = UserOrganizationRole.class
     )
     @OnDelete(action = OnDeleteAction.CASCADE)
-    @JsonIgnore
     private Set<UserOrganizationRole> userOrganizationRole = new HashSet<>();
 }

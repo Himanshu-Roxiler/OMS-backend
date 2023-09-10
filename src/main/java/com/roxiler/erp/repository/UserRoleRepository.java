@@ -1,8 +1,12 @@
 package com.roxiler.erp.repository;
 
+import com.roxiler.erp.model.Department;
+import com.roxiler.erp.model.Organization;
 import com.roxiler.erp.model.UserRole;
 import com.roxiler.erp.model.Users;
 import lombok.Data;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -18,4 +22,7 @@ public interface UserRoleRepository extends JpaRepository<UserRole, Integer> {
     UserRole readById(Integer id);
 
     UserRole readByName(String name);
+
+    @Query("SELECT role FROM UserRole role WHERE role.organization = :org")
+    Page<UserRole> getRolesListWithOrg(Organization org, Pageable pageable);
 }

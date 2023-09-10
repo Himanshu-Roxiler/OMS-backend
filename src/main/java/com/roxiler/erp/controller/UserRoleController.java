@@ -2,6 +2,7 @@ package com.roxiler.erp.controller;
 
 import com.roxiler.erp.dto.auth.UserDto;
 import com.roxiler.erp.dto.roles.CreateUserRoleDto;
+import com.roxiler.erp.dto.roles.ListRolesDto;
 import com.roxiler.erp.model.Department;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -31,9 +32,12 @@ public class UserRoleController {
     private UserRoleService userRoleService;
 
     @GetMapping("")
-    public ResponseEntity<ResponseObject> getAllUserRoles() {
+    public ResponseEntity<ResponseObject> getAllUserRoles(
+            @AuthenticationPrincipal UserDto userDto,
+            @RequestBody ListRolesDto listRolesDto
+    ) {
 
-        Iterable<UserRole> userRoles = userRoleService.getAllUserRolesIterable();
+        Iterable<UserRole> userRoles = userRoleService.getAllUserRolesIterable(userDto, listRolesDto);
 
         ResponseObject responseObject = new ResponseObject();
         responseObject.setIs_success(true);

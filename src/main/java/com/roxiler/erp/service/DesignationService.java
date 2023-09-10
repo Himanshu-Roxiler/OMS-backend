@@ -3,6 +3,7 @@ package com.roxiler.erp.service;
 import com.roxiler.erp.constants.PermissionConstants;
 import com.roxiler.erp.dto.auth.UserDto;
 import com.roxiler.erp.dto.designation.CreateDesignationDto;
+import com.roxiler.erp.dto.designation.ListDesignationDto;
 import com.roxiler.erp.dto.designation.UpdateDesignationDto;
 import com.roxiler.erp.interfaces.RequiredPermission;
 import com.roxiler.erp.model.*;
@@ -14,6 +15,9 @@ import com.roxiler.erp.repository.OrganizationRepository;
 import com.roxiler.erp.repository.UsersRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.AuthorizationServiceException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -39,12 +43,23 @@ public class DesignationService {
         return designations;
     }
 
-    public Iterable<Designation> getListDesignationsFromOrg(UserDto userDto) {
+    public Page<Designation> getListDesignationsWithPagination(UserDto userDto, ListDesignationDto listDesignationDto) {
         Optional<Organization> org = organizationRepository.findById(userDto.getOrgId());
         if (org.isEmpty()) {
             throw new EntityNotFoundException("No organization is found for user " + userDto.getOrgId());
         }
-        Iterable<Designation> designations = designationRepository.getListDesgWithOrg(org.get());
+        int pageSize = 10;
+        int pageNum = 1;
+        if (listDesignationDto.getPageNum().describeConstable().isPresent()) {
+            pageNum = listDesignationDto.getPageNum();
+        }
+        if (listDesignationDto.getPageSize().describeConstable().isPresent()) {
+            pageSize = listDesignationDto.getPageSize();
+        }
+        Pageable pageable = PageRequest.of(
+                pageNum - 1,
+                pageSize);
+        Page<Designation> designations = designationRepository.getListDesgWithOrg(org.get(), pageable);
         return designations;
     }
 

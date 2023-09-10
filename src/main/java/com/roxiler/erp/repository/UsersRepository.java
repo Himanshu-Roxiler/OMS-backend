@@ -1,7 +1,11 @@
 package com.roxiler.erp.repository;
 
+import com.roxiler.erp.model.Department;
+import com.roxiler.erp.model.Organization;
 import com.roxiler.erp.model.Users;
 import lombok.Data;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -23,6 +27,9 @@ public interface UsersRepository extends JpaRepository<Users, Integer> {
     Users readByEmail(String email);
 
     Optional<Users> findByEmail(String email);
+
+    @Query("SELECT user FROM Users user WHERE user.organization = :org")
+    Page<Users> getUsersListWithOrg(Organization org, Pageable pageable);
 
     Users readByUsernameAndActiveOrganization(String username, Integer orgId);
 

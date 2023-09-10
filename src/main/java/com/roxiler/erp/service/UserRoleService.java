@@ -8,9 +8,13 @@ import java.util.Set;
 import com.roxiler.erp.constants.PermissionConstants;
 import com.roxiler.erp.dto.auth.UserDto;
 import com.roxiler.erp.dto.roles.CreateUserRoleDto;
+import com.roxiler.erp.dto.roles.ListRolesDto;
 import com.roxiler.erp.model.*;
 import com.roxiler.erp.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.AuthorizationServiceException;
 import org.springframework.security.web.firewall.RequestRejectedException;
 import org.springframework.stereotype.Service;
@@ -79,8 +83,24 @@ public class UserRoleService {
         }
     }
 
-    public Iterable<UserRole> getAllUserRolesIterable() {
-        Iterable<UserRole> userRoles = userRoleRepository.findAll();
+    public Page<UserRole> getAllUserRolesIterable(UserDto userDto, ListRolesDto listRolesDto) {
+        Optional<Organization> org = organizationRepository.findById(userDto.getOrgId());
+        if (org.isEmpty()) {
+            throw new EntityNotFoundException("No organization is found for user " + userDto.getOrgId());
+        }
+        int pageSize = 10;
+        int pageNum = 1;
+        if (listRolesDto.getPageNum().describeConstable().isPresent()) {
+            pageNum = listRolesDto.getPageNum();
+        }
+        if (listRolesDto.getPageSize().describeConstable().isPresent()) {
+            pageSize = listRolesDto.getPageSize();
+        }
+        Pageable pageable = PageRequest.of(
+                pageNum - 1,
+                pageSize);
+//        Iterable<UserRole> userRoles = userRoleRepository.findAll();
+        Page<UserRole> userRoles = userRoleRepository.getRolesListWithOrg(org.get(), pageable);
         return userRoles;
     }
 

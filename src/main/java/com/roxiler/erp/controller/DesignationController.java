@@ -2,6 +2,7 @@ package com.roxiler.erp.controller;
 
 import com.roxiler.erp.dto.auth.UserDto;
 import com.roxiler.erp.dto.designation.CreateDesignationDto;
+import com.roxiler.erp.dto.designation.ListDesignationDto;
 import com.roxiler.erp.dto.designation.UpdateDesignationDto;
 import com.roxiler.erp.model.Department;
 import com.roxiler.erp.model.Designation;
@@ -37,9 +38,12 @@ public class DesignationController {
     }
 
     @GetMapping("")
-    public ResponseEntity<ResponseObject> getListDesignationsFromOrg(@AuthenticationPrincipal UserDto userDto) {
+    public ResponseEntity<ResponseObject> getListDesignationsFromOrg(
+            @AuthenticationPrincipal UserDto userDto,
+            @RequestBody ListDesignationDto listDesignationDto
+    ) {
 
-        Iterable<Designation> designations = designationService.getListDesignationsFromOrg(userDto);
+        Iterable<Designation> designations = designationService.getListDesignationsWithPagination(userDto, listDesignationDto);
 
         ResponseObject responseObject = new ResponseObject();
         responseObject.setIs_success(true);
