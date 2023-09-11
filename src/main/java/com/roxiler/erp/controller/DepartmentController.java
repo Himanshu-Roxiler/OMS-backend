@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.annotation.ApplicationScope;
 
 @RestController()
-@RequestMapping("/department")
+@RequestMapping("/v1/department")
 public class DepartmentController {
 
     @Autowired

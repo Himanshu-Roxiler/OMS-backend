@@ -21,7 +21,7 @@ import com.roxiler.erp.service.LeaveTrackerService;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping(value = "/leave-tracker")
+@RequestMapping(value = "/v1/leave-tracker")
 public class LeaveTrackerController {
 
     @Autowired
@@ -79,5 +79,5 @@ public class LeaveTrackerController {
         return response;
     }
 
-    
+
 }

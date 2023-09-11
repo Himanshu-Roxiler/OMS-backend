@@ -25,7 +25,7 @@ import com.roxiler.erp.service.UserRoleService;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping(value = "/role")
+@RequestMapping(value = "/v1/role")
 public class UserRoleController {
 
     @Autowired

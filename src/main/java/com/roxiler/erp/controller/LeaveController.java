@@ -21,9 +21,9 @@ import com.roxiler.erp.service.LeaveService;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping(value = "/leave")
+@RequestMapping(value = "/v1/leave")
 public class LeaveController {
-    
+
     @Autowired
     private LeaveService leaveService;
 
@@ -42,9 +42,9 @@ public class LeaveController {
     }
 
     @PostMapping("")
-    public ResponseEntity<ResponseObject> addLeaves(@AuthenticationPrincipal UserDto userDto ,@Valid @RequestBody Leaves Leaves) {
+    public ResponseEntity<ResponseObject> addLeaves(@AuthenticationPrincipal UserDto userDto, @Valid @RequestBody Leaves Leaves) {
 
-        Leaves Leaves2 = leaveService.saveLeaves(userDto,Leaves);
+        Leaves Leaves2 = leaveService.saveLeaves(userDto, Leaves);
         ResponseObject responseObject = new ResponseObject();
         responseObject.setIs_success(true);
         responseObject.setMessage("Successfully created Leaves.");

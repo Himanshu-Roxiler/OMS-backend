@@ -21,7 +21,7 @@ import com.roxiler.erp.service.FeatureService;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping(value = "/feature")
+@RequestMapping(value = "/v1/feature")
 public class FeatureController {
 
     @Autowired

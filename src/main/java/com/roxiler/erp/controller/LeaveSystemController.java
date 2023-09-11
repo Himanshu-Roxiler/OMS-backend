@@ -21,7 +21,7 @@ import com.roxiler.erp.service.LeaveSystemService;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping(value = "/leave-system")
+@RequestMapping(value = "/v1/leave-system")
 public class LeaveSystemController {
 
     @Autowired
@@ -42,7 +42,7 @@ public class LeaveSystemController {
     }
 
     @PostMapping("")
-    public ResponseEntity<ResponseObject> addLeavesSystem(@AuthenticationPrincipal UserDto userDto,@Valid @RequestBody LeavesSystem LeavesSystem) {
+    public ResponseEntity<ResponseObject> addLeavesSystem(@AuthenticationPrincipal UserDto userDto, @Valid @RequestBody LeavesSystem LeavesSystem) {
 
         LeavesSystem LeavesSystem2 = leaveSystemService.saveLeavesSystem(LeavesSystem);
         ResponseObject responseObject = new ResponseObject();
@@ -78,5 +78,5 @@ public class LeaveSystemController {
 
         return response;
     }
-    
+
 }
