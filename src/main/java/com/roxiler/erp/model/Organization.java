@@ -1,5 +1,6 @@
 package com.roxiler.erp.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -124,4 +125,13 @@ public class Organization extends BaseEntity {
             targetEntity = LeavesSystem.class
     )
     private Set<LeavesSystem> leavesSystems = new HashSet<>();
+
+    @OneToMany(
+            mappedBy = "organization",
+            fetch = FetchType.LAZY,
+            cascade = CascadeType.PERSIST,
+            targetEntity = Holiday.class
+    )
+    @JsonBackReference
+    private Set<Holiday> holidays = new HashSet<>();
 }
