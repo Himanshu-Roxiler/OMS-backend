@@ -2,8 +2,7 @@ package com.roxiler.erp.model;
 
 import java.util.Date;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.*;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -25,8 +24,11 @@ import lombok.Setter;
 @AllArgsConstructor
 @Entity
 @Table(name = "holiday")
+@JsonIdentityInfo(
+        generator = ObjectIdGenerators.PropertyGenerator.class,
+        property = "id")
 public class Holiday extends BaseEntity {
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
@@ -41,14 +43,14 @@ public class Holiday extends BaseEntity {
     @Column(name = "holiday_date")
     private Date holidayDate;
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.EAGER, optional = true)
     @JoinColumn(
             name = "organization_id",
             referencedColumnName = "id",
             nullable = true
     )
-    @JsonManagedReference
     private Organization organization;
-    
-    
+
+
 }

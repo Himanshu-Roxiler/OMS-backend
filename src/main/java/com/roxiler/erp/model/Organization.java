@@ -132,12 +132,12 @@ public class Organization extends BaseEntity {
     )
     private Set<LeavesSystem> leavesSystems = new HashSet<>();
 
+    @JsonIgnore
     @OneToMany(
             mappedBy = "organization",
             fetch = FetchType.LAZY,
             cascade = CascadeType.PERSIST,
             targetEntity = Holiday.class
     )
-    @JsonBackReference
     private Set<Holiday> holidays = new HashSet<>();
 }

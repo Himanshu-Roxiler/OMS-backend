@@ -45,6 +45,21 @@ CREATE TABLE feature_role (
     PRIMARY KEY (feature_id, role_id)
 );
 
+CREATE TABLE holiday (
+    id SERIAL NOT NULL,
+    organization_id INTEGER,
+    holiday_date TIMESTAMP(6),
+    holiday_description VARCHAR(255),
+    holiday_name VARCHAR(255),
+    created_at TIMESTAMP(6),
+    created_by VARCHAR(255),
+    updated_at TIMESTAMP(6),
+    updated_by VARCHAR(255),
+    deleted_at TIMESTAMP(6),
+    deleted_by VARCHAR(255),
+    PRIMARY KEY (id)
+);
+
 CREATE TABLE leaves (
     id SERIAL NOT NULL,
     approved_leaves INTEGER CHECK ((approved_leaves>=0) AND (approved_leaves<=50)),
@@ -199,6 +214,8 @@ ALTER TABLE designation ADD CONSTRAINT FK_designation_organization FOREIGN KEY (
 ALTER TABLE feature_role ADD CONSTRAINT FK_feature_role_user_role FOREIGN KEY (role_id) REFERENCES user_role;
 
 ALTER TABLE feature_role ADD CONSTRAINT FK_feature_role_feature FOREIGN KEY (feature_id) REFERENCES feature;
+
+ALTER TABLE holiday ADD CONSTRAINT FK_holiday_organization FOREIGN KEY (organization_id) REFERENCES organization;
 
 ALTER TABLE leaves_system ADD CONSTRAINT FK_leavesSys_designation FOREIGN KEY (designation) REFERENCES designation;
 
