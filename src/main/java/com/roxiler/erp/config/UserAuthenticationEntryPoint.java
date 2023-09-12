@@ -1,6 +1,8 @@
 package com.roxiler.erp.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.roxiler.erp.model.ResponseObject;
+
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -29,6 +31,11 @@ public class UserAuthenticationEntryPoint implements AuthenticationEntryPoint {
 //        response.setHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS, DELETE");
 //        response.setHeader("Access-Control-Max-Age", "3600");
 //        response.setHeader("Access-Control-Allow-Headers", "Content-Type, Accept, X-Requested-With, remember-me");
-        OBJECT_MAPPER.writeValue(response.getOutputStream(), new UnknownError("Unauthorized path"));
+        ResponseObject responseObject = new ResponseObject();
+        responseObject.setIs_success(false);
+        responseObject.setMessage("Invalid credentials");
+        String invalidCrenditailsResponse = OBJECT_MAPPER.writeValueAsString(responseObject);
+
+        response.getWriter().write(invalidCrenditailsResponse);
     }
 }
