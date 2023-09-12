@@ -81,6 +81,9 @@ public class AuthenticationService {
         Optional<Users> existingUser = usersRepository.findByEmail(email);
         if (existingUser.isEmpty()) {
             usersService.userSignUpViaOauth(oauthCredentialsDto);
+        } else {
+            existingUser.get().setGoogleId(subject);
+            usersRepository.save(existingUser.get());
         }
         Users user = usersRepository.readByGoogleId(subject);
         if (googleClientId.equals(aud)) {
@@ -97,9 +100,12 @@ public class AuthenticationService {
         Optional<Users> existingUser = usersRepository.findByEmail(email);
         if (existingUser.isEmpty()) {
             usersService.userSignUpViaOauth(oauthCredentialsDto);
+        } else {
+            existingUser.get().setOutlookId(subject);
+            usersRepository.save(existingUser.get());
         }
         Users user = usersRepository.readByOutlookId(subject);
-        if (googleClientId.equals(aud)) {
+        if (outlookClientId.equals(aud)) {
             return new UserDto(user.getId(), user.getUsername(), user.getEmail(), user.getActiveOrganization(), "login", "token");
         }
         throw new RuntimeException("Invalid login");
