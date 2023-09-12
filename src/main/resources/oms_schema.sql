@@ -181,6 +181,8 @@ CREATE TABLE users (
     user_profile INTEGER UNIQUE,
     reporting_manager INTEGER UNIQUE,
     user_leaves INTEGER UNIQUE,
+    google_id VARCHAR(255),
+    outlook_id VARCHAR(255),
     created_at TIMESTAMP(6),
     created_by VARCHAR(255),
     updated_at TIMESTAMP(6),
