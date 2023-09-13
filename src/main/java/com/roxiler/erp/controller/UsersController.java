@@ -1,9 +1,7 @@
 package com.roxiler.erp.controller;
 
 import com.roxiler.erp.dto.auth.UserDto;
-import com.roxiler.erp.dto.users.CreateUsersDto;
-import com.roxiler.erp.dto.users.ListUsersDto;
-import com.roxiler.erp.dto.users.UpdateUserDto;
+import com.roxiler.erp.dto.users.*;
 import com.roxiler.erp.model.ResponseObject;
 import com.roxiler.erp.model.Users;
 import com.roxiler.erp.model.Organization;
@@ -25,10 +23,14 @@ public class UsersController {
     @GetMapping("")
     public ResponseEntity<ResponseObject> getAllUsers(
             @AuthenticationPrincipal UserDto userDto,
-            @RequestBody ListUsersDto listUsersDto
+//            @RequestBody ListUsersDto listUsersDto
+            @RequestParam(value = "pageNum", defaultValue = "1") int pageNum,
+            @RequestParam(value = "pageSize", defaultValue = "10") int pageSize,
+            @RequestParam(value = "sortName", defaultValue = "id") String sortName,
+            @RequestParam(value = "sortOrder", defaultValue = "desc") String sortOrder
     ) {
 
-        Iterable<Users> users = usersService.getAllUsersWithPagination(userDto, listUsersDto);
+        Iterable<Users> users = usersService.getAllUsersWithPagination(userDto, pageNum, pageSize, sortName, sortOrder);
         ResponseObject responseObject = new ResponseObject();
         responseObject.setIs_success(true);
         responseObject.setMessage("Successfully fetched users");
@@ -73,6 +75,47 @@ public class UsersController {
         ResponseObject responseObject = new ResponseObject();
         responseObject.setIs_success(true);
         responseObject.setMessage("Successfully deleted user");
+        ResponseEntity<ResponseObject> response = new ResponseEntity<>(responseObject, HttpStatus.OK);
+
+        return response;
+    }
+
+    @PostMapping("/change-password")
+    public ResponseEntity<ResponseObject> changePassword(
+            @AuthenticationPrincipal UserDto userDto,
+            @Valid @RequestBody ChangePasswordDto changePasswordDto
+    ) throws Exception {
+        usersService.changeUserPassword(userDto, changePasswordDto);
+        ResponseObject responseObject = new ResponseObject();
+        responseObject.setIs_success(true);
+        responseObject.setMessage("Successfully changed password");
+        ResponseEntity<ResponseObject> response = new ResponseEntity<>(responseObject, HttpStatus.OK);
+
+        return response;
+    }
+
+    @PostMapping("/forgot-password")
+    public ResponseEntity<ResponseObject> forgotPassword(
+            @AuthenticationPrincipal UserDto userDto,
+            @Valid @RequestBody ForgotPasswordDto forgotPasswordDto
+    ) {
+        ResponseObject responseObject = new ResponseObject();
+        responseObject.setIs_success(true);
+        responseObject.setMessage("Link to reset password sent successfully");
+        ResponseEntity<ResponseObject> response = new ResponseEntity<>(responseObject, HttpStatus.OK);
+
+        return response;
+    }
+
+    @PostMapping("/reset-password")
+    public ResponseEntity<ResponseObject> resetPassword(
+            @AuthenticationPrincipal UserDto userDto,
+            @Valid @RequestBody ResetPasswordDto resetPasswordDto
+    ) throws Exception {
+        usersService.resetUserPassword(userDto, resetPasswordDto);
+        ResponseObject responseObject = new ResponseObject();
+        responseObject.setIs_success(true);
+        responseObject.setMessage("Successfully reset password");
         ResponseEntity<ResponseObject> response = new ResponseEntity<>(responseObject, HttpStatus.OK);
 
         return response;

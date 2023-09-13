@@ -56,18 +56,10 @@ public class DepartmentService {
 //    }
 
     @RequiredPermission(permission = PermissionConstants.DEPARTMENT)
-    public Page<Department> getListDepartmentsWithPagination(UserDto userDto, ListDepartmentDto listDepartmentDto) {
+    public Page<Department> getListDepartmentsWithPagination(UserDto userDto, Integer pageNum, Integer pageSize, String sortName, String sortOrder) {
         Optional<Organization> org = organizationRepository.findById(userDto.getOrgId());
         if (org.isEmpty()) {
             throw new EntityNotFoundException("No organization is found for user " + userDto.getOrgId());
-        }
-        int pageSize = 10;
-        int pageNum = 1;
-        if (listDepartmentDto.getPageNum().describeConstable().isPresent()) {
-            pageNum = listDepartmentDto.getPageNum();
-        }
-        if (listDepartmentDto.getPageSize().describeConstable().isPresent()) {
-            pageSize = listDepartmentDto.getPageSize();
         }
         Pageable pageable = PageRequest.of(
                 pageNum - 1,
