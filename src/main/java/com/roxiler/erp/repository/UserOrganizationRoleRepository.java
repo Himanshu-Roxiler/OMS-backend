@@ -23,4 +23,8 @@ public interface UserOrganizationRoleRepository extends JpaRepository<UserOrgani
 
     @Query("SELECT uor FROM UserOrganizationRole uor WHERE uor.role = :userRole")
     Iterable<UserOrganizationRole> findAllByRole(UserRole userRole);
+
+    @Query("SELECT uor.role FROM UserOrganizationRole uor WHERE uor.user = :user AND uor.organization = :org")
+    Iterable<UserRole> findUserRoleFromUserOrg(Users user, Organization org);
+
 }

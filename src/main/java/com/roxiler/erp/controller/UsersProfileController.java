@@ -1,13 +1,14 @@
 package com.roxiler.erp.controller;
 
 import com.roxiler.erp.dto.auth.UserDto;
-import com.roxiler.erp.dto.profile.CreateUserProfileDto;
 import com.roxiler.erp.dto.profile.UpdateUserProfileDto;
 import com.roxiler.erp.model.ResponseObject;
 import com.roxiler.erp.model.UserProfile;
 import com.roxiler.erp.service.UserProfileService;
 import jakarta.validation.Valid;
-import org.apache.catalina.User;
+
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,7 +25,7 @@ public class UsersProfileController {
     @GetMapping("")
     public ResponseEntity<ResponseObject> getUserProfile(@AuthenticationPrincipal UserDto userDto) {
 
-        UserProfile userProfile = userProfileService.getUserProfile(userDto);
+        Map<String, Object> userProfile = userProfileService.getUserProfile(userDto);
 
         ResponseObject responseObject = new ResponseObject();
         responseObject.setIs_success(true);

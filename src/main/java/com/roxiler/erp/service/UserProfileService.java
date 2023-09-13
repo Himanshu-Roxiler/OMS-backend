@@ -5,20 +5,23 @@ import com.roxiler.erp.dto.auth.UserDto;
 import com.roxiler.erp.dto.profile.CreateUserProfileDto;
 import com.roxiler.erp.dto.profile.UpdateUserProfileDto;
 import com.roxiler.erp.interfaces.RequiredPermission;
+import com.roxiler.erp.model.Organization;
 import com.roxiler.erp.model.UserProfile;
+import com.roxiler.erp.model.UserRole;
 import com.roxiler.erp.model.Users;
+import com.roxiler.erp.repository.OrganizationRepository;
+import com.roxiler.erp.repository.UserOrganizationRoleRepository;
 import com.roxiler.erp.repository.UserProfileRepository;
+import com.roxiler.erp.repository.UserRoleRepository;
 import com.roxiler.erp.repository.UsersRepository;
 import jakarta.persistence.EntityNotFoundException;
-import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.security.access.AuthorizationServiceException;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.web.firewall.RequestRejectedException;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -31,12 +34,27 @@ public class UserProfileService {
     @Autowired
     private UsersRepository usersRepository;
 
+    @Autowired
+    private UserOrganizationRoleRepository userOrganizationRoleRepository;
+
+    @Autowired
+    private OrganizationRepository organizationRepository;
+
     @RequiredPermission(permission = PermissionConstants.PROFILE)
-    public UserProfile getUserProfile(UserDto userDto) {
+    public Map<String, Object> getUserProfile(UserDto userDto) {
         Users user = usersRepository.readByEmail(userDto.getEmail());
         UserProfile userProfile = userProfileRepository.readById(user.getUserProfile().getId());
+        Optional<Organization> optionalOrganization = organizationRepository.findById(user.getOrganization().getId());
+        if (optionalOrganization.isPresent()) { 
+            Iterable<UserRole> roles = userOrganizationRoleRepository.findUserRoleFromUserOrg(user, optionalOrganization.get());
+            Map<String, Object> userRoleMap = new HashMap<>();
+            userRoleMap.put("users_profile_info", userProfile);
+            userRoleMap.put("roles", roles);
+            return userRoleMap;
 
-        return userProfile;
+        } else {
+            throw new EntityNotFoundException("organization is not found");
+        }
     }
 
     @RequiredPermission(permission = PermissionConstants.PROFILE)
