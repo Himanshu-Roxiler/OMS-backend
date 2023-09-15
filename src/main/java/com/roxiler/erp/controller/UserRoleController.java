@@ -34,10 +34,14 @@ public class UserRoleController {
     @GetMapping("")
     public ResponseEntity<ResponseObject> getAllUserRoles(
             @AuthenticationPrincipal UserDto userDto,
-            @RequestBody ListRolesDto listRolesDto
+//            @RequestBody ListRolesDto listRolesDto
+            @RequestParam(value = "pageNum", defaultValue = "1") int pageNum,
+            @RequestParam(value = "pageSize", defaultValue = "10") int pageSize,
+            @RequestParam(value = "sortName", defaultValue = "id") String sortName,
+            @RequestParam(value = "sortOrder", defaultValue = "desc") String sortOrder
     ) {
 
-        Iterable<UserRole> userRoles = userRoleService.getAllUserRolesIterable(userDto, listRolesDto);
+        Iterable<UserRole> userRoles = userRoleService.getAllUserRolesIterable(userDto, pageNum, pageSize, sortName, sortOrder);
 
         ResponseObject responseObject = new ResponseObject();
         responseObject.setIs_success(true);

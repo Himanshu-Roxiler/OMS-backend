@@ -40,10 +40,14 @@ public class DesignationController {
     @GetMapping("")
     public ResponseEntity<ResponseObject> getListDesignationsFromOrg(
             @AuthenticationPrincipal UserDto userDto,
-            @RequestBody ListDesignationDto listDesignationDto
+//            @RequestBody ListDesignationDto listDesignationDto
+            @RequestParam(value = "pageNum", defaultValue = "1") int pageNum,
+            @RequestParam(value = "pageSize", defaultValue = "10") int pageSize,
+            @RequestParam(value = "sortName", defaultValue = "id") String sortName,
+            @RequestParam(value = "sortOrder", defaultValue = "desc") String sortOrder
     ) {
 
-        Iterable<Designation> designations = designationService.getListDesignationsWithPagination(userDto, listDesignationDto);
+        Iterable<Designation> designations = designationService.getListDesignationsWithPagination(userDto, pageNum, pageSize, sortName, sortOrder);
 
         ResponseObject responseObject = new ResponseObject();
         responseObject.setIs_success(true);

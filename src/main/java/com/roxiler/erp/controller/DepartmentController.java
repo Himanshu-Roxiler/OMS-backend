@@ -38,9 +38,13 @@ public class DepartmentController {
     @GetMapping("")
     public ResponseEntity<ResponseObject> getListDepartmentsWithOrg(
             @AuthenticationPrincipal UserDto userDto,
-            @RequestBody ListDepartmentDto listDepartmentDto
+//            @RequestBody ListDepartmentDto listDepartmentDto,
+            @RequestParam(value = "pageNum", defaultValue = "1") int pageNum,
+            @RequestParam(value = "pageSize", defaultValue = "10") int pageSize,
+            @RequestParam(value = "sortName", defaultValue = "id") String sortName,
+            @RequestParam(value = "sortOrder", defaultValue = "desc") String sortOrder
     ) {
-        Iterable<Department> departments = departmentService.getListDepartmentsWithPagination(userDto, listDepartmentDto);
+        Iterable<Department> departments = departmentService.getListDepartmentsWithPagination(userDto, pageNum, pageSize, sortName, sortOrder);
         ResponseObject responseObject = new ResponseObject();
         responseObject.setIs_success(true);
         responseObject.setMessage("Successfully fetched departments");
