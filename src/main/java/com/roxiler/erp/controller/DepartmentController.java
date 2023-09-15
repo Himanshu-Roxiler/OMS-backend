@@ -42,9 +42,10 @@ public class DepartmentController {
             @RequestParam(value = "pageNum", defaultValue = "1") int pageNum,
             @RequestParam(value = "pageSize", defaultValue = "10") int pageSize,
             @RequestParam(value = "sortName", defaultValue = "id") String sortName,
-            @RequestParam(value = "sortOrder", defaultValue = "desc") String sortOrder
+            @RequestParam(value = "sortOrder", defaultValue = "desc") String sortOrder,
+            @RequestParam(value = "search", defaultValue = "") String search
     ) {
-        Iterable<Department> departments = departmentService.getListDepartmentsWithPagination(userDto, pageNum, pageSize, sortName, sortOrder);
+        Iterable<Department> departments = departmentService.getListDepartmentsWithPagination(userDto, pageNum, pageSize, sortName, sortOrder, search);
         ResponseObject responseObject = new ResponseObject();
         responseObject.setIs_success(true);
         responseObject.setMessage("Successfully fetched departments");

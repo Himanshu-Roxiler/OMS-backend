@@ -20,6 +20,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Locale;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
@@ -56,7 +57,7 @@ public class DepartmentService {
 //    }
 
     @RequiredPermission(permission = PermissionConstants.DEPARTMENT)
-    public Page<Department> getListDepartmentsWithPagination(UserDto userDto, Integer pageNum, Integer pageSize, String sortName, String sortOrder) {
+    public Page<Department> getListDepartmentsWithPagination(UserDto userDto, Integer pageNum, Integer pageSize, String sortName, String sortOrder, String search) {
         Optional<Organization> org = organizationRepository.findById(userDto.getOrgId());
         if (org.isEmpty()) {
             throw new EntityNotFoundException("No organization is found for user " + userDto.getOrgId());
@@ -64,7 +65,7 @@ public class DepartmentService {
         Pageable pageable = PageRequest.of(
                 pageNum - 1,
                 pageSize);
-        Page<Department> departments = departmentRepository.getDeptListWithOrg(org.get(), pageable);
+        Page<Department> departments = departmentRepository.getDeptListWithOrg(org.get(), search.toLowerCase(), pageable);
 
         return departments;
     }

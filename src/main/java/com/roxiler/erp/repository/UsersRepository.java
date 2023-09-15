@@ -28,8 +28,8 @@ public interface UsersRepository extends JpaRepository<Users, Integer> {
 
     Optional<Users> findByEmail(String email);
 
-    @Query("SELECT user FROM Users user WHERE user.organization = :org")
-    Page<Users> getUsersListWithOrg(Organization org, Pageable pageable);
+    @Query("SELECT user FROM Users user WHERE user.organization = :org AND LOWER(CONCAT(user.firstName, ' ', user.lastName)) LIKE %:search%")
+    Page<Users> getUsersListWithOrg(Organization org, String search, Pageable pageable);
 
     Users readByUsernameAndActiveOrganization(String username, Integer orgId);
 

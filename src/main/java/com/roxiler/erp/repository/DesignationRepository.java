@@ -28,8 +28,8 @@ public interface DesignationRepository extends JpaRepository<Designation, Intege
     @Query("SELECT desg FROM Designation desg WHERE desg.id = :id AND desg.organization = :org")
     Optional<Designation> getDesgWithOrg(Integer id, Organization org);
 
-    @Query("SELECT desg FROM Designation desg WHERE desg.organization = :org")
-    Page<Designation> getListDesgWithOrg(Organization org, Pageable pageable);
+    @Query("SELECT desg FROM Designation desg WHERE desg.organization = :org AND LOWER(desg.name) LIKE %:search%")
+    Page<Designation> getListDesgWithOrg(Organization org, String search, Pageable pageable);
 
 
 }

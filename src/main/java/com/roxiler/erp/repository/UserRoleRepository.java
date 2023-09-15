@@ -23,6 +23,6 @@ public interface UserRoleRepository extends JpaRepository<UserRole, Integer> {
 
     UserRole readByName(String name);
 
-    @Query("SELECT role FROM UserRole role WHERE role.organization = :org")
-    Page<UserRole> getRolesListWithOrg(Organization org, Pageable pageable);
+    @Query("SELECT role FROM UserRole role WHERE role.organization = :org AND LOWER(role.name) LIKE %:search%")
+    Page<UserRole> getRolesListWithOrg(Organization org, String search, Pageable pageable);
 }

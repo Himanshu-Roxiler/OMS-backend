@@ -85,7 +85,7 @@ public class UserRoleService {
     }
 
     @RequiredPermission(permission = PermissionConstants.ROLES)
-    public Page<UserRole> getAllUserRolesIterable(UserDto userDto, Integer pageNum, Integer pageSize, String sortName, String sortOrder) {
+    public Page<UserRole> getAllUserRolesIterable(UserDto userDto, Integer pageNum, Integer pageSize, String sortName, String sortOrder, String search) {
         Optional<Organization> org = organizationRepository.findById(userDto.getOrgId());
         if (org.isEmpty()) {
             throw new EntityNotFoundException("No organization is found for user " + userDto.getOrgId());
@@ -94,7 +94,9 @@ public class UserRoleService {
                 pageNum - 1,
                 pageSize);
 //        Iterable<UserRole> userRoles = userRoleRepository.findAll();
-        Page<UserRole> userRoles = userRoleRepository.getRolesListWithOrg(org.get(), pageable);
+
+        Page<UserRole> userRoles = userRoleRepository.getRolesListWithOrg(org.get(), search.toLowerCase(), pageable);
+        System.out.println("USER ROLES: \n" + userRoles);
         return userRoles;
     }
 

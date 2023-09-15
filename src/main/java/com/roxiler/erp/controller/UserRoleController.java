@@ -38,10 +38,11 @@ public class UserRoleController {
             @RequestParam(value = "pageNum", defaultValue = "1") int pageNum,
             @RequestParam(value = "pageSize", defaultValue = "10") int pageSize,
             @RequestParam(value = "sortName", defaultValue = "id") String sortName,
-            @RequestParam(value = "sortOrder", defaultValue = "desc") String sortOrder
+            @RequestParam(value = "sortOrder", defaultValue = "desc") String sortOrder,
+            @RequestParam(value = "search", defaultValue = "") String search
     ) {
 
-        Iterable<UserRole> userRoles = userRoleService.getAllUserRolesIterable(userDto, pageNum, pageSize, sortName, sortOrder);
+        Iterable<UserRole> userRoles = userRoleService.getAllUserRolesIterable(userDto, pageNum, pageSize, sortName, sortOrder, search);
 
         ResponseObject responseObject = new ResponseObject();
         responseObject.setIs_success(true);

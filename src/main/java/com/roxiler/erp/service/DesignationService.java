@@ -44,7 +44,7 @@ public class DesignationService {
     }
 
     @RequiredPermission(permission = PermissionConstants.DESIGNATION)
-    public Page<Designation> getListDesignationsWithPagination(UserDto userDto, Integer pageNum, Integer pageSize, String sortName, String sortOrder) {
+    public Page<Designation> getListDesignationsWithPagination(UserDto userDto, Integer pageNum, Integer pageSize, String sortName, String sortOrder, String search) {
         Optional<Organization> org = organizationRepository.findById(userDto.getOrgId());
         if (org.isEmpty()) {
             throw new EntityNotFoundException("No organization is found for user " + userDto.getOrgId());
@@ -52,7 +52,7 @@ public class DesignationService {
         Pageable pageable = PageRequest.of(
                 pageNum - 1,
                 pageSize);
-        Page<Designation> designations = designationRepository.getListDesgWithOrg(org.get(), pageable);
+        Page<Designation> designations = designationRepository.getListDesgWithOrg(org.get(), search.toLowerCase(), pageable);
         return designations;
     }
 

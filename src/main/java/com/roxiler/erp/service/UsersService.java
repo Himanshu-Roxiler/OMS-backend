@@ -149,7 +149,7 @@ public class UsersService {
     }
 
     @RequiredPermission(permission = PermissionConstants.USERS)
-    public Page<Users> getAllUsersWithPagination(UserDto userDto, Integer pageNum, Integer pageSize, String sortName, String sortOrder) {
+    public Page<Users> getAllUsersWithPagination(UserDto userDto, Integer pageNum, Integer pageSize, String sortName, String sortOrder, String search) {
         Optional<Organization> org = organizationRepository.findById(userDto.getOrgId());
         if (org.isEmpty()) {
             throw new EntityNotFoundException("No organization is found for user " + userDto.getOrgId());
@@ -158,7 +158,7 @@ public class UsersService {
                 pageNum - 1,
                 pageSize);
 //                listUsersDto.getSortOrder().equals("asc") ? Sort.by(Sort.Direction.ASC) : Sort.by(Sort.Direction.DESC));
-        Page<Users> users = usersRepository.getUsersListWithOrg(org.get(), pageable);
+        Page<Users> users = usersRepository.getUsersListWithOrg(org.get(), search.toLowerCase(), pageable);
 
         return users;
     }
