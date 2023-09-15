@@ -122,4 +122,36 @@ public class UsersController {
         return response;
     }
 
+    @PatchMapping("/assign-reporting-manager")
+    public ResponseEntity<ResponseObject> assignReportingManager(
+            @AuthenticationPrincipal UserDto userDto,
+            @Valid @RequestBody AssignReportingManagerDto assignReportingManagerDto
+    ) throws Exception {
+
+        Users user = usersService.assignReportingManager(userDto, assignReportingManagerDto);
+        ResponseObject responseObject = new ResponseObject();
+        responseObject.setIs_success(true);
+        responseObject.setMessage("Successfully assigned reporting manager");
+        responseObject.setData(user);
+        ResponseEntity<ResponseObject> response = new ResponseEntity<>(responseObject, HttpStatus.OK);
+
+        return response;
+    }
+
+    @PatchMapping("/remove-reporting-manager")
+    public ResponseEntity<ResponseObject> removeReportingManager(
+            @AuthenticationPrincipal UserDto userDto,
+            @Valid @RequestBody RemoveReportingManagerDto removeReportingManagerDto
+    ) throws Exception {
+
+        Users user = usersService.removeReportingManager(userDto, removeReportingManagerDto);
+        ResponseObject responseObject = new ResponseObject();
+        responseObject.setIs_success(true);
+        responseObject.setMessage("Successfully removed reporting manager");
+        responseObject.setData(user);
+        ResponseEntity<ResponseObject> response = new ResponseEntity<>(responseObject, HttpStatus.OK);
+
+        return response;
+    }
+
 }

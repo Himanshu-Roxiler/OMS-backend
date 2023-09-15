@@ -25,6 +25,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.security.access.AuthorizationServiceException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.firewall.RequestRejectedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -381,5 +382,47 @@ public class UsersService {
         String hashedPassword = passwordEncoder.encode(resetPasswordDto.getNewPassword());
         user.get().setPassword(hashedPassword);
         usersRepository.save(user.get());
+    }
+
+    @RequiredPermission(permission = PermissionConstants.USERS)
+    public Users assignReportingManager(UserDto userDto, AssignReportingManagerDto assignReportingManagerDto) {
+        if (Objects.equals(assignReportingManagerDto.getReportingManagerId(), assignReportingManagerDto.getUserId())) {
+            throw new RequestRejectedException("User cannot be it's own reporting manager");
+        }
+
+        Optional<Users> user = usersRepository.findById(assignReportingManagerDto.getUserId());
+        Optional<Users> reportingManager = usersRepository.findById(assignReportingManagerDto.getReportingManagerId());
+
+        if (user.isEmpty() || reportingManager.isEmpty()) {
+            throw new EntityNotFoundException("User or reporting manager not found");
+        }
+
+        if (!Objects.equals(user.get().getActiveOrganization(), userDto.getId()) || !Objects.equals(reportingManager.get().getActiveOrganization(), userDto.getOrgId())) {
+            throw new AuthorizationServiceException("You are not allowed to perform this action due to organization mismatch");
+        }
+
+        user.get().setReportingManagerId(assignReportingManagerDto.getReportingManagerId());
+        usersRepository.save(user.get());
+
+        return user.get();
+    }
+
+    @RequiredPermission(permission = PermissionConstants.USERS)
+    public Users removeReportingManager(UserDto userDto, RemoveReportingManagerDto removeReportingManagerDto) {
+        Optional<Users> user = usersRepository.findById(removeReportingManagerDto.getUserId());
+        ;
+
+        if (user.isEmpty()) {
+            throw new EntityNotFoundException("User or reporting manager not found");
+        }
+
+        if (!Objects.equals(user.get().getActiveOrganization(), userDto.getId())) {
+            throw new AuthorizationServiceException("You are not allowed to perform this action due to organization mismatch");
+        }
+
+        user.get().setReportingManagerId(null);
+        usersRepository.save(user.get());
+
+        return user.get();
     }
 }
