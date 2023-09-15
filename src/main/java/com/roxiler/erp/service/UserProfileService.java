@@ -9,21 +9,26 @@ import com.roxiler.erp.model.Organization;
 import com.roxiler.erp.model.UserProfile;
 import com.roxiler.erp.model.UserRole;
 import com.roxiler.erp.model.Users;
+import com.roxiler.erp.model.Feature;
 import com.roxiler.erp.repository.OrganizationRepository;
 import com.roxiler.erp.repository.UserOrganizationRoleRepository;
 import com.roxiler.erp.repository.UserProfileRepository;
 import com.roxiler.erp.repository.UserRoleRepository;
 import com.roxiler.erp.repository.UsersRepository;
 import jakarta.persistence.EntityNotFoundException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AuthorizationServiceException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 public class UserProfileService {
@@ -49,7 +54,16 @@ public class UserProfileService {
             Iterable<UserRole> roles = userOrganizationRoleRepository.findUserRoleFromUserOrg(user, optionalOrganization.get());
             Map<String, Object> userRoleMap = new HashMap<>();
             userRoleMap.put("users_profile_info", userProfile);
-            userRoleMap.put("roles", roles);
+            List<Object> customRoles = new ArrayList<>();
+            for (UserRole role : roles) {
+                Map<String, Object> userRole = new HashMap<>();
+                userRole.put("name", role.getName());
+                userRole.put("id", role.getId());
+                userRole.put("features", role.getFeatures());
+                customRoles.add(userRole);
+            }
+            userRoleMap.put("roles", customRoles);
+
             return userRoleMap;
 
         } else {
