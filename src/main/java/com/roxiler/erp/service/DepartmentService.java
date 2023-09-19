@@ -74,16 +74,19 @@ public class DepartmentService {
     public Department saveDepartment(CreateDepartmentDto department, Integer orgId) {
 
         Department dept = new Department();
+        System.out.println("1");
         Optional<Organization> org = organizationRepository.findById(orgId);
         if (org.isPresent()) {
+            System.out.println("2");
             Organization organization = org.get();
             dept.setOrganization(organization);
             dept.setName(department.getName());
             dept.setDescription(department.getDescription());
             departmentRepository.save(dept);
+            System.out.println("3");
             organization.getDepartments().add(dept);
             organizationRepository.save(organization);
-
+            System.out.println("4");
             return dept;
         } else {
             throw new EntityNotFoundException("Organization associated with user not found");

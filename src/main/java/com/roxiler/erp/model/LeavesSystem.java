@@ -37,25 +37,25 @@ public class LeavesSystem extends BaseEntity {
     @Min(value = 0, message = "Leaves should not be less than 0")
     @Max(value = 5, message = "Leaves should not be more than 50")
     @Column(name = "accrual")
-    private Integer accrual;
+    private Float accrual;
 
     @Min(value = 0, message = "Leaves should not be less than 0")
     @Max(value = 50, message = "Leaves should not be more than 50")
     @Column(name = "carry_over_limits")
-    private Integer carryOverLimits;
+    private Float carryOverLimits;
 
     @Min(value = 0, message = "Leaves should not be less than 0")
     @Max(value = 20, message = "Leaves should not be more than 20")
     @Column(name = "consecutive_leaves")
-    private Integer consecutiveLeaves;
+    private Float consecutiveLeaves;
 
-    @NotBlank(message = "Leave type should not be empty")
-    @Column(name = "allowed_leave_types")
-    private String allowedLeaveTypes;
+    //    @NotBlank(message = "Leave type should not be empty")
+//    @Column(name = "allowed_leave_types")
+    private String[] allowedLeaveTypes;
 
-    @NotBlank(message = "Leave type should not be empty")
-    @Column(name = "allowed_leave_durations")
-    private String allowedLeaveDurations;
+    //    @NotBlank(message = "Leave type should not be empty")
+//    @Column(name = "allowed_leave_durations")
+    private String[] allowedLeaveDurations;
 
     //     @JsonIdentityInfo(
 //             generator = ObjectIdGenerators.PropertyGenerator.class,

@@ -1,8 +1,10 @@
 package com.roxiler.erp.dto.leaves;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.roxiler.erp.constants.TypeOfLeaveConstants;
+import com.roxiler.erp.interfaces.LeaveBreakup;
 import com.roxiler.erp.interfaces.ValidateString;
 import com.roxiler.erp.model.Users;
 import jakarta.persistence.*;
@@ -21,6 +23,8 @@ public class CreateLeaveTrackerDto {
     @Temporal(TemporalType.DATE)
     private Date endDate;
 
+    private LeaveBreakup[] leaveBreakups;
+
     @NotBlank(message = "Reason should not be blank")
     @Size(min = 10, message = "Length should not be less than 3")
     private String reason;
@@ -31,7 +35,7 @@ public class CreateLeaveTrackerDto {
     @Size(min = 10, message = "Length should not be less than 3")
     @ValidateString(
             acceptedValues = {
-                    TypeOfLeaveConstants.PERSONAL_LEAVE,
+                    TypeOfLeaveConstants.PAID_LEAVE,
                     TypeOfLeaveConstants.SICK_LEAVE,
                     TypeOfLeaveConstants.UNPAID_LEAVE,
                     TypeOfLeaveConstants.VACATION_LEAVE
@@ -39,4 +43,6 @@ public class CreateLeaveTrackerDto {
             message = "Invalid input for leave type"
     )
     private String typeOfLeave;
+
+    private Integer reportingManager;
 }

@@ -1,5 +1,9 @@
 package com.roxiler.erp.controller;
 
+import com.roxiler.erp.dto.leaves.ApproveLeaveRequestDto;
+import com.roxiler.erp.dto.leaves.CreateLeaveTrackerDto;
+import com.roxiler.erp.interfaces.LeaveBreakup;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -34,7 +38,21 @@ public class LeaveTrackerController {
 
         ResponseObject responseObject = new ResponseObject();
         responseObject.setIs_success(true);
-        responseObject.setMessage("Successfully fetched departments");
+        responseObject.setMessage("Successfully fetched requests made by user");
+        responseObject.setData(LeavesTrackers);
+        ResponseEntity<ResponseObject> response = new ResponseEntity<>(responseObject, HttpStatus.OK);
+
+        return response;
+    }
+
+    @GetMapping("/reporting-manager")
+    public ResponseEntity<ResponseObject> getAllLeavesTrackersForRM(@AuthenticationPrincipal UserDto userDto) {
+
+        Iterable<LeavesTracker> LeavesTrackers = leaveTrackerService.getAllLeavesTrackersForRM(userDto);
+
+        ResponseObject responseObject = new ResponseObject();
+        responseObject.setIs_success(true);
+        responseObject.setMessage("Successfully fetched all the leave requests made");
         responseObject.setData(LeavesTrackers);
         ResponseEntity<ResponseObject> response = new ResponseEntity<>(responseObject, HttpStatus.OK);
 
@@ -42,13 +60,16 @@ public class LeaveTrackerController {
     }
 
     @PostMapping("")
-    public ResponseEntity<ResponseObject> addLeavesTracker(@Valid @RequestBody LeavesTracker LeavesTracker, @AuthenticationPrincipal UserDto userDto) {
+    public ResponseEntity<ResponseObject> addLeavesTracker(
+            @Valid @RequestBody CreateLeaveTrackerDto createLeaveTrackerDto,
+            @AuthenticationPrincipal UserDto userDto) {
 
-        LeavesTracker LeavesTracker2 = leaveTrackerService.saveLeavesTracker(LeavesTracker, userDto);
+        LeavesTracker leaveReq = leaveTrackerService.saveLeavesTracker(createLeaveTrackerDto, userDto);
+        System.out.println("\nTHE RETURNED OBJECT IS:\n" + leaveReq);
         ResponseObject responseObject = new ResponseObject();
         responseObject.setIs_success(true);
         responseObject.setMessage("Successfully created LeavesTracker.");
-        responseObject.setData(LeavesTracker2);
+        responseObject.setData(leaveReq);
 
         ResponseEntity<ResponseObject> response = new ResponseEntity<>(responseObject, HttpStatus.OK);
         return response;
@@ -79,5 +100,21 @@ public class LeaveTrackerController {
         return response;
     }
 
+    @PostMapping("/{id}")
+    public ResponseEntity<ResponseObject> approveLeaveRequest(
+            @Valid @RequestBody ApproveLeaveRequestDto approveLeaveRequestDto,
+            @AuthenticationPrincipal UserDto userDto,
+            @PathVariable("id") Integer id
+    ) {
 
+        System.out.println("LEAVE REQUEST: \n" + approveLeaveRequestDto);
+        LeavesTracker leavesTracker = leaveTrackerService.approveLeaveRequest(approveLeaveRequestDto, userDto, id);
+        ResponseObject responseObject = new ResponseObject();
+        responseObject.setIs_success(true);
+        responseObject.setMessage("Successfully created LeavesTracker.");
+        responseObject.setData(leavesTracker);
+
+        ResponseEntity<ResponseObject> response = new ResponseEntity<>(responseObject, HttpStatus.OK);
+        return response;
+    }
 }

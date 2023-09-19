@@ -148,11 +148,17 @@ public class Users extends BaseEntity {
 //    @JsonIdentityInfo(
 //            generator = ObjectIdGenerators.PropertyGenerator.class,
 //            property = "id")
-    @OneToOne(fetch = FetchType.EAGER, optional = true)
-    @JoinColumn(
-            name = "user_leaves",
-            referencedColumnName = "id",
-            nullable = true
+//    @OneToOne(fetch = FetchType.EAGER, optional = true)
+//    @JoinColumn(
+//            name = "user_leaves",
+//            referencedColumnName = "id",
+//            nullable = true
+//    )
+    @OneToOne(
+            mappedBy = "user",
+            fetch = FetchType.LAZY,
+            cascade = CascadeType.PERSIST,
+            targetEntity = Leaves.class
     )
     private Leaves userLeaves;
 
@@ -168,15 +174,15 @@ public class Users extends BaseEntity {
 //    )
 //    private Users reportingManager;
 
-    @JsonIgnore
+//    @JsonIgnore
 //    @JsonIdentityInfo(
 //            generator = ObjectIdGenerators.PropertyGenerator.class,
 //            property = "id")
-    @OneToMany(
-            mappedBy = "user",
-            fetch = FetchType.EAGER,
-            cascade = CascadeType.PERSIST,
-            targetEntity = LeavesTracker.class
-    )
-    private Set<LeavesTracker> userLeaveTracker = new HashSet<>();
+//    @OneToMany(
+//            mappedBy = "user",
+//            fetch = FetchType.EAGER,
+//            cascade = CascadeType.PERSIST,
+//            targetEntity = LeavesTracker.class
+//    )
+//    private Set<LeavesTracker> userLeaveTracker = new HashSet<>();
 }

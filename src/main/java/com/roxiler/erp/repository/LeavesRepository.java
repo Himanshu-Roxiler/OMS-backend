@@ -8,9 +8,14 @@ import org.springframework.transaction.annotation.Transactional;
 import com.roxiler.erp.model.Leaves;
 import com.roxiler.erp.model.Users;
 
+import java.util.Optional;
+
 public interface LeavesRepository extends JpaRepository<Leaves, Integer> {
-     @Query(value = "SELECT leave FROM Leaves leave WHERE leave.user= :user")
-    Iterable<Leaves> findAllByUser(Users user);
+    //    @Query(value = "SELECT leave FROM Leaves leave WHERE leave.user= :user")
+    Leaves readByUser(Users user);
+
+    @Query("SELECT leave FROM Leaves leave WHERE leave.user = :user")
+    Optional<Leaves> findByUser(Users user);
 
     @Modifying
     @Transactional

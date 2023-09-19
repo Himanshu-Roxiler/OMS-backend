@@ -36,33 +36,54 @@ public class Leaves extends BaseEntity {
     @Min(value = 0, message = "Leaves should not be less than 0")
     @Max(value = 50, message = "Leaves should not be more than 50")
     @Column(name = "total_leaves")
-    private Integer totalLeaves;
+    private Float totalLeaves;
 
     @Min(value = 0, message = "Leaves should not be less than 0")
     @Max(value = 50, message = "Leaves should not be more than 50")
-    @Column(name = "available_leaves")
-    private Integer availableLeaves;
+    @Column(name = "available_paid_leaves")
+    private Float availablePaidLeaves;
+
+    @Min(value = 0, message = "Leaves should not be less than 0")
+    @Max(value = 50, message = "Leaves should not be more than 50")
+    @Column(name = "available_unpaid_leaves")
+    private Float availableUnpaidLeaves;
+
+    @Min(value = 0, message = "Leaves should not be less than 0")
+    @Max(value = 50, message = "Leaves should not be more than 50")
+    @Column(name = "available_sick_leaves")
+    private Float availableSickLeaves;
+
+    @Min(value = 0, message = "Leaves should not be less than 0")
+    @Max(value = 50, message = "Leaves should not be more than 50")
+    @Column(name = "available_vacation_leaves")
+    private Float availableVacationLeaves;
 
     @Min(value = 0, message = "Leaves should not be less than 0")
     @Max(value = 50, message = "Leaves should not be more than 50")
     @Column(name = "booked_leaves")
-    private Integer bookedLeaves;
+    private Float bookedLeaves;
 
     @Min(value = 0, message = "Leaves should not be less than 0")
     @Max(value = 50, message = "Leaves should not be more than 50")
     @Column(name = "approved_leaves")
-    private Integer approvedLeaves;
+    private Float approvedLeaves;
 
     //     @JsonIdentityInfo(
 //             generator = ObjectIdGenerators.PropertyGenerator.class,
 //             property = "id")
     @JsonIgnore
-    @OneToOne(
-            mappedBy = "userLeaves",
-            fetch = FetchType.LAZY,
-            cascade = CascadeType.PERSIST,
-            targetEntity = Users.class
+//    @OneToOne(
+//            mappedBy = "userLeaves",
+//            fetch = FetchType.LAZY,
+//            cascade = CascadeType.PERSIST,
+//            targetEntity = Users.class
+//    )
+//    @JoinColumn(name = "user_id", referencedColumnName = "userLeaves")
+    @OneToOne(fetch = FetchType.EAGER, optional = true)
+    @JoinColumn(
+            name = "user_id",
+            referencedColumnName = "id",
+            nullable = true
     )
-    @JoinColumn(name = "user_id", referencedColumnName = "userLeaves")
     private Users user;
 }

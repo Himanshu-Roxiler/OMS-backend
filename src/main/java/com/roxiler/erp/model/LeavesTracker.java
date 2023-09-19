@@ -1,7 +1,6 @@
 package com.roxiler.erp.model;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
@@ -9,11 +8,10 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.ColumnTransformer;
 import org.hibernate.annotations.Where;
 
 import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
 
 @Entity
 @Table(name = "leaves_tracker")
@@ -73,28 +71,17 @@ public class LeavesTracker extends BaseEntity {
     @Column(name = "no_of_days")
     private Float noOfDays;
 
-    //    @JsonIdentityInfo(
-//            generator = ObjectIdGenerators.PropertyGenerator.class,
-//            property = "id")
-    @JsonIgnore
-    @ManyToOne(fetch = FetchType.LAZY, optional = true)
-    @JoinColumn(
-            name = "user_id",
-            referencedColumnName = "id",
-            nullable = true
-    )
-    private Users user;
-
-    //    @JsonIdentityInfo(
-//            generator = ObjectIdGenerators.PropertyGenerator.class,
-//            property = "id")
-//    @ManyToOne(fetch = FetchType.EAGER, optional = true)
-//    @JoinColumn(
-//            name = "reporting_manager",
-//            referencedColumnName = "id",
-//            nullable = true
-//    )
-//    private Users reporting_manager;
     @Column(name = "reporting_manager", nullable = true)
     private Integer reportingManager;
+
+    @Column(name = "user_id", nullable = true)
+    private Integer userId;
+
+    @ColumnTransformer(write = "?::jsonb")
+    @Column(name = "leave_breakups", nullable = true, columnDefinition = "jsonb")
+    private String leaveBreakups;
+
+    @ColumnTransformer(write = "?::jsonb")
+    @Column(name = "approved_leave_breakups", nullable = true, columnDefinition = "jsonb")
+    private String approvedLeaveBreakups;
 }

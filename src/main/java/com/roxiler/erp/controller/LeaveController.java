@@ -28,14 +28,14 @@ public class LeaveController {
     private LeaveService leaveService;
 
     @GetMapping("")
-    public ResponseEntity<ResponseObject> getAllLeavess(@AuthenticationPrincipal UserDto userDto) {
+    public ResponseEntity<ResponseObject> getUserLeaves(@AuthenticationPrincipal UserDto userDto) {
 
-        Iterable<Leaves> Leavess = leaveService.getAllLeavessIterable(userDto);
+        Leaves leaves = leaveService.getUserLeaves(userDto);
 
         ResponseObject responseObject = new ResponseObject();
         responseObject.setIs_success(true);
-        responseObject.setMessage("Successfully fetched departments");
-        responseObject.setData(Leavess);
+        responseObject.setMessage("Successfully fetched user leaves");
+        responseObject.setData(leaves);
         ResponseEntity<ResponseObject> response = new ResponseEntity<>(responseObject, HttpStatus.OK);
 
         return response;

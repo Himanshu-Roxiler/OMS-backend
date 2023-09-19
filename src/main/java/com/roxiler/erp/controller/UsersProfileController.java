@@ -51,7 +51,7 @@ public class UsersProfileController {
 //        return response;
 //    }
 
-    @PatchMapping("")
+    @PatchMapping("/{id}")
     public ResponseEntity<ResponseObject> updateUserProfile(
             @AuthenticationPrincipal UserDto userDto,
             @Valid @RequestBody UpdateUserProfileDto userProfile,

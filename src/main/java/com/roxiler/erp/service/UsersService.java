@@ -65,6 +65,9 @@ public class UsersService {
     @Autowired
     private UserOrganizationRoleService userOrganizationRoleService;
 
+    @Autowired
+    private LeaveService leaveService;
+
     @Transactional
     public Users userSignUp(UserSignupDto user) {
         System.out.println("\n\nNEW USER\n\n" + user + "\n");
@@ -226,7 +229,7 @@ public class UsersService {
         organizationRepository.save(organization.get());
         departmentRepository.save(department.get());
         designationRepository.save(designation.get());
-
+        leaveService.createLeaveOnUserCreation(savedUser);
         UserOrganizationRole userOrganizationRole = userOrganizationRoleService.createUserOrgRole(savedUser, organization.get(), user.getRoleId());
         savedUser.getUserOrganizationRole().add(userOrganizationRole);
         UserProfile userProfile = new UserProfile();

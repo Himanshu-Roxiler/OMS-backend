@@ -1,5 +1,7 @@
 package com.roxiler.erp.dto.leaves;
 
+import com.roxiler.erp.interfaces.ApprovedLeaveBreakup;
+import com.roxiler.erp.interfaces.LeaveBreakup;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -19,4 +21,6 @@ public class ApproveLeaveRequestDto {
     private String comment;
 
     private String note;
+
+    private ApprovedLeaveBreakup[] approvedLeaveBreakups;
 }

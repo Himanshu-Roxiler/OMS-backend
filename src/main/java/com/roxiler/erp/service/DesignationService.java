@@ -21,6 +21,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.AuthorizationServiceException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Objects;
 import java.util.Optional;
@@ -36,6 +37,9 @@ public class DesignationService {
 
     @Autowired
     private UsersRepository usersRepository;
+
+    @Autowired
+    private LeaveSystemService leaveSystemService;
 
     public Iterable<Designation> getAllDesignations() {
         Iterable<Designation> designations = designationRepository.findAll();
@@ -57,6 +61,7 @@ public class DesignationService {
     }
 
     @RequiredPermission(permission = PermissionConstants.DESIGNATION)
+    @Transactional
     public Designation saveDesignation(CreateDesignationDto designation, Integer orgId) {
         Optional<Organization> org = organizationRepository.findById(orgId);
         Designation newDesg = new Designation();
@@ -70,6 +75,7 @@ public class DesignationService {
             //organization.setDepartments(departments);
 
             organizationRepository.save(organization);
+            leaveSystemService.createLeavesSystemWithDesignation(desg, org.get());
             return desg;
         }
 

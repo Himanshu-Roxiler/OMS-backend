@@ -10,8 +10,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 public interface LeavesTrackerRepository extends JpaRepository<LeavesTracker, Integer> {
 
-    @Query(value = "SELECT leaveTracker FROM LeavesTracker leaveTracker WHERE leaveTracker.user= :user")
-    Iterable<LeavesTracker> findAllByUser(Users user);
+    @Query(value = "SELECT leaveTracker FROM LeavesTracker leaveTracker WHERE leaveTracker.userId = :userId")
+    Iterable<LeavesTracker> findAllByUser(Integer userId);
+
+    @Query(value = "SELECT leaveTracker FROM LeavesTracker leaveTracker WHERE leaveTracker.reportingManager = :reportingManagerId")
+    Iterable<LeavesTracker> findAllByReportingManager(Integer reportingManagerId);
 
     @Modifying
     @Transactional
