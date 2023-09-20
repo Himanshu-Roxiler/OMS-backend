@@ -10,6 +10,7 @@ public class ApprovedLeaveBreakup {
     private Date startDate;
     private Date endDate;
     private Float noOfDays;
+    private String timeOfDay;
     private Boolean isApproved = false;
 
 }

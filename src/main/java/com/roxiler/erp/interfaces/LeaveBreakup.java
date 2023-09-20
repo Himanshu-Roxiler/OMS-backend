@@ -1,6 +1,5 @@
 package com.roxiler.erp.interfaces;
 
-import com.roxiler.erp.constants.TypeOfLeaveConstants;
 import lombok.Data;
 
 import java.util.Date;
@@ -11,5 +10,6 @@ public class LeaveBreakup {
     private Date startDate;
     private Date endDate;
     private Float noOfDays;
+    private String timeOfDay;
     private Boolean isApproved = false;
 }

@@ -169,6 +169,7 @@ public class UsersService {
 
 
     @RequiredPermission(permission = PermissionConstants.USERS)
+    @Transactional
     public Users saveUser(CreateUsersDto user, String email) {
 
         //Department dept = departmentService.getDepartmentById(user.getDepartmentId().getId());

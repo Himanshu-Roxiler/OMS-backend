@@ -103,6 +103,7 @@ public class LeaveService {
         leaves.setAvailablePaidLeaves(accrual);
         leaves.setAvailableUnpaidLeaves(10f);
         leaves.setAvailableSickLeaves(5f);
+        leaves.setAvailableVacationLeaves(10f);
         leaves.setTotalLeaves(accrual);
         leaves.setUser(user);
 

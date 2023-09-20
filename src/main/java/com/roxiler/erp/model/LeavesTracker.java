@@ -60,6 +60,9 @@ public class LeavesTracker extends BaseEntity {
     @Column(name = "is_approved", nullable = true)
     private Boolean isApproved;
 
+    @Column(name = "is_cancelled")
+    private Boolean isCancelled = false;
+
     @Temporal(TemporalType.DATE)
     @Column(name = "approved_start_date", nullable = true)
     private Date approvedStartDate;
