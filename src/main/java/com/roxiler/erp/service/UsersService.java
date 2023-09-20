@@ -401,7 +401,7 @@ public class UsersService {
             throw new EntityNotFoundException("User or reporting manager not found");
         }
 
-        if (!Objects.equals(user.get().getActiveOrganization(), userDto.getId()) || !Objects.equals(reportingManager.get().getActiveOrganization(), userDto.getOrgId())) {
+        if (!Objects.equals(user.get().getActiveOrganization(), userDto.getOrgId()) || !Objects.equals(reportingManager.get().getActiveOrganization(), userDto.getOrgId())) {
             throw new AuthorizationServiceException("You are not allowed to perform this action due to organization mismatch");
         }
 
@@ -420,7 +420,7 @@ public class UsersService {
             throw new EntityNotFoundException("User or reporting manager not found");
         }
 
-        if (!Objects.equals(user.get().getActiveOrganization(), userDto.getId())) {
+        if (!Objects.equals(user.get().getActiveOrganization(), userDto.getOrgId())) {
             throw new AuthorizationServiceException("You are not allowed to perform this action due to organization mismatch");
         }
 
