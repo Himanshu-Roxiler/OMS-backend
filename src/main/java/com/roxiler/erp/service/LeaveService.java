@@ -187,4 +187,64 @@ public class LeaveService {
             throw new EntityNotFoundException("No leave record found");
         }
     }
+
+    public void updatesLeaveUponCancellation(Float noOfDays, Integer userId, String typeOfLeave) {
+
+        Optional<Users> user = usersRepository.findById(userId);
+        if (user.isEmpty()) {
+            throw new EntityNotFoundException("User not found");
+        }
+        Optional<Leaves> leaves = leavesRepository.findByUser(user.get());
+        if (leaves.isPresent()) {
+            if (typeOfLeave.equals(TypeOfLeaveConstants.PAID_LEAVE)) {
+                leaves.get().setAvailablePaidLeaves(leaves.get().getAvailablePaidLeaves() + noOfDays);
+                leaves.get().setBookedLeaves(leaves.get().getBookedLeaves() - noOfDays);
+                leavesRepository.save(leaves.get());
+            } else if (typeOfLeave.equals(TypeOfLeaveConstants.UNPAID_LEAVE)) {
+                leaves.get().setAvailableUnpaidLeaves(leaves.get().getAvailablePaidLeaves() + noOfDays);
+                leaves.get().setBookedLeaves(leaves.get().getBookedLeaves() - noOfDays);
+                leavesRepository.save(leaves.get());
+            } else if (typeOfLeave.equals(TypeOfLeaveConstants.SICK_LEAVE)) {
+                leaves.get().setAvailableSickLeaves(leaves.get().getAvailablePaidLeaves() + noOfDays);
+                leaves.get().setBookedLeaves(leaves.get().getBookedLeaves() - noOfDays);
+                leavesRepository.save(leaves.get());
+            } else if (typeOfLeave.equals(TypeOfLeaveConstants.VACATION_LEAVE)) {
+                leaves.get().setAvailableVacationLeaves(leaves.get().getAvailablePaidLeaves() + noOfDays);
+                leaves.get().setBookedLeaves(leaves.get().getBookedLeaves() - noOfDays);
+                leavesRepository.save(leaves.get());
+            }
+        } else {
+            throw new EntityNotFoundException("No leave record found");
+        }
+    }
+
+    public void updatesLeaveUponRejection(Float noOfDays, Integer userId, String typeOfLeave) {
+
+        Optional<Users> user = usersRepository.findById(userId);
+        if (user.isEmpty()) {
+            throw new EntityNotFoundException("User not found");
+        }
+        Optional<Leaves> leaves = leavesRepository.findByUser(user.get());
+        if (leaves.isPresent()) {
+            if (typeOfLeave.equals(TypeOfLeaveConstants.PAID_LEAVE)) {
+                leaves.get().setAvailablePaidLeaves(leaves.get().getAvailablePaidLeaves() + noOfDays);
+                leaves.get().setBookedLeaves(leaves.get().getBookedLeaves() - noOfDays);
+                leavesRepository.save(leaves.get());
+            } else if (typeOfLeave.equals(TypeOfLeaveConstants.UNPAID_LEAVE)) {
+                leaves.get().setAvailableUnpaidLeaves(leaves.get().getAvailablePaidLeaves() + noOfDays);
+                leaves.get().setBookedLeaves(leaves.get().getBookedLeaves() - noOfDays);
+                leavesRepository.save(leaves.get());
+            } else if (typeOfLeave.equals(TypeOfLeaveConstants.SICK_LEAVE)) {
+                leaves.get().setAvailableSickLeaves(leaves.get().getAvailablePaidLeaves() + noOfDays);
+                leaves.get().setBookedLeaves(leaves.get().getBookedLeaves() - noOfDays);
+                leavesRepository.save(leaves.get());
+            } else if (typeOfLeave.equals(TypeOfLeaveConstants.VACATION_LEAVE)) {
+                leaves.get().setAvailableVacationLeaves(leaves.get().getAvailablePaidLeaves() + noOfDays);
+                leaves.get().setBookedLeaves(leaves.get().getBookedLeaves() - noOfDays);
+                leavesRepository.save(leaves.get());
+            }
+        } else {
+            throw new EntityNotFoundException("No leave record found");
+        }
+    }
 }

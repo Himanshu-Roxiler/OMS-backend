@@ -1,5 +1,8 @@
 package com.roxiler.erp.service;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -7,7 +10,9 @@ import com.fasterxml.jackson.databind.exc.MismatchedInputException;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.roxiler.erp.dto.leaves.ApproveLeaveRequestDto;
+import com.roxiler.erp.dto.leaves.CancelLeaveRequestDto;
 import com.roxiler.erp.dto.leaves.CreateLeaveTrackerDto;
+import com.roxiler.erp.dto.leaves.RejectLeaveRequestDto;
 import com.roxiler.erp.interfaces.ApprovedLeaveBreakup;
 import com.roxiler.erp.interfaces.LeaveBreakup;
 import com.roxiler.erp.repository.LeavesRepository;
@@ -177,6 +182,97 @@ public class LeaveTrackerService {
             System.out.println("\nLEAVE BREAKUP STRING\n" + leaveBreakupsString);
             updateLeaveTracker.setApprovedLeaveBreakups(leaveBreakupsString);
 
+            LeavesTracker updatedLeave = leaveTrackerRepository.save(updateLeaveTracker);
+            return updatedLeave;
+        }
+
+        throw new EntityNotFoundException("No leave request found for the given id");
+    }
+
+    @Transactional
+    public LeavesTracker cancelLeaveRequest(CancelLeaveRequestDto cancelLeaveRequestDto, UserDto userDto, Integer id) {
+
+        Optional<LeavesTracker> leavesTracker = leaveTrackerRepository.findById(id);
+        Gson gson = new Gson();
+        if (leavesTracker.isPresent()) {
+            LeavesTracker updateLeaveTracker = leavesTracker.get();
+            Date leaveStartDate = updateLeaveTracker.getStartDate();
+            Date currDate = new Date();
+            if (currDate.after(leaveStartDate)) {
+                throw new RuntimeException("Cannot cancel the leave request");
+            }
+            if (!Objects.equals(updateLeaveTracker.getUserId(), userDto.getId())) {
+                throw new AuthorizationServiceException("You are not allowed to perform this action");
+            }
+            Float noOfDays = 0f;
+            System.out.println("\nIS APPROVED: " + updateLeaveTracker.getIsApproved());
+            Boolean isApproved = updateLeaveTracker.getIsApproved();
+            if (isApproved != null && isApproved) {
+                System.out.println("\ninside is approved\n");
+                ApprovedLeaveBreakup[] approvedLeaveBreakups = gson.fromJson(updateLeaveTracker.getApprovedLeaveBreakups(), ApprovedLeaveBreakup[].class);
+                for (ApprovedLeaveBreakup approvedLeaveBreakup : approvedLeaveBreakups) {
+                    Float numLeaveValue = approvedLeaveBreakup.getNoOfDays();
+                    if (approvedLeaveBreakup.getIsApproved()) {
+                        noOfDays += numLeaveValue;
+                    }
+                }
+            } else {
+                System.out.println("\ninside not is approved\n");
+                LeaveBreakup[] leaveBreakups = gson.fromJson(updateLeaveTracker.getLeaveBreakups(), LeaveBreakup[].class);
+                for (LeaveBreakup leaveBreakup : leaveBreakups) {
+                    Float numLeaveValue = leaveBreakup.getNoOfDays();
+                    noOfDays += numLeaveValue;
+                }
+            }
+            updateLeaveTracker.setLeaveCancelReason(cancelLeaveRequestDto.getLeaveCancelReason());
+            updateLeaveTracker.setIsCancelled(true);
+            System.out.println("\nno of days: " + noOfDays);
+
+            leaveService.updatesLeaveUponCancellation(noOfDays, userDto.getId(), updateLeaveTracker.getTypeOfLeave());
+            LeavesTracker updatedLeave = leaveTrackerRepository.save(updateLeaveTracker);
+            return updatedLeave;
+        }
+
+        throw new EntityNotFoundException("No leave request found for the given id");
+    }
+
+    @Transactional
+    public LeavesTracker rejectLeaveRequest(RejectLeaveRequestDto rejectLeaveRequestDto, UserDto userDto, Integer id) {
+
+        Optional<LeavesTracker> leavesTracker = leaveTrackerRepository.findById(id);
+        Gson gson = new Gson();
+        if (leavesTracker.isPresent()) {
+            LeavesTracker updateLeaveTracker = leavesTracker.get();
+            Date leaveStartDate = updateLeaveTracker.getStartDate();
+            Date currDate = new Date();
+            if (currDate.after(leaveStartDate)) {
+                throw new RuntimeException("Cannot cancel the leave request");
+            }
+            if (!Objects.equals(updateLeaveTracker.getReportingManager(), userDto.getId())) {
+                throw new AuthorizationServiceException("You are not allowed to perform this action");
+            }
+            Float noOfDays = 0f;
+            if (updateLeaveTracker.getIsApproved()) {
+                ApprovedLeaveBreakup[] approvedLeaveBreakups = gson.fromJson(updateLeaveTracker.getApprovedLeaveBreakups(), ApprovedLeaveBreakup[].class);
+                for (ApprovedLeaveBreakup approvedLeaveBreakup : approvedLeaveBreakups) {
+                    Float numLeaveValue = approvedLeaveBreakup.getNoOfDays();
+                    if (approvedLeaveBreakup.getIsApproved()) {
+                        noOfDays += numLeaveValue;
+                    }
+                }
+            } else {
+                LeaveBreakup[] leaveBreakups = gson.fromJson(updateLeaveTracker.getLeaveBreakups(), LeaveBreakup[].class);
+                for (LeaveBreakup leaveBreakup : leaveBreakups) {
+                    Float numLeaveValue = leaveBreakup.getNoOfDays();
+                    noOfDays += numLeaveValue;
+                }
+            }
+            updateLeaveTracker.setComment(rejectLeaveRequestDto.getComment());
+            updateLeaveTracker.setNote(rejectLeaveRequestDto.getNote());
+            updateLeaveTracker.setIsApproved(false);
+            System.out.println("\nno of days: " + noOfDays);
+
+            leaveService.updatesLeaveUponRejection(noOfDays, updateLeaveTracker.getUserId(), updateLeaveTracker.getTypeOfLeave());
             LeavesTracker updatedLeave = leaveTrackerRepository.save(updateLeaveTracker);
             return updatedLeave;
         }

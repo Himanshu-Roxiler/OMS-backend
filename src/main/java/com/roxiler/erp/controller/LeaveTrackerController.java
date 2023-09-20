@@ -1,7 +1,9 @@
 package com.roxiler.erp.controller;
 
 import com.roxiler.erp.dto.leaves.ApproveLeaveRequestDto;
+import com.roxiler.erp.dto.leaves.CancelLeaveRequestDto;
 import com.roxiler.erp.dto.leaves.CreateLeaveTrackerDto;
+import com.roxiler.erp.dto.leaves.RejectLeaveRequestDto;
 import com.roxiler.erp.interfaces.LeaveBreakup;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -109,6 +111,40 @@ public class LeaveTrackerController {
 
         System.out.println("LEAVE REQUEST: \n" + approveLeaveRequestDto);
         LeavesTracker leavesTracker = leaveTrackerService.approveLeaveRequest(approveLeaveRequestDto, userDto, id);
+        ResponseObject responseObject = new ResponseObject();
+        responseObject.setIs_success(true);
+        responseObject.setMessage("Successfully created LeavesTracker.");
+        responseObject.setData(leavesTracker);
+
+        ResponseEntity<ResponseObject> response = new ResponseEntity<>(responseObject, HttpStatus.OK);
+        return response;
+    }
+
+    @PostMapping("/cancel-leave-request/{id}")
+    public ResponseEntity<ResponseObject> cancelLeaveRequest(
+            @Valid @RequestBody CancelLeaveRequestDto cancelLeaveRequestDto,
+            @AuthenticationPrincipal UserDto userDto,
+            @PathVariable("id") Integer id
+    ) {
+
+        LeavesTracker leavesTracker = leaveTrackerService.cancelLeaveRequest(cancelLeaveRequestDto, userDto, id);
+        ResponseObject responseObject = new ResponseObject();
+        responseObject.setIs_success(true);
+        responseObject.setMessage("Successfully created LeavesTracker.");
+        responseObject.setData(leavesTracker);
+
+        ResponseEntity<ResponseObject> response = new ResponseEntity<>(responseObject, HttpStatus.OK);
+        return response;
+    }
+
+    @PostMapping("/reject-leave-request/{id}")
+    public ResponseEntity<ResponseObject> rejectLeaveRequest(
+            @Valid @RequestBody RejectLeaveRequestDto rejectLeaveRequestDto,
+            @AuthenticationPrincipal UserDto userDto,
+            @PathVariable("id") Integer id
+    ) {
+
+        LeavesTracker leavesTracker = leaveTrackerService.rejectLeaveRequest(rejectLeaveRequestDto, userDto, id);
         ResponseObject responseObject = new ResponseObject();
         responseObject.setIs_success(true);
         responseObject.setMessage("Successfully created LeavesTracker.");
