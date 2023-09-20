@@ -50,7 +50,7 @@ public class UserProfileService {
         Users user = usersRepository.readByEmail(userDto.getEmail());
         UserProfile userProfile = userProfileRepository.readById(user.getUserProfile().getId());
         Optional<Organization> optionalOrganization = organizationRepository.findById(user.getOrganization().getId());
-        if (optionalOrganization.isPresent()) { 
+        if (optionalOrganization.isPresent()) {
             Iterable<UserRole> roles = userOrganizationRoleRepository.findUserRoleFromUserOrg(user, optionalOrganization.get());
             Map<String, Object> userRoleMap = new HashMap<>();
             userRoleMap.put("users_profile_info", userProfile);
@@ -110,11 +110,6 @@ public class UserProfileService {
         if (userProf.isPresent()) {
             Integer userId = userProf.get().getUser().getId();
             Optional<Users> user = usersRepository.findById(userId);
-            if (user.isPresent()) {
-                if (user.get().getId() != 1) {
-                    throw new AuthorizationServiceException("You are not allowed to perform this action");
-                }
-            }
             UserProfile userProfileToUpdate = userProf.get();
             userProfileToUpdate.setFirstName(userProfile.getFirstName());
             userProfileToUpdate.setLastName(userProfile.getLastName());
