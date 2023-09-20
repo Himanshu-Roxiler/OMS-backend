@@ -1,9 +1,12 @@
 package com.roxiler.erp.service;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 import com.roxiler.erp.constants.LeaveDurationConstants;
 import com.roxiler.erp.constants.TypeOfLeaveConstants;
+import com.roxiler.erp.dto.auth.UserDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -24,6 +27,8 @@ public class LeaveSystemService {
     @Autowired
     private DesignationRepository designationRepository;
 
+    @Autowired
+    private UsersRepository usersRepository;
 
     public LeavesSystem saveLeavesSystem(LeavesSystem leavesSystem) {
         Optional<Organization> organizatOptional = organizationRepository.findById(leavesSystem.getOrganization().getId());
@@ -46,8 +51,11 @@ public class LeaveSystemService {
         return leavesSystem2;
     }
 
-    public Iterable<LeavesSystem> getAllLeavesSystemsIterable() {
-        return leavesSystemRepository.findAll();
+    public LeavesSystem getLeaveSystem(UserDto userDto) {
+        Users user = usersRepository.readByEmail(userDto.getEmail());
+        Designation designation = user.getDesignation();
+        LeavesSystem leavesSystem = leavesSystemRepository.readByDesignationAndOrganization(designation, designation.getOrganization());
+        return leavesSystem;
     }
 
     public void deleteLeavesSystem(Integer id) {

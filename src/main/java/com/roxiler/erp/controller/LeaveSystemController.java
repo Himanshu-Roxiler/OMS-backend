@@ -30,16 +30,29 @@ public class LeaveSystemController {
     @GetMapping("")
     public ResponseEntity<ResponseObject> getAllLeavesSystems(@AuthenticationPrincipal UserDto userDto) {
 
-        Iterable<LeavesSystem> LeavesSystems = leaveSystemService.getAllLeavesSystemsIterable();
+        LeavesSystem leavesSystem = leaveSystemService.getLeaveSystem(userDto);
 
         ResponseObject responseObject = new ResponseObject();
         responseObject.setIs_success(true);
         responseObject.setMessage("Successfully fetched departments");
-        responseObject.setData(LeavesSystems);
+        responseObject.setData(leavesSystem);
         ResponseEntity<ResponseObject> response = new ResponseEntity<>(responseObject, HttpStatus.OK);
 
         return response;
     }
+//
+//    @GetMapping("/designation")
+//    public ResponseEntity<ResponseObject> getLeavesSystems(@AuthenticationPrincipal UserDto userDto) {
+//
+//        LeavesSystem leavesSystem = leaveSystemService.getLeaveSystemByDesignation(userDto);
+//        ResponseObject responseObject = new ResponseObject();
+//        responseObject.setIs_success(true);
+//        responseObject.setMessage("Successfully fetched departments");
+//        responseObject.setData(leavesSystem);
+//        ResponseEntity<ResponseObject> response = new ResponseEntity<>(responseObject, HttpStatus.OK);
+//
+//        return response;
+//    }
 
     @PostMapping("")
     public ResponseEntity<ResponseObject> addLeavesSystem(@AuthenticationPrincipal UserDto userDto, @Valid @RequestBody LeavesSystem LeavesSystem) {
