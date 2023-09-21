@@ -63,6 +63,8 @@ public class UserProfileService {
                 customRoles.add(userRole);
             }
             userRoleMap.put("roles", customRoles);
+            userRoleMap.put("designation", user.getDesignation());
+            userRoleMap.put("department", user.getDepartment());
 
             return userRoleMap;
 
