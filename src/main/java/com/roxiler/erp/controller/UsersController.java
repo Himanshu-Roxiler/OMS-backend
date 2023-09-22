@@ -97,10 +97,9 @@ public class UsersController {
 
     @PostMapping("/forgot-password")
     public ResponseEntity<ResponseObject> forgotPassword(
-            @AuthenticationPrincipal UserDto userDto,
             @Valid @RequestBody ForgotPasswordDto forgotPasswordDto
     ) {
-        usersService.forgotUserPassword(userDto, forgotPasswordDto);
+        usersService.forgotUserPassword(forgotPasswordDto);
         ResponseObject responseObject = new ResponseObject();
         responseObject.setIs_success(true);
         responseObject.setMessage("Link to reset password sent successfully");
@@ -111,10 +110,9 @@ public class UsersController {
 
     @PostMapping("/reset-password")
     public ResponseEntity<ResponseObject> resetPassword(
-            @AuthenticationPrincipal UserDto userDto,
             @Valid @RequestBody ResetPasswordDto resetPasswordDto
     ) throws Exception {
-        usersService.resetUserPassword(userDto, resetPasswordDto);
+        usersService.resetUserPassword(resetPasswordDto);
         ResponseObject responseObject = new ResponseObject();
         responseObject.setIs_success(true);
         responseObject.setMessage("Successfully reset password");

@@ -352,11 +352,8 @@ public class UsersService {
     }
 
     @RequiredPermission(permission = PermissionConstants.USERS)
-    public void forgotUserPassword(UserDto userDto, ForgotPasswordDto forgotPasswordDto) {
+    public void forgotUserPassword(ForgotPasswordDto forgotPasswordDto) {
 
-        if (!Objects.equals(userDto.getEmail(), forgotPasswordDto.getEmail())) {
-            throw new AuthorizationServiceException("You are not allowed to perform this action");
-        }
         Optional<Users> user = usersRepository.findByEmail(forgotPasswordDto.getEmail());
         if (user.isEmpty()) {
             throw new EntityNotFoundException("User not found");
@@ -367,14 +364,14 @@ public class UsersService {
         Algorithm algorithm = Algorithm.HMAC256(secretKey);
 
         String token = JWT.create()
-                .withClaim("email", userDto.getEmail())
+                .withClaim("email", forgotPasswordDto.getEmail())
                 .withIssuer("reset-password")
                 .withIssuedAt(now)
                 .withExpiresAt(validity)
                 .sign(algorithm);
 
         // SEND EMAIL
-        String recipient = userDto.getEmail();
+        String recipient = forgotPasswordDto.getEmail();
         String subject = "Reset Password";
         String resetLink = String.format("%s?token=%s", forgetPasswordURL, token);
         Context ctx = new Context(LocaleContextHolder.getLocale());
@@ -390,7 +387,7 @@ public class UsersService {
     }
 
     @RequiredPermission(permission = PermissionConstants.USERS)
-    public void resetUserPassword(UserDto userDto, ResetPasswordDto resetPasswordDto) throws Exception {
+    public void resetUserPassword(ResetPasswordDto resetPasswordDto) throws Exception {
         Algorithm algorithm = Algorithm.HMAC256(secretKey);
 
         JWTVerifier verifier = JWT.require(algorithm)
@@ -402,9 +399,6 @@ public class UsersService {
         Optional<Users> user = usersRepository.findByEmail(email);
         if (user.isEmpty()) {
             throw new EntityNotFoundException("User not found");
-        }
-        if (!Objects.equals(user.get().getEmail(), userDto.getEmail())) {
-            throw new AuthorizationServiceException("You are not allowed to perform this action");
         }
 
         if (!Objects.equals(resetPasswordDto.getNewPassword(), resetPasswordDto.getConfirmNewPassword())) {
