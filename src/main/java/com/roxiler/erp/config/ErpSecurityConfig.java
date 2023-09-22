@@ -31,7 +31,7 @@ public class ErpSecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(httpSecuritySessionManagementConfigurer -> httpSecuritySessionManagementConfigurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests((requests) -> requests
-                        .requestMatchers(HttpMethod.POST, "/v1/signIn", "/v1/signUp", "/v1/oauth/signIn", "/v1/oauth/signUp").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/v1/signIn", "/v1/signUp", "/v1/oauth/signIn", "/v1/oauth/signUp", "/v1/users/forgot-password", "/v1/users/reset-password").permitAll()
                         .anyRequest().authenticated())
         ;
         return http.build();
