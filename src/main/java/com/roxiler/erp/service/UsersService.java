@@ -13,11 +13,13 @@ import com.roxiler.erp.interfaces.RequiredPermission;
 import com.roxiler.erp.model.*;
 import com.roxiler.erp.model.Users;
 import com.roxiler.erp.repository.*;
+import jakarta.mail.MessagingException;
 import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
 import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -28,8 +30,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.firewall.RequestRejectedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.thymeleaf.TemplateEngine;
+import org.thymeleaf.context.Context;
 
 import javax.swing.text.html.Option;
+import java.io.UnsupportedEncodingException;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -40,6 +45,9 @@ public class UsersService {
 
     @Value("${security.jwt.token.secret-key}")
     private String secretKey;
+
+    @Value("${forget-password-url}")
+    private String forgetPasswordURL;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -67,6 +75,13 @@ public class UsersService {
 
     @Autowired
     private LeaveService leaveService;
+
+    @Autowired
+    private EmailService emailService;
+
+    @Autowired
+    private TemplateEngine templateEngine;
+
 
     @Transactional
     public Users userSignUp(UserSignupDto user) {
@@ -348,7 +363,7 @@ public class UsersService {
         }
 
         Date now = new Date();
-        Date validity = new Date(now.getTime() + 3600000);
+        Date validity = new Date(now.getTime() + 900000);
         Algorithm algorithm = Algorithm.HMAC256(secretKey);
 
         String token = JWT.create()
@@ -359,6 +374,19 @@ public class UsersService {
                 .sign(algorithm);
 
         // SEND EMAIL
+        String recipient = userDto.getEmail();
+        String subject = "Reset Password";
+        String resetLink = String.format("%s?token=%s", forgetPasswordURL, token);
+        Context ctx = new Context(LocaleContextHolder.getLocale());
+        ctx.setVariable("url", resetLink);
+        String htmlContent = templateEngine.process("forget-password", ctx);
+        System.out.println("\nURL\n" + resetLink);
+
+        try {
+            emailService.sendEmail(recipient, subject, htmlContent);
+        } catch (UnsupportedEncodingException | MessagingException e) {
+            System.out.println(e.getStackTrace());
+        }
     }
 
     @RequiredPermission(permission = PermissionConstants.USERS)

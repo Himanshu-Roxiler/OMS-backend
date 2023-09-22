@@ -100,6 +100,7 @@ public class UsersController {
             @AuthenticationPrincipal UserDto userDto,
             @Valid @RequestBody ForgotPasswordDto forgotPasswordDto
     ) {
+        usersService.forgotUserPassword(userDto, forgotPasswordDto);
         ResponseObject responseObject = new ResponseObject();
         responseObject.setIs_success(true);
         responseObject.setMessage("Link to reset password sent successfully");
