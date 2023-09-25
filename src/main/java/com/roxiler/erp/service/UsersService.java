@@ -165,7 +165,7 @@ public class UsersService {
     }
 
     @RequiredPermission(permission = PermissionConstants.USERS)
-    public Map<String, Object> getAllUsersWithPagination(UserDto userDto, Integer pageNum, Integer pageSize, String sortName, String sortOrder, String search) {
+    public List<Map<String, Object>> getAllUsersWithPagination(UserDto userDto, Integer pageNum, Integer pageSize, String sortName, String sortOrder, String search) {
         Optional<Organization> org = organizationRepository.findById(userDto.getOrgId());
         if (org.isEmpty()) {
             throw new EntityNotFoundException("No organization is found for user " + userDto.getOrgId());
@@ -175,16 +175,18 @@ public class UsersService {
                 pageSize);
 //                listUsersDto.getSortOrder().equals("asc") ? Sort.by(Sort.Direction.ASC) : Sort.by(Sort.Direction.DESC));
         Page<Users> users = usersRepository.getUsersListWithOrg(org.get(), search.toLowerCase(), pageable);
-        Map<String, Object> usersList = new HashMap<>();
+        List<Map<String, Object>> usersList = new ArrayList<>();
         for (Users user : users) {
-            usersList.put("user", user);
+            Map<String, Object> userObj = new HashMap<>();
+            userObj.put("user", user);
             if (user.getReportingManagerId() != null) {
                 Optional<Users> reportingManager = usersRepository.findById(user.getReportingManagerId());
                 if (reportingManager.isPresent()) {
                     String rmName = String.format("%s %s", reportingManager.get().getFirstName(), reportingManager.get().getLastName());
-                    usersList.put("reportingManager", rmName);
+                    userObj.put("reportingManager", rmName);
                 }
             }
+            usersList.add(userObj);
         }
         return usersList;
     }

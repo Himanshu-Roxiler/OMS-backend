@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 
 @RestController()
@@ -33,7 +34,7 @@ public class UsersController {
             @RequestParam(value = "search", defaultValue = "") String search
     ) {
 
-        Map<String, Object> users = usersService.getAllUsersWithPagination(userDto, pageNum, pageSize, sortName, sortOrder, search);
+        List<Map<String, Object>> users = usersService.getAllUsersWithPagination(userDto, pageNum, pageSize, sortName, sortOrder, search);
         ResponseObject responseObject = new ResponseObject();
         responseObject.setIs_success(true);
         responseObject.setMessage("Successfully fetched users");
