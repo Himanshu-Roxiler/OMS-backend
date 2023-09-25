@@ -35,10 +35,7 @@ import org.thymeleaf.context.Context;
 
 import javax.swing.text.html.Option;
 import java.io.UnsupportedEncodingException;
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class UsersService {
@@ -168,7 +165,7 @@ public class UsersService {
     }
 
     @RequiredPermission(permission = PermissionConstants.USERS)
-    public Page<Users> getAllUsersWithPagination(UserDto userDto, Integer pageNum, Integer pageSize, String sortName, String sortOrder, String search) {
+    public Map<String, Object> getAllUsersWithPagination(UserDto userDto, Integer pageNum, Integer pageSize, String sortName, String sortOrder, String search) {
         Optional<Organization> org = organizationRepository.findById(userDto.getOrgId());
         if (org.isEmpty()) {
             throw new EntityNotFoundException("No organization is found for user " + userDto.getOrgId());
@@ -178,8 +175,18 @@ public class UsersService {
                 pageSize);
 //                listUsersDto.getSortOrder().equals("asc") ? Sort.by(Sort.Direction.ASC) : Sort.by(Sort.Direction.DESC));
         Page<Users> users = usersRepository.getUsersListWithOrg(org.get(), search.toLowerCase(), pageable);
-
-        return users;
+        Map<String, Object> usersList = new HashMap<>();
+        for (Users user : users) {
+            usersList.put("user", user);
+            if (user.getReportingManagerId() != null) {
+                Optional<Users> reportingManager = usersRepository.findById(user.getReportingManagerId());
+                if (reportingManager.isPresent()) {
+                    String rmName = String.format("%s %s", reportingManager.get().getFirstName(), reportingManager.get().getLastName());
+                    usersList.put("reportingManager", rmName);
+                }
+            }
+        }
+        return usersList;
     }
 
 
@@ -351,7 +358,7 @@ public class UsersService {
         }
     }
 
-    @RequiredPermission(permission = PermissionConstants.USERS)
+    //    @RequiredPermission(permission = PermissionConstants.USERS)
     public void forgotUserPassword(ForgotPasswordDto forgotPasswordDto) {
 
         Optional<Users> user = usersRepository.findByEmail(forgotPasswordDto.getEmail());
@@ -370,6 +377,9 @@ public class UsersService {
                 .withExpiresAt(validity)
                 .sign(algorithm);
 
+        user.get().setPasswordResetToken(token);
+        usersRepository.save(user.get());
+
         // SEND EMAIL
         String recipient = forgotPasswordDto.getEmail();
         String subject = "Reset Password";
@@ -386,7 +396,7 @@ public class UsersService {
         }
     }
 
-    @RequiredPermission(permission = PermissionConstants.USERS)
+    //    @RequiredPermission(permission = PermissionConstants.USERS)
     public void resetUserPassword(ResetPasswordDto resetPasswordDto) throws Exception {
         Algorithm algorithm = Algorithm.HMAC256(secretKey);
 
@@ -401,12 +411,17 @@ public class UsersService {
             throw new EntityNotFoundException("User not found");
         }
 
+        if (!Objects.equals(user.get().getPasswordResetToken(), resetPasswordDto.getToken())) {
+            throw new RuntimeException("The token is no longer valid");
+        }
+
         if (!Objects.equals(resetPasswordDto.getNewPassword(), resetPasswordDto.getConfirmNewPassword())) {
             throw new Exception("New password and Confirm new password should be same");
         }
 
         String hashedPassword = passwordEncoder.encode(resetPasswordDto.getNewPassword());
         user.get().setPassword(hashedPassword);
+        user.get().setPasswordResetToken(null);
         usersRepository.save(user.get());
     }
 
