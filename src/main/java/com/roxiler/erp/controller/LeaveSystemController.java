@@ -29,9 +29,23 @@ public class LeaveSystemController {
     private LeaveSystemService leaveSystemService;
 
     @GetMapping("")
-    public ResponseEntity<ResponseObject> getAllLeavesSystems(@AuthenticationPrincipal UserDto userDto) {
+    public ResponseEntity<ResponseObject> getUserLeavesSystems(@AuthenticationPrincipal UserDto userDto) {
 
         LeavesSystem leavesSystem = leaveSystemService.getLeaveSystem(userDto);
+
+        ResponseObject responseObject = new ResponseObject();
+        responseObject.setIs_success(true);
+        responseObject.setMessage("Successfully fetched departments");
+        responseObject.setData(leavesSystem);
+        ResponseEntity<ResponseObject> response = new ResponseEntity<>(responseObject, HttpStatus.OK);
+
+        return response;
+    }
+
+    @GetMapping("/organization")
+    public ResponseEntity<ResponseObject> getAllLeavesSystemsInOrg(@AuthenticationPrincipal UserDto userDto) {
+
+        Iterable<LeavesSystem> leavesSystem = leaveSystemService.getAllLeaveSystem(userDto);
 
         ResponseObject responseObject = new ResponseObject();
         responseObject.setIs_success(true);
@@ -71,9 +85,11 @@ public class LeaveSystemController {
     @PatchMapping("/{id}")
     public ResponseEntity<ResponseObject> updateLeavesSystem(
             @Valid @RequestBody UpdateLeaveSystemDto updateLeaveSystemDto,
-            @AuthenticationPrincipal UserDto userDto) {
+            @AuthenticationPrincipal UserDto userDto,
+            @PathVariable("id") Integer id
+    ) {
 
-        LeavesSystem LeavesSystem2 = leaveSystemService.updatLeavesSystem(updateLeaveSystemDto, userDto);
+        LeavesSystem LeavesSystem2 = leaveSystemService.updatLeavesSystem(updateLeaveSystemDto, userDto, id);
         ResponseObject responseObject = new ResponseObject();
         responseObject.setIs_success(true);
         responseObject.setMessage("Successfully updated Leaves Policy");

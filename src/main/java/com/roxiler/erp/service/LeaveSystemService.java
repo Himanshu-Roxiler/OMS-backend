@@ -61,6 +61,13 @@ public class LeaveSystemService {
         return leavesSystem;
     }
 
+    public Iterable<LeavesSystem> getAllLeaveSystem(UserDto userDto) {
+        Users user = usersRepository.readByEmail(userDto.getEmail());
+        Organization organization = user.getOrganization();
+        Iterable<LeavesSystem> leavesSystem = leavesSystemRepository.readByOrganization(organization);
+        return leavesSystem;
+    }
+
     public void deleteLeavesSystem(Integer id) {
         Optional<LeavesSystem> LeavesSystem = leavesSystemRepository.findById(id);
         if (LeavesSystem.isEmpty()) {
@@ -71,8 +78,8 @@ public class LeaveSystemService {
         }
     }
 
-    public LeavesSystem updatLeavesSystem(UpdateLeaveSystemDto updateLeaveSystemDto, UserDto userDto) {
-        Optional<LeavesSystem> optionalLeavesSystem = leavesSystemRepository.findById(updateLeaveSystemDto.getLeavePolicyId());
+    public LeavesSystem updatLeavesSystem(UpdateLeaveSystemDto updateLeaveSystemDto, UserDto userDto, Integer leavePolicyId) {
+        Optional<LeavesSystem> optionalLeavesSystem = leavesSystemRepository.findById(leavePolicyId);
         Users user = usersRepository.readByEmail(userDto.getEmail());
         if (optionalLeavesSystem.isEmpty()) {
             throw new EntityNotFoundException("Leave Policy not found");
@@ -86,7 +93,7 @@ public class LeaveSystemService {
         existingLeavesSystem.setCarryOverLimits(updateLeaveSystemDto.getCarryOverLimits());
         existingLeavesSystem.setConsecutiveLeaves(updateLeaveSystemDto.getConsecutiveLeaves());
         existingLeavesSystem.setAllowedLeaveDurations(updateLeaveSystemDto.getAllowedLeaveDurations());
-        updateLeaveSystemDto.setAllowedLeaveTypes(updateLeaveSystemDto.getAllowedLeaveTypes());
+        existingLeavesSystem.setAllowedLeaveTypes(updateLeaveSystemDto.getAllowedLeaveTypes());
         return leavesSystemRepository.save(existingLeavesSystem);
 
     }
