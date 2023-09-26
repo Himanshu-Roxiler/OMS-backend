@@ -2,12 +2,15 @@ package com.roxiler.erp.service;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 
 import com.roxiler.erp.constants.LeaveDurationConstants;
 import com.roxiler.erp.constants.TypeOfLeaveConstants;
 import com.roxiler.erp.dto.auth.UserDto;
+import com.roxiler.erp.dto.leaves.UpdateLeaveSystemDto;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.AuthorizationServiceException;
 import org.springframework.stereotype.Service;
 
 import com.roxiler.erp.model.*;
@@ -68,20 +71,23 @@ public class LeaveSystemService {
         }
     }
 
-    public LeavesSystem updatLeavesSystem(LeavesSystem updateLeavesSystem, Integer id) {
-        Optional<LeavesSystem> optionalLeavesSystem = leavesSystemRepository.findById(id);
-
+    public LeavesSystem updatLeavesSystem(UpdateLeaveSystemDto updateLeaveSystemDto, UserDto userDto) {
+        Optional<LeavesSystem> optionalLeavesSystem = leavesSystemRepository.findById(updateLeaveSystemDto.getLeavePolicyId());
+        Users user = usersRepository.readByEmail(userDto.getEmail());
         if (optionalLeavesSystem.isEmpty()) {
-            throw new EntityNotFoundException("LeavesSystem " + id + " does not exist");
+            throw new EntityNotFoundException("Leave Policy not found");
         }
 
-        if (optionalLeavesSystem.isPresent()) {
-            LeavesSystem existingLeavesSystem = optionalLeavesSystem.get();
-            existingLeavesSystem.setAccrual(updateLeavesSystem.getAccrual());
-            existingLeavesSystem.setCarryOverLimits(updateLeavesSystem.getCarryOverLimits());
-            return leavesSystemRepository.save(existingLeavesSystem);
+        LeavesSystem existingLeavesSystem = optionalLeavesSystem.get();
+        if (!Objects.equals(userDto.getOrgId(), existingLeavesSystem.getOrganization().getId())) {
+            throw new AuthorizationServiceException("You are not allowed to perform this action");
         }
-        return updateLeavesSystem;
+        existingLeavesSystem.setAccrual(updateLeaveSystemDto.getAccrual());
+        existingLeavesSystem.setCarryOverLimits(updateLeaveSystemDto.getCarryOverLimits());
+        existingLeavesSystem.setConsecutiveLeaves(updateLeaveSystemDto.getConsecutiveLeaves());
+        existingLeavesSystem.setAllowedLeaveDurations(updateLeaveSystemDto.getAllowedLeaveDurations());
+        updateLeaveSystemDto.setAllowedLeaveTypes(updateLeaveSystemDto.getAllowedLeaveTypes());
+        return leavesSystemRepository.save(existingLeavesSystem);
 
     }
 

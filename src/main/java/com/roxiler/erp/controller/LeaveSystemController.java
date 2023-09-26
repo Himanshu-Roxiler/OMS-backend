@@ -1,5 +1,6 @@
 package com.roxiler.erp.controller;
 
+import com.roxiler.erp.dto.leaves.UpdateLeaveSystemDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -68,12 +69,14 @@ public class LeaveSystemController {
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<ResponseObject> updateLeavesSystem(@Valid @RequestBody LeavesSystem LeavesSystem, @AuthenticationPrincipal UserDto userDto) {
+    public ResponseEntity<ResponseObject> updateLeavesSystem(
+            @Valid @RequestBody UpdateLeaveSystemDto updateLeaveSystemDto,
+            @AuthenticationPrincipal UserDto userDto) {
 
-        LeavesSystem LeavesSystem2 = leaveSystemService.updatLeavesSystem(LeavesSystem, userDto.getId());
+        LeavesSystem LeavesSystem2 = leaveSystemService.updatLeavesSystem(updateLeaveSystemDto, userDto);
         ResponseObject responseObject = new ResponseObject();
         responseObject.setIs_success(true);
-        responseObject.setMessage("Successfully updated LeavesSystem");
+        responseObject.setMessage("Successfully updated Leaves Policy");
         responseObject.setData(LeavesSystem2);
         ResponseEntity<ResponseObject> response = new ResponseEntity<>(responseObject, HttpStatus.OK);
 
