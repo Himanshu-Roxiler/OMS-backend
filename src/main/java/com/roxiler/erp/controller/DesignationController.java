@@ -94,7 +94,7 @@ public class DesignationController {
     public ResponseEntity<ResponseObject> deleteDesignation(
             @AuthenticationPrincipal UserDto userDto,
             @PathVariable("id") Integer id
-    ) {
+    ) throws Exception {
         designationService.deleteDesignation(id, userDto.getEmail());
         ResponseObject responseObject = new ResponseObject();
         responseObject.setIs_success(true);

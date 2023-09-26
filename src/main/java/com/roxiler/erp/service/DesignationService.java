@@ -7,8 +7,6 @@ import com.roxiler.erp.dto.designation.ListDesignationDto;
 import com.roxiler.erp.dto.designation.UpdateDesignationDto;
 import com.roxiler.erp.interfaces.RequiredPermission;
 import com.roxiler.erp.model.*;
-import com.roxiler.erp.model.Designation;
-import com.roxiler.erp.model.Designation;
 import com.roxiler.erp.repository.DepartmentRepository;
 import com.roxiler.erp.repository.DesignationRepository;
 import com.roxiler.erp.repository.OrganizationRepository;
@@ -107,7 +105,7 @@ public class DesignationService {
     }
 
     @RequiredPermission(permission = PermissionConstants.DESIGNATION)
-    public void deleteDesignation(Integer id, String email) {
+    public void deleteDesignation(Integer id, String email) throws Exception {
 
         Users user = usersRepository.readByEmail(email);
         String deletedBy = SecurityContextHolder.getContext().getAuthentication().getName();
@@ -124,7 +122,14 @@ public class DesignationService {
                 organizationRepository.save(organization.get());
             }
 
-            designationRepository.softDeleteById(id, deletedBy);
+            if (desg.get().getUsers().size() == 0) {
+                designationRepository.softDeleteById(id, deletedBy);
+            } else {
+                throw new Exception("Designation deleted successfully.");        
+            }
+
+        } else {
+            throw new EntityNotFoundException("Designation is not found.");
         }
     }
 

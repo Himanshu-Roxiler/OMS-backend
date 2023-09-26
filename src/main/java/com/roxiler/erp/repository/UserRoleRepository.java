@@ -25,4 +25,10 @@ public interface UserRoleRepository extends JpaRepository<UserRole, Integer> {
 
     @Query("SELECT role FROM UserRole role WHERE role.organization = :org AND LOWER(role.name) LIKE %:search%")
     Page<UserRole> getRolesListWithOrg(Organization org, String search, Pageable pageable);
+
+    @Modifying
+    @Transactional
+    @Query("UPDATE UserRole userRole SET userRole.deletedAt = CURRENT_TIMESTAMP, userRole.deletedBy = :deletedBy WHERE userRole.id = :id")
+    void softDeleteById(Integer id, String deletedBy);
+
 }

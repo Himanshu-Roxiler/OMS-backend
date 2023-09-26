@@ -91,7 +91,7 @@ public class DepartmentController {
     public ResponseEntity<ResponseObject> deleteDepartment(
             @AuthenticationPrincipal UserDto userDto,
             @PathVariable("id") Integer id
-    ) {
+    ) throws Exception {
         departmentService.deleteDepartment(id, userDto.getEmail());
         ResponseObject responseObject = new ResponseObject();
         responseObject.setIs_success(true);

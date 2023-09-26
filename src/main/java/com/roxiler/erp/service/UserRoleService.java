@@ -101,7 +101,7 @@ public class UserRoleService {
     }
 
     @Transactional
-    public void deleteUserRole(Integer id, UserDto userDto) {
+    public void deleteUserRole(Integer id, UserDto userDto) throws Exception {
         Optional<UserRole> userRole = userRoleRepository.findById(id);
         if (userRole.isEmpty()) {
             throw new EntityNotFoundException("UserRole " + id + " does not exist");
@@ -128,9 +128,16 @@ public class UserRoleService {
 //                    System.out.printf("\nID: " + userOrganizationRole.getId());
 //                    userOrganizationRoleRepository.deleteById(userOrganizationRole.getId());
 //                }
+            } else {
+                throw new EntityNotFoundException("Organization is not found");
             }
-
-            userRoleRepository.deleteById(userRole.get().getId());
+            if (userRole.get().getUserOrganizationRole().size() == 0) {
+                userRoleRepository.softDeleteById(id, userDto.getEmail());
+            } else {
+                throw new Exception("Role deleted successfully.");
+            }
+        } else {
+            throw new EntityNotFoundException("UserRole is not found");
         }
     }
 

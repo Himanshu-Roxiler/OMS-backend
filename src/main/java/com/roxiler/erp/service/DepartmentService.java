@@ -118,7 +118,7 @@ public class DepartmentService {
     }
 
     @RequiredPermission(permission = PermissionConstants.DEPARTMENT)
-    public void deleteDepartment(Integer id, String email) {
+    public void deleteDepartment(Integer id, String email) throws Exception {
 
         Users user = usersRepository.readByEmail(email);
         String deletedBy = SecurityContextHolder.getContext().getAuthentication().getName();
@@ -135,7 +135,14 @@ public class DepartmentService {
                 organizationRepository.save(organization.get());
             }
 
-            departmentRepository.softDeleteById(id, deletedBy);
+            if (dept.get().getUsers().size() == 0) {
+                departmentRepository.softDeleteById(id, deletedBy);
+            } else {
+                throw new Exception("Department deleted successfully.");
+            }
+
+        } else {
+            throw new EntityNotFoundException("Department is not found.");
         }
     }
 

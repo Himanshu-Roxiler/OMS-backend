@@ -89,7 +89,7 @@ public class UserRoleController {
     public ResponseEntity<ResponseObject> deleteUserRole(
             @AuthenticationPrincipal UserDto userDto,
             @PathVariable("id") Integer id
-    ) {
+    ) throws Exception {
         userRoleService.deleteUserRole(id, userDto);
         ResponseObject responseObject = new ResponseObject();
         responseObject.setIs_success(true);
