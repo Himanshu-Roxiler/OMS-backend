@@ -430,7 +430,7 @@ public class UsersService {
     @RequiredPermission(permission = PermissionConstants.USERS)
     public Users assignReportingManager(UserDto userDto, AssignReportingManagerDto assignReportingManagerDto) {
         if (Objects.equals(assignReportingManagerDto.getReportingManagerId(), assignReportingManagerDto.getUserId())) {
-            throw new RequestRejectedException("User cannot be it's own reporting manager");
+            throw new AuthorizationServiceException("User cannot be it's own reporting manager");
         }
 
         Optional<Users> user = usersRepository.findById(assignReportingManagerDto.getUserId());
