@@ -2,6 +2,7 @@ package com.roxiler.erp.service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.Objects;
 import java.util.Optional;
@@ -15,6 +16,7 @@ import com.roxiler.erp.dto.leaves.CreateLeaveTrackerDto;
 import com.roxiler.erp.dto.leaves.RejectLeaveRequestDto;
 import com.roxiler.erp.interfaces.ApprovedLeaveBreakup;
 import com.roxiler.erp.interfaces.LeaveBreakup;
+import com.roxiler.erp.repository.LeaveSystemRepository;
 import com.roxiler.erp.repository.LeavesRepository;
 import jakarta.validation.ValidationException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,6 +42,9 @@ public class LeaveTrackerService {
     private UsersRepository usersRepository;
 
     @Autowired
+    private LeaveSystemRepository leaveSystemRepository;
+
+    @Autowired
     private LeaveService leaveService;
 
 
@@ -54,6 +59,10 @@ public class LeaveTrackerService {
             throw new EntityNotFoundException("User or Reporting Manager not found");
         } else {
             LeaveBreakup[] leaveBreakups = createLeaveTrackerDto.getLeaveBreakups();
+            LeavesSystem leavesSystem = leaveSystemRepository.readByDesignationAndOrganization(user.get().getDesignation(), user.get().getOrganization());
+            if (Arrays.stream(leavesSystem.getAllowedLeaveTypes()).noneMatch(str -> Objects.equals(str, createLeaveTrackerDto.getTypeOfLeave()))) {
+                throw new ValidationException("Type of leave is not applicable for this person");
+            }
             for (LeaveBreakup leaveBreakup : leaveBreakups) {
                 Float numLeaveValue = leaveBreakup.getNoOfDays();
                 if (numLeaveValue != 0.25f && numLeaveValue != 0.5f && numLeaveValue != 1f) {

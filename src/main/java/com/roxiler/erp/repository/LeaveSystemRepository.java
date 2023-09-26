@@ -20,4 +20,6 @@ public interface LeaveSystemRepository extends JpaRepository<LeavesSystem, Integ
     void softDeleteById(Integer id, String deletedBy);
 
     LeavesSystem readByDesignationAndOrganization(Designation designation, Organization organization);
+
+    Iterable<LeavesSystem> readByOrganization(Organization organization);
 }
