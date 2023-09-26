@@ -20,6 +20,7 @@ import com.roxiler.erp.repository.OrganizationRepository;
 import com.roxiler.erp.repository.UserOrganizationRoleRepository;
 import com.roxiler.erp.repository.UserRoleRepository;
 import com.roxiler.erp.repository.UsersRepository;
+import com.roxiler.erp.service.AuthenticationService;
 import com.roxiler.erp.service.UsersService;
 
 import jakarta.persistence.EntityNotFoundException;
@@ -47,6 +48,9 @@ public class AuthController {
     private OrganizationRepository organizationRepository;
 
     @Autowired
+    private AuthenticationService authenticationService;
+
+    @Autowired
     private UserOrganizationRoleRepository userOrganizationRoleRepository;
 
     public AuthController(UsersService usersService,
@@ -58,73 +62,13 @@ public class AuthController {
     @PostMapping("/signIn")
     public ResponseEntity<Map<String, Object>> signIn(@AuthenticationPrincipal UserDto userDto) {
         userDto.setToken(userAuthenticationProvider.createToken(userDto.getLogin(), userDto));
-        Optional<Users> optionalUser = usersRepository.findByEmail(userDto.getEmail());
-
-        if (optionalUser.isPresent()) {
-            Users user = optionalUser.get();
-            Optional<Organization> optionalOrganization = organizationRepository
-                    .findById(user.getOrganization().getId());
-            if (optionalOrganization.isPresent()) {
-                Iterable<UserRole> roles = userOrganizationRoleRepository.findUserRoleFromUserOrg(user,
-                        optionalOrganization.get());
-                Map<String, Object> userRoleMap = new HashMap<>();
-                userRoleMap.put("user", userDto);
-                List<Object> customRoles = new ArrayList<>();
-                for (UserRole role : roles) {
-                    Map<String, Object> userRole = new HashMap<>();
-                    userRole.put("name", role.getName());
-                    userRole.put("id", role.getId());
-                    userRole.put("features", role.getFeatures());
-                    customRoles.add(userRole);
-                }
-                userRoleMap.put("roles", customRoles);
-                // userRoleMap.put("designation", user.getDesignation());
-                // userRoleMap.put("department", user.getDepartment());
-
-                return ResponseEntity.ok(userRoleMap);
-
-            } else {
-                throw new EntityNotFoundException("Organization is not available");
-            }
-        } else {
-            throw new EntityNotFoundException("User is not available");
-        }
+        return ResponseEntity.ok(authenticationService.getUsersRoles(userDto));
     }
 
     @PostMapping("/oauth/signIn")
     public ResponseEntity<Map<String, Object>> signInViaOauth(@AuthenticationPrincipal UserDto userDto) {
         userDto.setToken(userAuthenticationProvider.createToken(userDto.getLogin(), userDto));
-        Optional<Users> optionalUser = usersRepository.findByEmail(userDto.getEmail());
-
-        if (optionalUser.isPresent()) {
-            Users user = optionalUser.get();
-            Optional<Organization> optionalOrganization = organizationRepository
-                    .findById(user.getOrganization().getId());
-            if (optionalOrganization.isPresent()) {
-                Iterable<UserRole> roles = userOrganizationRoleRepository.findUserRoleFromUserOrg(user,
-                        optionalOrganization.get());
-                Map<String, Object> userRoleMap = new HashMap<>();
-                userRoleMap.put("user", userDto);
-                List<Object> customRoles = new ArrayList<>();
-                for (UserRole role : roles) {
-                    Map<String, Object> userRole = new HashMap<>();
-                    userRole.put("name", role.getName());
-                    userRole.put("id", role.getId());
-                    userRole.put("features", role.getFeatures());
-                    customRoles.add(userRole);
-                }
-                userRoleMap.put("roles", customRoles);
-                // userRoleMap.put("designation", user.getDesignation());
-                // userRoleMap.put("department", user.getDepartment());
-
-                return ResponseEntity.ok(userRoleMap);
-
-            } else {
-                throw new EntityNotFoundException("Organization is not available");
-            }
-        } else {
-            throw new EntityNotFoundException("User is not available");
-        }
+        return ResponseEntity.ok(authenticationService.getUsersRoles(userDto));
     }
 
     @PostMapping("/signUp")
