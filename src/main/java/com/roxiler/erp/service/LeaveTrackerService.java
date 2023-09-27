@@ -51,12 +51,15 @@ public class LeaveTrackerService {
     @Transactional
     public LeavesTracker saveLeavesTracker(CreateLeaveTrackerDto createLeaveTrackerDto, UserDto userDto) {
         Optional<Users> user = usersRepository.findById(userDto.getId());
-        Optional<Users> reportingManager = usersRepository.findById(createLeaveTrackerDto.getReportingManager());
+        if (user.isEmpty()) {
+            throw new EntityNotFoundException("User not found");
+        }
+        Optional<Users> reportingManager = usersRepository.findById(user.get().getReportingManager().getId());
         LeavesTracker leavesTracker = new LeavesTracker();
         Float noOfDays = 0f;
 
-        if (user.isEmpty() || reportingManager.isEmpty()) {
-            throw new EntityNotFoundException("User or Reporting Manager not found");
+        if (reportingManager.isEmpty()) {
+            throw new EntityNotFoundException("Reporting Manager not found");
         } else {
             LeaveBreakup[] leaveBreakups = createLeaveTrackerDto.getLeaveBreakups();
             LeavesSystem leavesSystem = leaveSystemRepository.readByDesignationAndOrganization(user.get().getDesignation(), user.get().getOrganization());
@@ -71,7 +74,7 @@ public class LeaveTrackerService {
                 noOfDays += numLeaveValue;
             }
             leavesTracker.setUserId(user.get().getId());
-            leavesTracker.setReportingManager(createLeaveTrackerDto.getReportingManager());
+            leavesTracker.setReportingManager(reportingManager.get().getId());
             leavesTracker.setStartDate(createLeaveTrackerDto.getStartDate());
             leavesTracker.setEndDate(createLeaveTrackerDto.getEndDate());
             leavesTracker.setReason(createLeaveTrackerDto.getReason());

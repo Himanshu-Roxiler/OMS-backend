@@ -3,6 +3,7 @@ package com.roxiler.erp.model;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIncludeProperties;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -16,9 +17,9 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@JsonIdentityInfo(
-        generator = ObjectIdGenerators.PropertyGenerator.class,
-        property = "id")
+//@JsonIdentityInfo(
+//        generator = ObjectIdGenerators.PropertyGenerator.class,
+//        property = "id")
 public class UserOrganizationRole extends BaseEntity {
 
     @Id
@@ -41,7 +42,8 @@ public class UserOrganizationRole extends BaseEntity {
     //    @JsonIdentityInfo(
 //            generator = ObjectIdGenerators.PropertyGenerator.class,
 //            property = "id")
-    @JsonIgnore
+//    @JsonIgnore
+    @JsonIncludeProperties({"id", "name"})
     @ManyToOne(fetch = FetchType.LAZY, optional = true)
     @JoinColumn(
             name = "organization_id",
@@ -53,7 +55,8 @@ public class UserOrganizationRole extends BaseEntity {
     //    @JsonIdentityInfo(
 //            generator = ObjectIdGenerators.PropertyGenerator.class,
 //            property = "id")
-    @JsonIgnore
+//    @JsonIgnore
+    @JsonIncludeProperties({"id", "name", "features"})
     @ManyToOne(fetch = FetchType.LAZY, optional = true)
     @JoinColumn(
             name = "role_id",

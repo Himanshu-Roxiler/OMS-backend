@@ -1,9 +1,6 @@
 package com.roxiler.erp.model;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import com.fasterxml.jackson.annotation.*;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
@@ -23,9 +20,9 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 //@JsonIgnoreProperties({"hibernateLazyInitializer"})
-@JsonIdentityInfo(
-        generator = ObjectIdGenerators.PropertyGenerator.class,
-        property = "id")
+//@JsonIdentityInfo(
+//        generator = ObjectIdGenerators.PropertyGenerator.class,
+//        property = "id")
 public class Leaves extends BaseEntity {
 
     @Id
@@ -71,7 +68,7 @@ public class Leaves extends BaseEntity {
     //     @JsonIdentityInfo(
 //             generator = ObjectIdGenerators.PropertyGenerator.class,
 //             property = "id")
-    @JsonIgnore
+//    @JsonIgnore
 //    @OneToOne(
 //            mappedBy = "userLeaves",
 //            fetch = FetchType.LAZY,
@@ -79,6 +76,7 @@ public class Leaves extends BaseEntity {
 //            targetEntity = Users.class
 //    )
 //    @JoinColumn(name = "user_id", referencedColumnName = "userLeaves")
+    @JsonIncludeProperties({"id", "name", "email", "organization", "designation", "department"})
     @OneToOne(fetch = FetchType.EAGER, optional = true)
     @JoinColumn(
             name = "user_id",

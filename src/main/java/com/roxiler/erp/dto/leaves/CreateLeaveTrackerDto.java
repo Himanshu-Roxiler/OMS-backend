@@ -43,6 +43,4 @@ public class CreateLeaveTrackerDto {
             message = "Invalid input for leave type"
     )
     private String typeOfLeave;
-
-    private Integer reportingManager;
 }

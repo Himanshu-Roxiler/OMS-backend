@@ -1,9 +1,6 @@
 package com.roxiler.erp.model;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import com.fasterxml.jackson.annotation.*;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
@@ -23,9 +20,9 @@ import java.util.Set;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@JsonIdentityInfo(
-        generator = ObjectIdGenerators.PropertyGenerator.class,
-        property = "id")
+//@JsonIdentityInfo(
+//        generator = ObjectIdGenerators.PropertyGenerator.class,
+//        property = "id")
 @JsonIgnoreProperties({"hibernateLazyInitializer"})
 public class LeavesSystem extends BaseEntity {
 
@@ -60,7 +57,8 @@ public class LeavesSystem extends BaseEntity {
     //     @JsonIdentityInfo(
 //             generator = ObjectIdGenerators.PropertyGenerator.class,
 //             property = "id")
-    @JsonIgnore
+//    @JsonIgnore
+    @JsonIncludeProperties({"id", "name"})
     @ManyToOne(fetch = FetchType.LAZY, optional = true)
     @JoinColumn(
             name = "organization",
@@ -72,7 +70,8 @@ public class LeavesSystem extends BaseEntity {
     //     @JsonIdentityInfo(
 //             generator = ObjectIdGenerators.PropertyGenerator.class,
 //             property = "id")
-    @JsonIgnore
+//    @JsonIgnore
+    @JsonIncludeProperties({"id", "name"})
     @OneToOne(
             fetch = FetchType.LAZY,
             cascade = CascadeType.PERSIST,

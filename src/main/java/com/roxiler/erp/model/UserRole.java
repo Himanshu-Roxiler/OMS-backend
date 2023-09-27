@@ -1,9 +1,6 @@
 package com.roxiler.erp.model;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import com.fasterxml.jackson.annotation.*;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -23,9 +20,9 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 @JsonIgnoreProperties({"hibernateLazyInitializer"})
-@JsonIdentityInfo(
-        generator = ObjectIdGenerators.PropertyGenerator.class,
-        property = "id")
+//@JsonIdentityInfo(
+//        generator = ObjectIdGenerators.PropertyGenerator.class,
+//        property = "id")
 public class UserRole extends BaseEntity {
 
     @Id
@@ -41,7 +38,8 @@ public class UserRole extends BaseEntity {
     //    @JsonIdentityInfo(
 //            generator = ObjectIdGenerators.PropertyGenerator.class,
 //            property = "id")
-    @JsonIgnore
+//    @JsonIgnore
+    @JsonIncludeProperties({"id", "name"})
     @ManyToOne(fetch = FetchType.EAGER, optional = true)
     @JoinColumn(
             name = "organization",
@@ -53,7 +51,8 @@ public class UserRole extends BaseEntity {
     //    @JsonIdentityInfo(
 //            generator = ObjectIdGenerators.PropertyGenerator.class,
 //            property = "id")
-    @JsonIgnore
+//    @JsonIgnore
+    @JsonIncludeProperties({"id", "name"})
     @ManyToMany(
             mappedBy = "roles",
             fetch = FetchType.LAZY,

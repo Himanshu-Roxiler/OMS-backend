@@ -22,10 +22,15 @@ import com.roxiler.erp.service.HolidayService;
 
 import jakarta.validation.Valid;
 
+import java.text.ParseException;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+
 @RestController
-@RequestMapping("/holiday")
+@RequestMapping(value = "/v1/holiday")
 public class HolidayController {
-    
+
     @Autowired
     private HolidayService Holidayervice;
 
@@ -58,9 +63,9 @@ public class HolidayController {
     }
 
     @PostMapping("")
-    public ResponseEntity<ResponseObject> addHoliday(@AuthenticationPrincipal UserDto userDto ,@Valid @RequestBody CreateHolidayDto Holiday) {
+    public ResponseEntity<ResponseObject> addHoliday(@AuthenticationPrincipal UserDto userDto, @Valid @RequestBody CreateHolidayDto Holiday) {
 
-        Holiday Holiday2 = Holidayervice.saveHoliday(Holiday,userDto);
+        Holiday Holiday2 = Holidayervice.saveHoliday(Holiday, userDto);
         ResponseObject responseObject = new ResponseObject();
         responseObject.setIs_success(true);
         responseObject.setMessage("Successfully created Holiday.");
@@ -95,4 +100,45 @@ public class HolidayController {
         return response;
     }
 
+    @GetMapping("/upcoming-all")
+    public ResponseEntity<ResponseObject> getUpcomingLeaveAndHolidays(@AuthenticationPrincipal UserDto userDto) throws ParseException {
+
+        Iterable<Map<String, Object>> Holidays = Holidayervice.upcomingLeavesAndHolidays(userDto);
+
+        ResponseObject responseObject = new ResponseObject();
+        responseObject.setIs_success(true);
+        responseObject.setMessage("Successfully fetched upcoming holidays and leaves");
+        responseObject.setData(Holidays);
+        ResponseEntity<ResponseObject> response = new ResponseEntity<>(responseObject, HttpStatus.OK);
+
+        return response;
+    }
+
+    @GetMapping("/upcoming-holiday")
+    public ResponseEntity<ResponseObject> getUpcomingHolidays(@AuthenticationPrincipal UserDto userDto) {
+
+        Iterable<Map<String, Object>> Holidays = Holidayervice.upcomingHolidays(userDto);
+
+        ResponseObject responseObject = new ResponseObject();
+        responseObject.setIs_success(true);
+        responseObject.setMessage("Successfully fetched upcoming holidays");
+        responseObject.setData(Holidays);
+        ResponseEntity<ResponseObject> response = new ResponseEntity<>(responseObject, HttpStatus.OK);
+
+        return response;
+    }
+
+    @GetMapping("/upcoming-leaves")
+    public ResponseEntity<ResponseObject> getUpcomingLeaves(@AuthenticationPrincipal UserDto userDto) {
+
+        Iterable<Map<String, Object>> Holidays = Holidayervice.upcomingLeaves(userDto);
+
+        ResponseObject responseObject = new ResponseObject();
+        responseObject.setIs_success(true);
+        responseObject.setMessage("Successfully fetched upcoming holidays");
+        responseObject.setData(Holidays);
+        ResponseEntity<ResponseObject> response = new ResponseEntity<>(responseObject, HttpStatus.OK);
+
+        return response;
+    }
 }

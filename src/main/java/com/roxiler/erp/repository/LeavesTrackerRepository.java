@@ -20,4 +20,7 @@ public interface LeavesTrackerRepository extends JpaRepository<LeavesTracker, In
     @Transactional
     @Query(value = "UPDATE LeavesTracker leaveTracker SET leaveTracker.deletedAt = CURRENT_TIMESTAMP, leaveTracker.deletedBy = :deletedBy WHERE leave.id = :id", nativeQuery = true)
     void softDeleteById(Integer id, String deletedBy);
+
+    @Query(value = "SELECT leaveTracker FROM LeavesTracker leaveTracker WHERE leaveTracker.userId = :userId AND (leaveTracker.startDate > CURRENT_DATE OR leaveTracker.endDate <= CURRENT_DATE)")
+    Iterable<LeavesTracker> findUpcomingLeaves(Integer userId);
 }

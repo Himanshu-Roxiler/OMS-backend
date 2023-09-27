@@ -24,9 +24,9 @@ import java.util.Set;
 @Getter
 @Setter
 //@JsonIgnoreProperties({"hibernateLazyInitializer"})
-@JsonIdentityInfo(
-        generator = ObjectIdGenerators.PropertyGenerator.class,
-        property = "id")
+//@JsonIdentityInfo(
+//        generator = ObjectIdGenerators.PropertyGenerator.class,
+//        property = "id")
 public class Organization extends BaseEntity {
 
     @Id
