@@ -138,7 +138,7 @@ public class DepartmentService {
             if (dept.get().getUsers().size() == 0) {
                 departmentRepository.softDeleteById(id, deletedBy);
             } else {
-                throw new Exception("Department deleted successfully.");
+                throw new Exception("Unable to delete department as there are users associated with the department.");
             }
 
         } else {

@@ -134,7 +134,7 @@ public class UserRoleService {
             if (userRole.get().getUserOrganizationRole().size() == 0) {
                 userRoleRepository.softDeleteById(id, userDto.getEmail());
             } else {
-                throw new Exception("Role deleted successfully.");
+                throw new Exception("Unable to delete role as there are users associated with the department.");
             }
         } else {
             throw new EntityNotFoundException("UserRole is not found");

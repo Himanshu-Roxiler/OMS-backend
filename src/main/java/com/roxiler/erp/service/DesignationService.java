@@ -125,7 +125,7 @@ public class DesignationService {
             if (desg.get().getUsers().size() == 0) {
                 designationRepository.softDeleteById(id, deletedBy);
             } else {
-                throw new Exception("Designation deleted successfully.");        
+                throw new Exception("Unable to delete designation as there are users associated with the department.");        
             }
 
         } else {
