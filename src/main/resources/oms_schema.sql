@@ -201,7 +201,7 @@ CREATE TABLE users (
     designation INTEGER,
     organization INTEGER,
     user_profile INTEGER UNIQUE,
-    reporting_manager_id INTEGER,
+    reporting_manager INTEGER UNIQUE,
     google_id VARCHAR(255),
     outlook_id VARCHAR(255),
     created_at TIMESTAMP(6),
@@ -242,5 +242,7 @@ ALTER TABLE users ADD CONSTRAINT FK_user_dept FOREIGN KEY (department) REFERENCE
 ALTER TABLE users ADD CONSTRAINT FK_user_desg FOREIGN KEY (designation) REFERENCES designation;
 
 ALTER TABLE users ADD CONSTRAINT FK_user_org FOREIGN KEY (organization) REFERENCES organization;
+
+ALTER TABLE users ADD CONSTRAINT FK_user_rm FOREIGN KEY (reporting_manager) REFERENCES users;
 
 ALTER TABLE users ADD CONSTRAINT FK_user_profile FOREIGN KEY (user_profile) REFERENCES user_profile;

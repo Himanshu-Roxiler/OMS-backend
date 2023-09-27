@@ -69,8 +69,22 @@ public class Users extends BaseEntity {
     @Column(name = "outlook_id")
     private String outlookId;
 
-    @Column(name = "reporting_manager_id", nullable = true)
-    private Integer reportingManagerId;
+//    @Column(name = "reporting_manager_id", nullable = true)
+//    private Integer reportingManagerId;
+
+    //    @JsonIgnore
+//    @JsonIdentityInfo(
+//            generator = ObjectIdGenerators.PropertyGenerator.class,
+//            property = "id")
+    @JsonIncludeProperties({"id", "email", "username", "firstName", "lastName"})
+    @OneToOne(fetch = FetchType.EAGER, optional = true)
+    @JoinColumn(
+            name = "reporting_manager",
+            referencedColumnName = "id",
+            nullable = true
+    )
+    private Users reportingManager;
+
 
     //    @JsonIgnore
 //    @JsonIdentityInfo(

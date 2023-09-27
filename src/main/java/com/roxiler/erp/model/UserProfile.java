@@ -68,7 +68,7 @@ public class UserProfile extends BaseEntity {
 //            generator = ObjectIdGenerators.PropertyGenerator.class,
 //            property = "id")
 //    @JsonIgnore
-    @JsonIncludeProperties({"id", "username", "email", "department", "designation", "organization", "userOrganizationRole"})
+    @JsonIncludeProperties({"id", "username", "email", "department", "designation", "organization", "userOrganizationRole", "reportingManager"})
     @OneToOne(
             mappedBy = "userProfile",
             fetch = FetchType.LAZY,

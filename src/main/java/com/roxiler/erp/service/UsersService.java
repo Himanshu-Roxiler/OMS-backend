@@ -179,8 +179,8 @@ public class UsersService {
         for (Users user : users) {
             Map<String, Object> userObj = new HashMap<>();
             userObj.put("user", user);
-            if (user.getReportingManagerId() != null) {
-                Optional<Users> reportingManager = usersRepository.findById(user.getReportingManagerId());
+            if (user.getReportingManager() != null) {
+                Optional<Users> reportingManager = usersRepository.findById(user.getReportingManager().getId());
                 if (reportingManager.isPresent()) {
                     String rmName = String.format("%s %s", reportingManager.get().getFirstName(), reportingManager.get().getLastName());
                     userObj.put("reportingManager", rmName);
@@ -263,6 +263,7 @@ public class UsersService {
         userProfile.setUser(savedUser);
         UserProfile savedProfile = userProfileRepository.save(userProfile);
         savedUser.setUserProfile(savedProfile);
+        savedUser.setReportingManager(adminUser);
         usersRepository.save(savedUser);
 
         String recipient = user.getEmail();
@@ -436,6 +437,17 @@ public class UsersService {
         user.get().setPassword(hashedPassword);
         user.get().setPasswordResetToken(null);
         usersRepository.save(user.get());
+
+        String recipient = user.get().getEmail();
+        String subject = "Reset Password";
+        Context ctx = new Context(LocaleContextHolder.getLocale());
+        String htmlContent = templateEngine.process("reset-password", ctx);
+
+        try {
+            emailService.sendEmail(recipient, subject, htmlContent);
+        } catch (UnsupportedEncodingException | MessagingException e) {
+            System.out.println(e.getStackTrace());
+        }
     }
 
     @RequiredPermission(permission = PermissionConstants.USERS)
@@ -455,7 +467,8 @@ public class UsersService {
             throw new AuthorizationServiceException("You are not allowed to perform this action due to organization mismatch");
         }
 
-        user.get().setReportingManagerId(assignReportingManagerDto.getReportingManagerId());
+//        user.get().setReportingManagerId(assignReportingManagerDto.getReportingManagerId());
+        user.get().setReportingManager(reportingManager.get());
         usersRepository.save(user.get());
 
         return user.get();
@@ -474,7 +487,8 @@ public class UsersService {
             throw new AuthorizationServiceException("You are not allowed to perform this action due to organization mismatch");
         }
 
-        user.get().setReportingManagerId(null);
+//        user.get().setReportingManagerId(null);
+        user.get().setReportingManager(null);
         usersRepository.save(user.get());
 
         return user.get();
