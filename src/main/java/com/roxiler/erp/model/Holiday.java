@@ -24,9 +24,9 @@ import lombok.Setter;
 @AllArgsConstructor
 @Entity
 @Table(name = "holiday")
-@JsonIdentityInfo(
-        generator = ObjectIdGenerators.PropertyGenerator.class,
-        property = "id")
+//@JsonIdentityInfo(
+//        generator = ObjectIdGenerators.PropertyGenerator.class,
+//        property = "id")
 public class Holiday extends BaseEntity {
 
     @Id
@@ -43,7 +43,8 @@ public class Holiday extends BaseEntity {
     @Column(name = "holiday_date")
     private Date holidayDate;
 
-    @JsonIgnore
+    //    @JsonIgnore
+    @JsonIncludeProperties({"id", "name"})
     @ManyToOne(fetch = FetchType.EAGER, optional = true)
     @JoinColumn(
             name = "organization_id",

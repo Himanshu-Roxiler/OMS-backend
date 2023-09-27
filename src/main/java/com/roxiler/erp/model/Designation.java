@@ -19,9 +19,9 @@ import java.util.Set;
 @Getter
 @Setter
 //@JsonIgnoreProperties({"hibernateLazyInitializer"})
-@JsonIdentityInfo(
-        generator = ObjectIdGenerators.PropertyGenerator.class,
-        property = "id")
+//@JsonIdentityInfo(
+//        generator = ObjectIdGenerators.PropertyGenerator.class,
+//        property = "id")
 public class Designation extends BaseEntity {
 
     @Id
@@ -42,7 +42,8 @@ public class Designation extends BaseEntity {
     //    @JsonIdentityInfo(
 //            generator = ObjectIdGenerators.PropertyGenerator.class,
 //            property = "id")
-    @JsonIgnore
+//    @JsonIgnore
+    @JsonIncludeProperties({"id", "name"})
     @ManyToOne(fetch = FetchType.EAGER, optional = true)
     @JoinColumn(
             name = "organization_id",

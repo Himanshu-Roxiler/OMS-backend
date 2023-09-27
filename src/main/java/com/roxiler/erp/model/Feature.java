@@ -20,9 +20,9 @@ import java.util.Set;
 @Where(clause = "deleted_at IS NULL")
 //@Getter
 //@Setter
-@JsonIdentityInfo(
-        generator = ObjectIdGenerators.PropertyGenerator.class,
-        property = "id")
+//@JsonIdentityInfo(
+//        generator = ObjectIdGenerators.PropertyGenerator.class,
+//        property = "id")
 @Data
 public class Feature extends BaseEntity {
 

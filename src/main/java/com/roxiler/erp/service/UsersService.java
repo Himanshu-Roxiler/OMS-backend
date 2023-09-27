@@ -264,6 +264,18 @@ public class UsersService {
         UserProfile savedProfile = userProfileRepository.save(userProfile);
         savedUser.setUserProfile(savedProfile);
         usersRepository.save(savedUser);
+
+        String recipient = user.getEmail();
+        String subject = "Account Credentials";
+        Context ctx = new Context(LocaleContextHolder.getLocale());
+        ctx.setVariable("password", user.getPassword());
+        String htmlContent = templateEngine.process("account-credentials", ctx);
+
+        try {
+            emailService.sendEmail(recipient, subject, htmlContent);
+        } catch (UnsupportedEncodingException | MessagingException e) {
+            System.out.println(e.getStackTrace());
+        }
         return savedUser;
     }
 
@@ -389,7 +401,6 @@ public class UsersService {
         Context ctx = new Context(LocaleContextHolder.getLocale());
         ctx.setVariable("url", resetLink);
         String htmlContent = templateEngine.process("forget-password", ctx);
-        System.out.println("\nURL\n" + resetLink);
 
         try {
             emailService.sendEmail(recipient, subject, htmlContent);

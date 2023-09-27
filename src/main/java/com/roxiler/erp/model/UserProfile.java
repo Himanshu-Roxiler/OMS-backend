@@ -2,6 +2,7 @@ package com.roxiler.erp.model;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIncludeProperties;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
@@ -66,7 +67,8 @@ public class UserProfile extends BaseEntity {
     //    @JsonIdentityInfo(
 //            generator = ObjectIdGenerators.PropertyGenerator.class,
 //            property = "id")
-    @JsonIgnore
+//    @JsonIgnore
+    @JsonIncludeProperties({"id", "username", "email", "department", "designation", "organization", "userOrganizationRole"})
     @OneToOne(
             mappedBy = "userProfile",
             fetch = FetchType.LAZY,
