@@ -39,6 +39,9 @@ public class DesignationService {
     @Autowired
     private LeaveSystemService leaveSystemService;
 
+    @Autowired
+    private LeaveService leaveService;
+
     public Iterable<Designation> getAllDesignations() {
         Iterable<Designation> designations = designationRepository.findAll();
 
@@ -56,6 +59,18 @@ public class DesignationService {
                 pageSize);
         Page<Designation> designations = designationRepository.getListDesgWithOrg(org.get(), search.toLowerCase(), pageable);
         return designations;
+    }
+
+    public void createAdminDesignation(UserDto userDto) {
+        CreateDesignationDto createDesignationDto = new CreateDesignationDto();
+        createDesignationDto.setName("Admin");
+        createDesignationDto.setDescription("This is an admin account");
+
+        Designation adminDesignation = saveDesignation(createDesignationDto, userDto.getOrgId());
+        Optional<Users> user = usersRepository.findByEmail(userDto.getEmail());
+        user.get().setDesignation(adminDesignation);
+        usersRepository.save(user.get());
+        leaveService.createLeaveOnUserCreation(user.get());
     }
 
     @RequiredPermission(permission = PermissionConstants.DESIGNATION)
@@ -125,7 +140,7 @@ public class DesignationService {
             if (desg.get().getUsers().size() == 0) {
                 designationRepository.softDeleteById(id, deletedBy);
             } else {
-                throw new Exception("Unable to delete designation as there are users associated with the department.");        
+                throw new Exception("Unable to delete designation as there are users associated with the department.");
             }
 
         } else {

@@ -100,7 +100,7 @@ public class LeaveService {
         leaves.setApprovedLeaves(0f);
         leaves.setBookedLeaves(0f);
         Float accrual = leavesSystem.getAccrual();
-        leaves.setAvailablePaidLeaves(accrual);
+        leaves.setAvailablePaidLeaves(5f);
         leaves.setAvailableUnpaidLeaves(10f);
         leaves.setAvailableSickLeaves(5f);
         leaves.setAvailableVacationLeaves(10f);

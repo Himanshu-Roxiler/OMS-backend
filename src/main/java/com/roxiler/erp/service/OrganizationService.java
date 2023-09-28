@@ -45,6 +45,12 @@ public class OrganizationService {
     @Autowired
     private HolidayService holidayService;
 
+    @Autowired
+    private DesignationService designationService;
+
+    @Autowired
+    private DepartmentService departmentService;
+
     @Transactional
     @EntityGraph(value = "departments")
     public Iterable<Organization> findPopulatedOrganizations() {
@@ -74,6 +80,7 @@ public class OrganizationService {
             Organization org = organizationRepository.save(organization);
             user.get().setOrganization(org);
             user.get().setActiveOrganization(org.getId());
+            user.get().setReportingManager(user.get());
             usersRepository.save(user.get());
 
             UserOrganizationRole userOrganizationRole = new UserOrganizationRole();
@@ -86,6 +93,8 @@ public class OrganizationService {
             Organization savedOrg = organizationRepository.save(organization);
             userDto.setOrgId(savedOrg.getId());
             holidayService.createHolidaysOnOrgCreation(userDto);
+            designationService.createAdminDesignation(userDto);
+            departmentService.createAdminDepartment(userDto);
         }
 
         return organization;

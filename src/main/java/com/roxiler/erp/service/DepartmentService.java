@@ -5,6 +5,7 @@ import com.roxiler.erp.dto.auth.UserDto;
 import com.roxiler.erp.dto.department.CreateDepartmentDto;
 import com.roxiler.erp.dto.department.ListDepartmentDto;
 import com.roxiler.erp.dto.department.UpdateDepartmentDto;
+import com.roxiler.erp.dto.designation.CreateDesignationDto;
 import com.roxiler.erp.interfaces.RequiredPermission;
 import com.roxiler.erp.model.*;
 import com.roxiler.erp.repository.DepartmentRepository;
@@ -36,7 +37,10 @@ public class DepartmentService {
     private OrganizationRepository organizationRepository;
 
     @Autowired
-    UsersRepository usersRepository;
+    private UsersRepository usersRepository;
+
+    @Autowired
+    private LeaveService leaveService;
 
     @RequiredPermission(permission = PermissionConstants.DEPARTMENT)
     public Iterable<Department> getAllDepartments() {
@@ -68,6 +72,17 @@ public class DepartmentService {
         Page<Department> departments = departmentRepository.getDeptListWithOrg(org.get(), search.toLowerCase(), pageable);
 
         return departments;
+    }
+
+    public void createAdminDepartment(UserDto userDto) {
+        CreateDepartmentDto createDepartmentDto = new CreateDepartmentDto();
+        createDepartmentDto.setName("Administration");
+        createDepartmentDto.setDescription("This is the administration department");
+
+        Department department = saveDepartment(createDepartmentDto, userDto.getOrgId());
+        Optional<Users> user = usersRepository.findByEmail(userDto.getEmail());
+        user.get().setDepartment(department);
+        usersRepository.save(user.get());
     }
 
     @RequiredPermission(permission = PermissionConstants.DEPARTMENT)
