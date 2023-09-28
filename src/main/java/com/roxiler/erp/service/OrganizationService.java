@@ -80,7 +80,6 @@ public class OrganizationService {
             Organization org = organizationRepository.save(organization);
             user.get().setOrganization(org);
             user.get().setActiveOrganization(org.getId());
-            user.get().setReportingManager(user.get());
             usersRepository.save(user.get());
 
             UserOrganizationRole userOrganizationRole = new UserOrganizationRole();

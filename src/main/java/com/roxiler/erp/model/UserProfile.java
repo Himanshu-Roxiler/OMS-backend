@@ -19,9 +19,9 @@ import java.util.Date;
 @Where(clause = "deleted_at IS NULL")
 @Getter
 @Setter
-@JsonIdentityInfo(
-        generator = ObjectIdGenerators.PropertyGenerator.class,
-        property = "id")
+//@JsonIdentityInfo(
+//        generator = ObjectIdGenerators.PropertyGenerator.class,
+//        property = "id")
 public class UserProfile extends BaseEntity {
 
     @Id
