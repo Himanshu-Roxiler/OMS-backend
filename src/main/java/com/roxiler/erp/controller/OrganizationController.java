@@ -39,7 +39,7 @@ public class OrganizationController {
             @AuthenticationPrincipal UserDto user,
             @Valid @RequestBody Organization organization
     ) {
-        Organization newOrganization = organizationService.saveOrganization(organization, user.getId());
+        Organization newOrganization = organizationService.saveOrganization(organization, user);
         ResponseObject responseObject = new ResponseObject();
         responseObject.setIs_success(true);
         responseObject.setMessage("Successfully created organization");

@@ -3,6 +3,7 @@ package com.roxiler.erp.service;
 import com.roxiler.erp.constants.PermissionConstants;
 import com.roxiler.erp.constants.RoleNameConstants;
 import com.roxiler.erp.dto.auth.UserDto;
+import com.roxiler.erp.dto.holiday.CreateHolidayDto;
 import com.roxiler.erp.interfaces.RequiredPermission;
 import com.roxiler.erp.model.*;
 import com.roxiler.erp.model.Organization;
@@ -41,6 +42,9 @@ public class OrganizationService {
     @Autowired
     private UserRoleRepository userRoleRepository;
 
+    @Autowired
+    private HolidayService holidayService;
+
     @Transactional
     @EntityGraph(value = "departments")
     public Iterable<Organization> findPopulatedOrganizations() {
@@ -56,11 +60,11 @@ public class OrganizationService {
     }
 
     //@RequiredPermission(permission = PermissionConstants.ADMIN)
-    public Organization saveOrganization(Organization organization, Integer userId) {
+    public Organization saveOrganization(Organization organization, UserDto userDto) {
 
         //Department dept = departmentService.getDepartmentById(organization.getDepartmentId().getId());
         //Designation desg = designationService.getDesignationById(organization.getDesignationId().getId());
-        Optional<Users> user = usersRepository.findById(userId);
+        Optional<Users> user = usersRepository.findById(userDto.getId());
         if (user.isPresent()) {
 
             if (user.get().getOrganization() != null) {
@@ -79,8 +83,9 @@ public class OrganizationService {
             userOrganizationRole.setUser(user.get());
             UserOrganizationRole userOrgRole = userOrganizationRoleRepository.save(userOrganizationRole);
             organization.getUserOrganizationRole().add(userOrgRole);
-            organizationRepository.save(organization);
-
+            Organization savedOrg = organizationRepository.save(organization);
+            userDto.setOrgId(savedOrg.getId());
+            holidayService.createHolidaysOnOrgCreation(userDto);
         }
 
         return organization;

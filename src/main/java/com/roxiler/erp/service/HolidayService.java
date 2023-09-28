@@ -57,6 +57,45 @@ public class HolidayService {
         }
     }
 
+    public void createHolidaysOnOrgCreation(UserDto userDto) {
+        CreateHolidayDto createHolidayDto = new CreateHolidayDto();
+
+        SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd");
+        try {
+            String inputDate = "2023-10-02";
+            Date date = inputFormat.parse(inputDate);
+            createHolidayDto.setHolidayDate(date);
+            createHolidayDto.setHolidayName("Gandhi Jayanti");
+            createHolidayDto.setHolidayDescription("Birth anniversary of Mahatma Gandhi");
+            saveHoliday(createHolidayDto, userDto);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            String inputDate = "2023-10-24";
+            Date date = inputFormat.parse(inputDate);
+            createHolidayDto.setHolidayDate(date);
+            createHolidayDto.setHolidayName("Dussehra");
+            createHolidayDto.setHolidayDescription("Celebration of victory of good over evil and end of Navratri");
+            saveHoliday(createHolidayDto, userDto);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            String inputDate = "2023-12-25";
+            Date date = inputFormat.parse(inputDate);
+            createHolidayDto.setHolidayDate(date);
+            createHolidayDto.setHolidayName("Christmas");
+            createHolidayDto.setHolidayDescription("Birthday of Jesus Christ");
+            saveHoliday(createHolidayDto, userDto);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+    }
+
     public Holiday saveHoliday(CreateHolidayDto createHolidayDto, UserDto userDto) {
         Optional<Organization> org = organizationRepository.findById(userDto.getOrgId());
 
