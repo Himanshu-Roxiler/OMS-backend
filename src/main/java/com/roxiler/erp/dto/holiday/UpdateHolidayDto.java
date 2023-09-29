@@ -13,11 +13,11 @@ import lombok.Data;
 public class UpdateHolidayDto {
 
     @NotBlank(message = "Holiday Name should not be blank")
-    @Size(min = 3, message = "Length should not be less than 3")
+    @Size(min = 3, message = "Length of name should not be less than 3")
     private String holidayName;
 
     @NotBlank(message = "Holiday Description should not be blank")
-    @Size(min = 3, message = "Length should not be less than 3")
+    @Size(min = 10, message = "Length of description should not be less than 10")
     private String holidayDescription;
 
     @Temporal(TemporalType.DATE)

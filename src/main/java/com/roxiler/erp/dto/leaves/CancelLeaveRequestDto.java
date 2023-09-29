@@ -7,7 +7,7 @@ import lombok.Data;
 @Data
 public class CancelLeaveRequestDto {
     @NotBlank(message = "Reason should not be blank")
-    @Size(min = 10, message = "Length should not be less than 3")
+    @Size(min = 10, message = "Length of reason should not be less than 10")
     private String leaveCancelReason;
 
 }

@@ -155,6 +155,7 @@ public class HolidayService {
             obj.put("date", formattedDate);
             obj.put("normalizedDate", holiday.getHolidayDate().getTime());
             obj.put("reason", holiday.getHolidayName());
+            obj.put("isLeave", false);
             upcomingLeavesAndHolidays.add(obj);
         }
         for (LeavesTracker leavesTracker : leavesTrackers) {
@@ -174,6 +175,8 @@ public class HolidayService {
                         obj.put("date", formattedDate);
                         obj.put("reason", "Approved Leave");
                         obj.put("normalizedDate", approvedLeaveBreakup.getStartDate().getTime());
+                        obj.put("isLeave", true);
+                        obj.put("leaveRequestId", leavesTracker.getId());
                         upcomingLeavesAndHolidays.add(obj);
                     }
                 }
@@ -191,6 +194,8 @@ public class HolidayService {
                         obj.put("date", formattedDate);
                         obj.put("reason", "Leave Approval Pending");
                         obj.put("normalizedDate", leaveBreakup.getStartDate().getTime());
+                        obj.put("isLeave", true);
+                        obj.put("leaveRequestId", leavesTracker.getId());
                         upcomingLeavesAndHolidays.add(obj);
                     }
                 }
@@ -221,6 +226,7 @@ public class HolidayService {
             obj.put("date", formattedDate);
             obj.put("normalizedDate", holiday.getHolidayDate().getTime());
             obj.put("reason", holiday.getHolidayName());
+            obj.put("isLeave", false);
             upcomingHolidays.add(obj);
         }
 
@@ -256,6 +262,8 @@ public class HolidayService {
                         obj.put("date", formattedDate);
                         obj.put("reason", "Approved Leave");
                         obj.put("normalizedDate", approvedLeaveBreakup.getStartDate().getTime());
+                        obj.put("isLeave", true);
+                        obj.put("leaveRequestId", leavesTracker.getId());
                         upcomingLeavesAndHolidays.add(obj);
                     }
                 }
@@ -273,6 +281,8 @@ public class HolidayService {
                         obj.put("date", formattedDate);
                         obj.put("reason", "Leave Approval Pending");
                         obj.put("normalizedDate", leaveBreakup.getStartDate().getTime());
+                        obj.put("isLeave", true);
+                        obj.put("leaveRequestId", leavesTracker.getId());
                         upcomingLeavesAndHolidays.add(obj);
                     }
                 }

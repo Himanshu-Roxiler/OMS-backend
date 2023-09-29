@@ -10,7 +10,7 @@ import java.util.Date;
 @Data
 public class RejectLeaveRequestDto {
     @NotBlank(message = "Comment should not be blank")
-    @Size(min = 10, message = "Length should not be less than 10")
+    @Size(min = 10, message = "Length of comment should not be less than 10")
     private String comment;
 
     private String note;

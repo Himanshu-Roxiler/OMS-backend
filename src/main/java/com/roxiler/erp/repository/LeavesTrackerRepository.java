@@ -8,6 +8,10 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Date;
+import java.util.List;
+import java.util.Optional;
+
 public interface LeavesTrackerRepository extends JpaRepository<LeavesTracker, Integer> {
 
     @Query(value = "SELECT leaveTracker FROM LeavesTracker leaveTracker WHERE leaveTracker.userId = :userId")
@@ -23,4 +27,7 @@ public interface LeavesTrackerRepository extends JpaRepository<LeavesTracker, In
 
     @Query(value = "SELECT leaveTracker FROM LeavesTracker leaveTracker WHERE leaveTracker.userId = :userId AND (leaveTracker.startDate > CURRENT_DATE OR leaveTracker.endDate <= CURRENT_DATE)")
     Iterable<LeavesTracker> findUpcomingLeaves(Integer userId);
+
+    @Query(value = "SELECT leaveTracker FROM LeavesTracker leaveTracker WHERE leaveTracker.userId = :id AND ((leaveTracker.startDate >= :startDate AND leaveTracker.startDate <= :endDate) OR (leaveTracker.endDate >= :startDate AND leaveTracker.endDate <= :endDate))")
+    List<LeavesTracker> findByStartDateAndEndDate(Integer id, Date startDate, Date endDate);
 }

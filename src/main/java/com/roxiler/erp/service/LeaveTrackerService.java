@@ -2,10 +2,7 @@ package com.roxiler.erp.service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 import com.fasterxml.jackson.databind.exc.MismatchedInputException;
 import com.google.gson.Gson;
@@ -21,6 +18,7 @@ import com.roxiler.erp.repository.LeavesRepository;
 import jakarta.validation.ValidationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AuthorizationServiceException;
+import org.springframework.security.web.firewall.RequestRejectedException;
 import org.springframework.stereotype.Service;
 
 import com.roxiler.erp.dto.auth.UserDto;
@@ -55,6 +53,10 @@ public class LeaveTrackerService {
             throw new EntityNotFoundException("User not found");
         }
         Optional<Users> reportingManager = usersRepository.findById(user.get().getReportingManager().getId());
+        List<LeavesTracker> isLeaveApplied = leaveTrackerRepository.findByStartDateAndEndDate(userDto.getId(), createLeaveTrackerDto.getStartDate(), createLeaveTrackerDto.getEndDate());
+        if (!isLeaveApplied.isEmpty()) {
+            throw new RequestRejectedException("You have already applied leave for some of the days");
+        }
         LeavesTracker leavesTracker = new LeavesTracker();
         Float noOfDays = 0f;
 
@@ -170,6 +172,9 @@ public class LeaveTrackerService {
             if (!Objects.equals(updateLeaveTracker.getReportingManager(), userDto.getId())) {
                 throw new AuthorizationServiceException("You are not allowed to perform this action");
             }
+            if ((updateLeaveTracker.getIsApproved() != null) || updateLeaveTracker.getIsCancelled()) {
+                throw new RequestRejectedException("The leave has already been approved or rejected, or is cancelled by the user");
+            }
             updateLeaveTracker.setApprovedStartDate(approveLeaveRequestDto.getApprovedStartDate());
             updateLeaveTracker.setApprovedEndDate(approveLeaveRequestDto.getApprovedEndDate());
             updateLeaveTracker.setIsApproved(true);
@@ -208,6 +213,9 @@ public class LeaveTrackerService {
         Gson gson = new Gson();
         if (leavesTracker.isPresent()) {
             LeavesTracker updateLeaveTracker = leavesTracker.get();
+            if ((updateLeaveTracker.getIsApproved() != null && !updateLeaveTracker.getIsApproved()) || updateLeaveTracker.getIsCancelled()) {
+                throw new RequestRejectedException("Leave is already cancelled by you or rejected by reporting manager");
+            }
             Date leaveStartDate = updateLeaveTracker.getStartDate();
             Date currDate = new Date();
             if (currDate.after(leaveStartDate)) {
@@ -255,6 +263,9 @@ public class LeaveTrackerService {
         Gson gson = new Gson();
         if (leavesTracker.isPresent()) {
             LeavesTracker updateLeaveTracker = leavesTracker.get();
+            if ((updateLeaveTracker.getIsApproved() != null) || updateLeaveTracker.getIsCancelled()) {
+                throw new RequestRejectedException("The leave has already been rejected or approved, or is cancelled by the user");
+            }
             Date leaveStartDate = updateLeaveTracker.getStartDate();
             Date currDate = new Date();
             if (currDate.after(leaveStartDate)) {
@@ -264,7 +275,8 @@ public class LeaveTrackerService {
                 throw new AuthorizationServiceException("You are not allowed to perform this action");
             }
             Float noOfDays = 0f;
-            if (updateLeaveTracker.getIsApproved()) {
+            Boolean isApproved = updateLeaveTracker.getIsApproved();
+            if (isApproved != null && isApproved) {
                 ApprovedLeaveBreakup[] approvedLeaveBreakups = gson.fromJson(updateLeaveTracker.getApprovedLeaveBreakups(), ApprovedLeaveBreakup[].class);
                 for (ApprovedLeaveBreakup approvedLeaveBreakup : approvedLeaveBreakups) {
                     Float numLeaveValue = approvedLeaveBreakup.getNoOfDays();

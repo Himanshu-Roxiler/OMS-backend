@@ -16,7 +16,7 @@ import java.util.Set;
 @Data
 public class CreateUserRoleDto {
     @NotBlank(message = "Role name should not be blank")
-    @Size(min = 3, message = "Length should not be less than 3")
+    @Size(min = 3, message = "Length of name should not be less than 3")
     private String name;
 
     private Integer[] featureIds;

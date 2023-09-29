@@ -77,7 +77,7 @@ public class Users extends BaseEntity {
 //            generator = ObjectIdGenerators.PropertyGenerator.class,
 //            property = "id")
     @JsonIncludeProperties({"id", "email", "username", "firstName", "lastName"})
-    @OneToOne(fetch = FetchType.EAGER, optional = true)
+    @ManyToOne(fetch = FetchType.EAGER, optional = true)
     @JoinColumn(
             name = "reporting_manager",
             referencedColumnName = "id",

@@ -8,6 +8,6 @@ import lombok.Data;
 public class ForgotPasswordDto {
 
     @NotBlank(message = "Email should not be blank")
-    @Size(min = 3, message = "Length should not be less than 3")
+    @Size(min = 3, message = "Length of email should not be less than 3")
     private String email;
 }

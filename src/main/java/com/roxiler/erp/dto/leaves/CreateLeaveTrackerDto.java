@@ -26,13 +26,13 @@ public class CreateLeaveTrackerDto {
     private LeaveBreakup[] leaveBreakups;
 
     @NotBlank(message = "Reason should not be blank")
-    @Size(min = 10, message = "Length should not be less than 3")
+    @Size(min = 10, message = "Reason should not be less than 10 letters")
     private String reason;
 
     private Float noOfDays;
 
     @NotBlank(message = "Type of leave should not be blank")
-    @Size(min = 10, message = "Length should not be less than 10")
+    @Size(min = 10, message = "Type of leave should not be less than 10 letters")
     @ValidateString(
             acceptedValues = {
                     TypeOfLeaveConstants.PAID_LEAVE,
