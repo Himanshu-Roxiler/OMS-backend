@@ -25,9 +25,9 @@ public interface LeavesTrackerRepository extends JpaRepository<LeavesTracker, In
     @Query(value = "UPDATE LeavesTracker leaveTracker SET leaveTracker.deletedAt = CURRENT_TIMESTAMP, leaveTracker.deletedBy = :deletedBy WHERE leave.id = :id", nativeQuery = true)
     void softDeleteById(Integer id, String deletedBy);
 
-    @Query(value = "SELECT leaveTracker FROM LeavesTracker leaveTracker WHERE leaveTracker.userId = :userId AND (leaveTracker.startDate > CURRENT_DATE OR leaveTracker.endDate <= CURRENT_DATE)")
+    @Query(value = "SELECT leaveTracker FROM LeavesTracker leaveTracker WHERE leaveTracker.userId = :userId AND (leaveTracker.startDate > CURRENT_DATE OR leaveTracker.endDate <= CURRENT_DATE) AND leaveTracker.isCancelled=false")
     Iterable<LeavesTracker> findUpcomingLeaves(Integer userId);
 
-    @Query(value = "SELECT leaveTracker FROM LeavesTracker leaveTracker WHERE leaveTracker.userId = :id AND ((leaveTracker.startDate >= :startDate AND leaveTracker.startDate <= :endDate) OR (leaveTracker.endDate >= :startDate AND leaveTracker.endDate <= :endDate))")
+    @Query(value = "SELECT leaveTracker FROM LeavesTracker leaveTracker WHERE leaveTracker.userId = :id AND ((leaveTracker.startDate >= :startDate AND leaveTracker.startDate <= :endDate) OR (leaveTracker.endDate >= :startDate AND leaveTracker.endDate <= :endDate)) AND leaveTracker.isCancelled=false")
     List<LeavesTracker> findByStartDateAndEndDate(Integer id, Date startDate, Date endDate);
 }
