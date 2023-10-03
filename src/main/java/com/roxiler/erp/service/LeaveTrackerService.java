@@ -52,7 +52,7 @@ public class LeaveTrackerService {
         if (user.isEmpty()) {
             throw new EntityNotFoundException("User not found");
         }
-        Optional<Users> reportingManager = usersRepository.findById(user.get().getReportingManager().getId());
+        Users reportingManager = user.get().getReportingManager();
         List<LeavesTracker> isLeaveApplied = leaveTrackerRepository.findByStartDateAndEndDate(userDto.getId(), createLeaveTrackerDto.getStartDate(), createLeaveTrackerDto.getEndDate());
         if (!isLeaveApplied.isEmpty()) {
             throw new RequestRejectedException("You have already applied leave for some of the days");
@@ -60,7 +60,7 @@ public class LeaveTrackerService {
         LeavesTracker leavesTracker = new LeavesTracker();
         Float noOfDays = 0f;
 
-        if (reportingManager.isEmpty()) {
+        if (reportingManager == null) {
             throw new EntityNotFoundException("Reporting Manager not found");
         } else {
             LeaveBreakup[] leaveBreakups = createLeaveTrackerDto.getLeaveBreakups();
@@ -76,7 +76,7 @@ public class LeaveTrackerService {
                 noOfDays += numLeaveValue;
             }
             leavesTracker.setUserId(user.get().getId());
-            leavesTracker.setReportingManager(reportingManager.get().getId());
+            leavesTracker.setReportingManager(reportingManager.getId());
             leavesTracker.setStartDate(createLeaveTrackerDto.getStartDate());
             leavesTracker.setEndDate(createLeaveTrackerDto.getEndDate());
             leavesTracker.setReason(createLeaveTrackerDto.getReason());

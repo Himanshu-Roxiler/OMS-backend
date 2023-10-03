@@ -1,5 +1,7 @@
 package com.roxiler.erp.repository;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import com.roxiler.erp.model.Holiday;
@@ -12,4 +14,8 @@ public interface HolidayRepository extends JpaRepository<Holiday, Integer> {
 
     @Query("SELECT holiday from Holiday holiday WHERE holiday.organization = :organization AND holiday.holidayDate > CURRENT_DATE")
     Iterable<Holiday> findUpcomingHolidaysInOrg(Organization organization);
+
+    @Query("SELECT holiday from Holiday holiday WHERE holiday.organization = :organization AND holiday.holidayDate > CURRENT_DATE")
+    Page<Holiday> findUpcomingHolidaysInOrgWithPagination(Organization organization, Pageable pageable);
+
 }

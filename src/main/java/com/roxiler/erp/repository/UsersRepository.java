@@ -31,6 +31,9 @@ public interface UsersRepository extends JpaRepository<Users, Integer> {
     @Query("SELECT user FROM Users user WHERE user.organization = :org AND LOWER(CONCAT(user.firstName, ' ', user.lastName)) LIKE %:search%")
     Page<Users> getUsersListWithOrg(Organization org, String search, Pageable pageable);
 
+    @Query("SELECT user FROM Users user WHERE user.organization = :org ORDER BY user.createdAt DESC")
+    Page<Users> getNewUsersListWithOrg(Organization org, Pageable pageable);
+
     Users readByUsernameAndActiveOrganization(String username, Integer orgId);
 
     Optional<Users> findByUsernameAndActiveOrganization(String username, Integer orgId);

@@ -13,6 +13,9 @@ import com.roxiler.erp.model.LeavesTracker;
 import com.roxiler.erp.model.Users;
 import com.roxiler.erp.repository.LeavesTrackerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.roxiler.erp.dto.auth.UserDto;
@@ -216,6 +219,35 @@ public class HolidayService {
 
         Users user = usersRepository.readByEmail(userDto.getEmail());
         Iterable<Holiday> holidays = holidayRepository.findUpcomingHolidaysInOrg(user.getOrganization());
+        List<Map<String, Object>> upcomingHolidays = new ArrayList<>();
+        for (Holiday holiday : holidays) {
+            Map<String, Object> obj = new HashMap<>();
+            SimpleDateFormat dateFormat = new SimpleDateFormat("EEE MMM dd yyyy");
+            dateFormat.setTimeZone(TimeZone.getTimeZone("IST"));
+            Date date = new Date(holiday.getHolidayDate().getTime());
+            String formattedDate = dateFormat.format(date);
+            obj.put("date", formattedDate);
+            obj.put("normalizedDate", holiday.getHolidayDate().getTime());
+            obj.put("reason", holiday.getHolidayName());
+            obj.put("isLeave", false);
+            upcomingHolidays.add(obj);
+        }
+
+        upcomingHolidays.sort((map1, map2) -> {
+            long epoch1 = Long.parseLong(map1.get("normalizedDate").toString());
+            long epoch2 = Long.parseLong(map2.get("normalizedDate").toString());
+
+            return Long.compare(epoch1, epoch2);
+        });
+
+        return upcomingHolidays;
+    }
+
+    public Iterable<Map<String, Object>> upcomingHolidaysWithPagination(UserDto userDto) {
+
+        Users user = usersRepository.readByEmail(userDto.getEmail());
+        Pageable pageable = PageRequest.of(0, 5);
+        Page<Holiday> holidays = holidayRepository.findUpcomingHolidaysInOrgWithPagination(user.getOrganization(), pageable);
         List<Map<String, Object>> upcomingHolidays = new ArrayList<>();
         for (Holiday holiday : holidays) {
             Map<String, Object> obj = new HashMap<>();

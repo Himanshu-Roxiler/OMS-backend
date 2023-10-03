@@ -191,6 +191,26 @@ public class UsersService {
         return usersList;
     }
 
+    public List<Map<String, Object>> getNewJoinees(UserDto userDto) {
+        Optional<Organization> org = organizationRepository.findById(userDto.getOrgId());
+        if (org.isEmpty()) {
+            throw new EntityNotFoundException("No organization is found for user " + userDto.getOrgId());
+        }
+        Pageable pageable = PageRequest.of(0, 5);
+//                listUsersDto.getSortOrder().equals("asc") ? Sort.by(Sort.Direction.ASC) : Sort.by(Sort.Direction.DESC));
+        Page<Users> users = usersRepository.getNewUsersListWithOrg(org.get(), pageable);
+        List<Map<String, Object>> usersList = new ArrayList<>();
+        for (Users user : users) {
+            Map<String, Object> userObj = new HashMap<>();
+            String fullName = String.format("%s %s", user.getFirstName(), user.getLastName());
+            userObj.put("fullName", fullName);
+            userObj.put("designation", user.getDesignation().getName());
+            userObj.put("id", user.getId());
+            usersList.add(userObj);
+        }
+        return usersList;
+    }
+
 
     @RequiredPermission(permission = PermissionConstants.USERS)
     @Transactional
