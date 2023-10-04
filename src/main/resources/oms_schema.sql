@@ -201,7 +201,7 @@ CREATE TABLE users (
     designation INTEGER,
     organization INTEGER,
     user_profile INTEGER UNIQUE,
-    reporting_manager INTEGER UNIQUE,
+    reporting_manager INTEGER,
     google_id VARCHAR(255),
     outlook_id VARCHAR(255),
     created_at TIMESTAMP(6),
