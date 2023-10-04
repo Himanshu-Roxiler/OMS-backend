@@ -34,7 +34,7 @@ public class UsersController {
             @RequestParam(value = "search", defaultValue = "") String search
     ) {
 
-        List<Map<String, Object>> users = usersService.getAllUsersWithPagination(userDto, pageNum, pageSize, sortName, sortOrder, search);
+        Map<String, Object> users = usersService.getAllUsersWithPagination(userDto, pageNum, pageSize, sortName, sortOrder, search);
         ResponseObject responseObject = new ResponseObject();
         responseObject.setIs_success(true);
         responseObject.setMessage("Successfully fetched users");
@@ -73,9 +73,12 @@ public class UsersController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<ResponseObject> deleteUser(@PathVariable("id") Integer id) {
+    public ResponseEntity<ResponseObject> deleteUser(
+            @PathVariable("id") Integer id,
+            @AuthenticationPrincipal UserDto userDto
+    ) {
 
-        usersService.deleteUser(id);
+        usersService.deleteUser(id, userDto);
         ResponseObject responseObject = new ResponseObject();
         responseObject.setIs_success(true);
         responseObject.setMessage("Successfully deleted user");

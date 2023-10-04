@@ -24,10 +24,6 @@ public class UpdateUserDto {
 //    @Size(min=3, message = "Length should not be less than 3")
 //    private String email;
 
-    @NotBlank(message = "Password should not be blank")
-    @Size(min = 4, message = "Length of password should not be less than 4")
-    private String password;
-
     @Digits(integer = Integer.MAX_VALUE, fraction = 0, message = "Department should not be blank")
     private Integer deptId;
 

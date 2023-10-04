@@ -165,7 +165,7 @@ public class UsersService {
     }
 
     @RequiredPermission(permission = PermissionConstants.USERS)
-    public List<Map<String, Object>> getAllUsersWithPagination(UserDto userDto, Integer pageNum, Integer pageSize, String sortName, String sortOrder, String search) {
+    public Map<String, Object> getAllUsersWithPagination(UserDto userDto, Integer pageNum, Integer pageSize, String sortName, String sortOrder, String search) {
         Optional<Organization> org = organizationRepository.findById(userDto.getOrgId());
         if (org.isEmpty()) {
             throw new EntityNotFoundException("No organization is found for user " + userDto.getOrgId());
@@ -188,7 +188,11 @@ public class UsersService {
             }
             usersList.add(userObj);
         }
-        return usersList;
+        Map<String, Object> allData = new HashMap<>();
+        allData.put("data", usersList);
+        allData.put("totalElements", users.getTotalElements());
+        allData.put("pageNumber", users.getPageable().getPageNumber());
+        return allData;
     }
 
     public List<Map<String, Object>> getNewJoinees(UserDto userDto) {
@@ -341,12 +345,18 @@ public class UsersService {
     }
 
     @RequiredPermission(permission = PermissionConstants.USERS)
-    public void deleteUser(Integer id) {
+    public void deleteUser(Integer id, UserDto userDto) {
 
+        if (Objects.equals(userDto.getId(), id)) {
+            throw new AuthorizationServiceException("You cannot delete your own account");
+        }
         String deletedBy = SecurityContextHolder.getContext().getAuthentication().getName();
         Optional<Users> user = usersRepository.findById(id);
 
         if (user.isPresent()) {
+            if (!Objects.equals(user.get().getOrganization().getId(), userDto.getOrgId())) {
+                throw new AuthorizationServiceException("You are not authorised to perform this action");
+            }
             Optional<Department> department = departmentRepository.findById(user.get().getDepartment().getId());
             Optional<Designation> designation = designationRepository.findById(user.get().getDesignation().getId());
             Optional<Organization> organization = organizationRepository.findById(user.get().getOrganization().getId());
