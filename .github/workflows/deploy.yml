@@ -27,7 +27,7 @@ jobs:
             git pull origin main
             sudo VOLUME_LOCATION=/home/ubuntu/OMS-DB-DATA PROPERTIES_FILE_LOCATION=/home/ubuntu/OMS-docker/application.properties docker compose down -v
             sudo docker image prune -af
-            sudo VOLUME_LOCATION=/home/ubuntu/OMS-DB-DATA PROPERTIES_FILE_LOCATION=/home/ubuntu/OMS-docker/application.properties docker compose up -d
+            sudo VOLUME_LOCATION=/home/ubuntu/OMS-DB-DATA PROPERTIES_FILE_LOCATION=/home/ubuntu/OMS-docker/application.properties docker compose up --build -d
 #
 #      - name: Update Code
 #        run: |
