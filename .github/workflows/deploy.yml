@@ -24,7 +24,7 @@ jobs:
           port: ${{ secrets.OMS_EC2_PORT }}
           script: |
             cd /home/ubuntu/OMS-docker/OMS-backend
-            git pull origin use-docker
+            git pull origin main
             sudo VOLUME_LOCATION=/home/ubuntu/OMS-DB-DATA PROPERTIES_FILE_LOCATION=/home/ubuntu/OMS-docker/application.properties docker compose down
             sudo VOLUME_LOCATION=/home/ubuntu/OMS-DB-DATA PROPERTIES_FILE_LOCATION=/home/ubuntu/OMS-docker/application.properties docker compose up -d
 #
