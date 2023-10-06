@@ -1,0 +1,38 @@
+version: '3'
+services:
+  postgres:
+    build:
+      context: .
+      dockerfile: Dockerfile.postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: oms
+    volumes:
+      - ${VOLUME_LOCATION}:/var/lib/postgresql/data
+    networks:
+      - mynet
+
+  spring-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/oms
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: postgres
+    volumes:
+      - ${PROPERTIES_FILE_LOCATION}:/app/config/application.properties
+    networks:
+      - mynet
+
+volumes:
+  postgres-data:
+
+networks:
+  mynet:
+    driver: bridge

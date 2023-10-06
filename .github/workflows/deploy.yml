@@ -1,0 +1,42 @@
+name: Deploy to EC2
+
+on:
+  push:
+    branches:
+      - adding-leaves
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+        with:
+          ref: adding-leaves
+
+      - name: SSH into EC2
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.OMS_EC2_HOST }}
+          username: ${{ secrets.OMS_EC2_USERNAME }}
+          key: ${{ secrets.OMS_EC2_KEY }}
+          port: ${{ secrets.OMS_EC2_PORT }}
+          script: |
+            cd /home/ubuntu/OMS-docker/OMS-backend
+            git pull origin use-docker
+            sudo VOLUME_LOCATION=/home/ubuntu/OMS-DB-DATA PROPERTIES_FILE_LOCATION=/home/ubuntu/OMS-docker/application.properties docker compose down
+            sudo VOLUME_LOCATION=/home/ubuntu/OMS-DB-DATA PROPERTIES_FILE_LOCATION=/home/ubuntu/OMS-docker/application.properties docker compose up -d
+#
+#      - name: Update Code
+#        run: |
+#          cd $GITHUB_WORKSPACE
+#          echo $GITHUB_WORKSPACE
+#          git pull origin use-docker
+#        continue-on-error: true
+#
+#      - name: Restart Docker Compose
+#        run: |
+#          cd $GITHUB_WORKSPACE
+#          sudo VOLUME_LOCATION=/home/ubuntu/OMS-DB-DATA docker compose down
+#          sudo VOLUME_LOCATION=/home/ubuntu/OMS-DB-DATA docker compose up -d
