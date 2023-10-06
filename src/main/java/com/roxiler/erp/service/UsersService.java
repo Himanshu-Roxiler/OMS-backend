@@ -380,7 +380,7 @@ public class UsersService {
         }
     }
 
-    @RequiredPermission(permission = PermissionConstants.USERS)
+    //    @RequiredPermission(permission = PermissionConstants.USERS)
     public void changeUserPassword(UserDto userDto, ChangePasswordDto changePasswordDto) throws Exception {
         Optional<Users> user = usersRepository.findById(userDto.getId());
         if (user.isEmpty()) {
@@ -392,7 +392,7 @@ public class UsersService {
         }
 
         if (
-                passwordEncoder.matches(changePasswordDto.getNewPassword(), user.get().getPassword()) ||
+                passwordEncoder.matches(changePasswordDto.getOldPassword(), user.get().getPassword()) ||
                         passwordEncoder.matches("A2f9R7sGvNtE1DpYw", user.get().getPassword())
         ) {
             String hashedPassword = passwordEncoder.encode(changePasswordDto.getNewPassword());
